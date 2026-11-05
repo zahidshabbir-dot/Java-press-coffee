@@ -1,0 +1,186 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{%- liquid
+  assign total = 0
+  for block in section.blocks
+    if block.type == 'question'
+      assign total = total | plus: 1
+    endif
+  endfor
+-%}
+
+{% style %}
+  #wr-sf-{{ section.id }} { background:{{ section.settings.bg }}; color:#fff; font-family:'Instrument Sans',sans-serif; padding:56px 0; }
+  #wr-sf-{{ section.id }} * { box-sizing:border-box; }
+  #wr-sf-{{ section.id }} [hidden] { display:none !important; }
+  #wr-sf-{{ section.id }} .wr-sf__inner { max-width:1360px; margin:0 auto; padding:0 40px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:64px; align-items:center; }
+  #wr-sf-{{ section.id }} .wr-sf__intro { padding-left:40px; }
+  #wr-sf-{{ section.id }} .wr-sf__eyebrow { margin:0 0 14px; font-size:12px; line-height:normal; font-weight:500; letter-spacing:2px; text-transform:uppercase; color:#fff; }
+  #wr-sf-{{ section.id }} .wr-sf__title { margin:0; max-width:420px; font-family:'Instrument Sans',sans-serif; font-size:32px; line-height:1.15; font-weight:600; color:#fff; text-transform:none; letter-spacing:0; }
+  #wr-sf-{{ section.id }} .wr-sf__text { margin:14px 0 0; max-width:380px; font-size:13.5px; line-height:1.6; color:#b9b9b9; }
+  #wr-sf-{{ section.id }} .wr-sf__card { background:#fff; color:#111; padding:30px 34px 28px; min-height:360px; max-width:720px; width:100%; }
+  #wr-sf-{{ section.id }} .wr-sf__bar { display:flex; gap:8px; }
+  #wr-sf-{{ section.id }} .wr-sf__bar i { flex:1 1 0; height:3px; background:#dedede; transition:background .2s; }
+  #wr-sf-{{ section.id }} .wr-sf__bar i.is-on { background:#000; }
+  #wr-sf-{{ section.id }} .wr-sf__qn { margin:22px 0 6px; font-size:11px; line-height:normal; font-weight:500; letter-spacing:1.2px; text-transform:uppercase; color:#6b6b6b; }
+  #wr-sf-{{ section.id }} .wr-sf__q { margin:0 0 20px; font-family:'Instrument Sans',sans-serif; font-size:22px; line-height:1.2; font-weight:600; color:#111; text-transform:none; letter-spacing:0; }
+  #wr-sf-{{ section.id }} .wr-sf__opts, #wr-sf-{{ section.id }} .wr-sf__links { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  #wr-sf-{{ section.id }} .wr-sf__opt, #wr-sf-{{ section.id }} .wr-sf__link { display:flex; align-items:center; gap:10px; width:100%; padding:11px 14px; border:1px solid #dcdcdc; background:#fff; color:#111; font-family:inherit; font-size:14px; line-height:1.2; text-align:left; text-decoration:none; cursor:pointer; transition:border-color .15s; }
+  #wr-sf-{{ section.id }} .wr-sf__opt:hover, #wr-sf-{{ section.id }} .wr-sf__link:hover { border-color:#111; }
+  #wr-sf-{{ section.id }} .wr-sf__sw { flex:0 0 28px; width:28px; height:28px; border-radius:3px; background:#e6dfd3; }
+  #wr-sf-{{ section.id }} .wr-sf__back, #wr-sf-{{ section.id }} .wr-sf__restart { display:inline-block; margin-top:20px; padding:0; border:0; background:none; color:#6b6b6b; font-family:inherit; font-size:12.5px; text-decoration:underline; cursor:pointer; }
+  #wr-sf-{{ section.id }} .wr-sf__rtitle { margin:22px 0 6px; font-family:'Instrument Sans',sans-serif; font-size:24px; line-height:1.2; font-weight:600; color:#111; text-transform:none; letter-spacing:0; }
+  #wr-sf-{{ section.id }} .wr-sf__rtext { margin:0 0 18px; max-width:520px; font-size:13.5px; line-height:1.55; color:#666; }
+  @media (max-width:989px) {
+    #wr-sf-{{ section.id }} { padding:40px 0; }
+    #wr-sf-{{ section.id }} .wr-sf__inner { grid-template-columns:1fr; gap:28px; padding:0 20px; }
+    #wr-sf-{{ section.id }} .wr-sf__intro { padding-left:0; }
+    #wr-sf-{{ section.id }} .wr-sf__title { font-size:28px; }
+    #wr-sf-{{ section.id }} .wr-sf__card { padding:22px 20px; min-height:0; max-width:none; }
+  }
+  @media (max-width:549px) {
+    #wr-sf-{{ section.id }} .wr-sf__opts, #wr-sf-{{ section.id }} .wr-sf__links { grid-template-columns:1fr; }
+  }
+{% endstyle %}
+
+<section id="wr-sf-{{ section.id }}">
+  <div class="wr-sf__inner">
+    <div class="wr-sf__intro">
+      {%- if section.settings.eyebrow != blank -%}<p class="wr-sf__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="wr-sf__title">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p class="wr-sf__text">{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+
+    <div class="wr-sf__card">
+      <div class="wr-sf__bar" aria-hidden="true">{%- for i in (1..total) -%}<i></i>{%- endfor -%}</div>
+
+      {%- assign qn = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'question' -%}
+          {%- assign qn = qn | plus: 1 -%}
+          <div class="wr-sf__step" {% unless qn == 1 %}hidden{% endunless %} {{ block.shopify_attributes }}>
+            <p class="wr-sf__qn">Question {{ qn }} of {{ total }}</p>
+            <h3 class="wr-sf__q">{{ block.settings.title }}</h3>
+            <div class="wr-sf__opts">
+              {%- assign lines = block.settings.options | newline_to_br | strip_newlines | split: '<br />' -%}
+              {%- for line in lines -%}
+                {%- if line != blank -%}
+                  {%- assign parts = line | split: '|' -%}
+                  {%- assign opt_label = parts[0] | strip -%}
+                  {%- assign opt_key = parts[1] | strip -%}
+                  {%- assign opt_color = parts[2] | strip -%}
+                  <button type="button" class="wr-sf__opt" data-key="{{ opt_key }}"><span class="wr-sf__sw" style="background:{{ opt_color | default: '#e6dfd3' }}"></span><span>{{ opt_label }}</span></button>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            <button type="button" class="wr-sf__back" {% if qn == 1 %}hidden{% endif %}>← Back</button>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'result' -%}
+          <div class="wr-sf__result" data-key="{{ block.settings.key }}" hidden {{ block.shopify_attributes }}>
+            <h3 class="wr-sf__rtitle">{{ block.settings.title }}</h3>
+            <p class="wr-sf__rtext">{{ block.settings.text }}</p>
+            <div class="wr-sf__links">
+              {%- assign rlines = block.settings.links | newline_to_br | strip_newlines | split: '<br />' -%}
+              {%- for rline in rlines -%}
+                {%- if rline != blank -%}
+                  {%- assign rparts = rline | split: '|' -%}
+                  <a class="wr-sf__link" href="{{ rparts[1] | strip | default: '#' }}"><span class="wr-sf__sw" style="background:{{ block.settings.swatch }}"></span><span>{{ rparts[0] | strip }} →</span></a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            <button type="button" class="wr-sf__restart">Start over</button>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var root = document.getElementById('wr-sf-{{ section.id }}');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
+    var steps = [].slice.call(root.querySelectorAll('.wr-sf__step'));
+    var results = [].slice.call(root.querySelectorAll('.wr-sf__result'));
+    var segs = [].slice.call(root.querySelectorAll('.wr-sf__bar i'));
+    var key = '';
+    var current = 0;
+    function paint(n) { segs.forEach(function (s, k) { s.classList.toggle('is-on', k <= n); }); }
+    function show(n) {
+      current = n;
+      steps.forEach(function (s, k) { s.hidden = k !== n; });
+      results.forEach(function (r) { r.hidden = true; });
+      paint(n);
+    }
+    function finish() {
+      steps.forEach(function (s) { s.hidden = true; });
+      var match = results.filter(function (r) { return r.dataset.key === key; })[0] || results[0];
+      results.forEach(function (r) { r.hidden = r !== match; });
+      segs.forEach(function (s) { s.classList.add('is-on'); });
+    }
+    root.addEventListener('click', function (e) {
+      var opt = e.target.closest('.wr-sf__opt');
+      if (opt) {
+        if (opt.dataset.key) key = opt.dataset.key;
+        if (current < steps.length - 1) show(current + 1); else finish();
+        return;
+      }
+      if (e.target.closest('.wr-sf__back')) { show(Math.max(0, current - 1)); return; }
+      if (e.target.closest('.wr-sf__restart')) { key = ''; show(0); }
+    });
+    show(0);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "WR Style finder",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small text", "default": "Style finder" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Not sure where to start? Find your style in 30 seconds." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Answer 3 quick questions and we'll match you with collections that suit your room, plus samples to try at home." },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#000000" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Question", "default": "Which room are you decorating?" },
+        { "type": "textarea", "id": "options", "label": "Answers (one per line)", "info": "Format: Label | result key | color. The result key picks which result is shown at the end (optional).", "default": "Living room | | #bfae92\nBedroom | | #c9c4be" }
+      ]
+    },
+    {
+      "type": "result",
+      "name": "Result",
+      "settings": [
+        { "type": "text", "id": "key", "label": "Result key", "info": "Must match a result key used in the answers.", "default": "bold" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Bold Botanist" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Big blooms and color that make the wall the star of the room. We'll show the lighter colorways first." },
+        { "type": "textarea", "id": "links", "label": "Links (one per line)", "info": "Format: Label | URL", "default": "Floral Wallpaper | /collections/all\nTropical | /collections/all" },
+        { "type": "color", "id": "swatch", "label": "Swatch color", "default": "#f4d6d2" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "WR Style finder",
+      "blocks": [
+        { "type": "question", "settings": { "title": "Which room are you decorating?", "options": "Living room | | #bfae92\nBedroom | | #c9c4be\nBathroom | | #d8cfc0\nDining or kitchen | | #d9c9a8\nKids' room | | #c5d0da\nOffice or business | | #e6dfd0\nNursery | | #cfd3d6\nPowder room | | #4a4a4a" } },
+        { "type": "question", "settings": { "title": "Which vibe feels most like you?", "options": "Calm & natural | calm | #b5c0a3\nBold & colorful | bold | #e9c9c1\nClassic & elegant | classic | #1a1a1a\nModern & textured | modern | #e4dccb" } },
+        { "type": "question", "settings": { "title": "Which colors do you love?", "options": "Neutrals & creams | | #ece6da\nGreens & blues | | #a8bfb4\nWarm & earthy | | #c9a27c\nDark & dramatic | | #2a2a2a" } },
+        { "type": "result", "settings": { "key": "calm", "title": "Calm Naturalist", "text": "Soft botanicals and organic textures that quiet the room. We'll show the lighter colorways first.", "links": "Natural Wallpaper | /collections/all\nGrasscloth | /collections/all", "swatch": "#dfe6d3" } },
+        { "type": "result", "settings": { "key": "bold", "title": "Bold Botanist", "text": "Big blooms and color that make the wall the star of the room. We'll show the lighter colorways first.", "links": "Floral Wallpaper | /collections/all\nTropical | /collections/all\nWall Murals | /collections/all\nBotanical | /collections/all", "swatch": "#f4d6d2" } },
+        { "type": "result", "settings": { "key": "classic", "title": "Classic Romantic", "text": "Damasks, stripes and timeless patterns with a refined finish.", "links": "Damask | /collections/all\nStripes | /collections/all", "swatch": "#e9e0cf" } },
+        { "type": "result", "settings": { "key": "modern", "title": "Modern Minimalist", "text": "Quiet textures and clean geometry for a contemporary space.", "links": "Textured | /collections/all\nGeometric | /collections/all", "swatch": "#e4dccb" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

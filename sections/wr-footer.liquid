@@ -1,0 +1,117 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{% style %}
+  .wr-ft-{{ section.id }} { background:{{ section.settings.bg }}; color:#111; font-family:'Instrument Sans',sans-serif; padding:24px 0 22px; }
+  .wr-ft-{{ section.id }} * { box-sizing:border-box; }
+  .wr-ft-{{ section.id }} .wr-ft__inner { max-width:1440px; margin:0 auto; padding:0 20px; display:grid; grid-template-columns:250px minmax(0,1fr); gap:24px; align-items:start; }
+  .wr-ft-{{ section.id }} .wr-ft__brand { border:1px solid #e5e5e5; border-radius:16px; padding:16px 16px 18px; background:#fff; }
+  .wr-ft-{{ section.id }} .wr-ft__name { margin:0 0 14px; font-size:12.5px; line-height:normal; font-weight:700; color:#111; }
+  .wr-ft-{{ section.id }} .wr-ft__line { margin:0 0 10px; font-size:12.5px; line-height:1.55; color:#111; }
+  .wr-ft-{{ section.id }} .wr-ft__line a { color:inherit; text-decoration:none; }
+  .wr-ft-{{ section.id }} .wr-ft__social { display:flex; flex-wrap:wrap; gap:14px; margin:16px 0 0; padding:0; list-style:none; }
+  .wr-ft-{{ section.id }} .wr-ft__social li { margin:0; }
+  .wr-ft-{{ section.id }} .wr-ft__social a { display:block; color:#111; }
+  .wr-ft-{{ section.id }} .wr-ft__social a:hover { opacity:0.65; }
+  .wr-ft-{{ section.id }} .wr-ft__social svg { display:block; width:26px; height:26px; }
+  .wr-ft-{{ section.id }} .wr-ft__cols { display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px 32px; padding:0 8px 0 4px; }
+  .wr-ft-{{ section.id }} .wr-ft__h { margin:0 0 12px; font-family:'Instrument Sans',sans-serif; font-size:16px; line-height:normal; font-weight:500; color:#111; text-transform:none; letter-spacing:0; }
+  .wr-ft-{{ section.id }} .wr-ft__links { list-style:none; margin:0; padding:0; display:grid; gap:11px; }
+  .wr-ft-{{ section.id }} .wr-ft__links li { margin:0; }
+  .wr-ft-{{ section.id }} .wr-ft__links a { font-size:12.5px; line-height:1.3; color:#111; text-decoration:none; }
+  .wr-ft-{{ section.id }} .wr-ft__links a:hover { text-decoration:underline; }
+  .wr-ft-{{ section.id }} .wr-ft__copy { max-width:1440px; margin:34px auto 0; padding:0 20px; text-align:center; font-size:12.5px; line-height:normal; color:#111; }
+  @media (max-width:989px) {
+    .wr-ft-{{ section.id }} .wr-ft__inner { grid-template-columns:1fr; }
+    .wr-ft-{{ section.id }} .wr-ft__cols { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); padding:0 4px; }
+  }
+{% endstyle %}
+
+<footer class="wr-ft-{{ section.id }}">
+  <div class="wr-ft__inner">
+    <div class="wr-ft__brand">
+      {%- if section.settings.brand_name != blank -%}<p class="wr-ft__name">{{ section.settings.brand_name }}</p>{%- endif -%}
+      {%- if section.settings.phone != blank -%}
+        <p class="wr-ft__line"><strong>{{ section.settings.phone_label }}</strong> {{ section.settings.phone_note }}<br><a href="tel:{{ section.settings.phone | replace: ' ', '' }}">{{ section.settings.phone }}</a></p>
+      {%- endif -%}
+      {%- if section.settings.email != blank -%}
+        <p class="wr-ft__line"><strong>Email-</strong> <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></p>
+      {%- endif -%}
+      <ul class="wr-ft__social">
+        {%- if section.settings.facebook != blank -%}<li><a href="{{ section.settings.facebook }}" aria-label="Facebook" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a></li>{%- endif -%}
+        {%- if section.settings.instagram != blank -%}<li><a href="{{ section.settings.instagram }}" aria-label="Instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a></li>{%- endif -%}
+        {%- if section.settings.tiktok != blank -%}<li><a href="{{ section.settings.tiktok }}" aria-label="TikTok" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg></a></li>{%- endif -%}
+        {%- if section.settings.pinterest != blank -%}<li><a href="{{ section.settings.pinterest }}" aria-label="Pinterest" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg></a></li>{%- endif -%}
+        {%- if section.settings.x != blank -%}<li><a href="{{ section.settings.x }}" aria-label="X" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></li>{%- endif -%}
+      </ul>
+    </div>
+
+    <nav class="wr-ft__cols" aria-label="Footer">
+      {%- for block in section.blocks -%}
+        <div class="wr-ft__col" {{ block.shopify_attributes }}>
+          {%- if block.settings.title != blank -%}<h3 class="wr-ft__h">{{ block.settings.title }}</h3>{%- endif -%}
+          <ul class="wr-ft__links">
+            {%- if block.settings.menu != blank -%}
+              {%- for link in block.settings.menu.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+            {%- else -%}
+              {%- assign flines = block.settings.links | newline_to_br | strip_newlines | split: '<br />' -%}
+              {%- for fline in flines -%}
+                {%- if fline != blank -%}
+                  {%- assign fparts = fline | split: '|' -%}
+                  <li><a href="{{ fparts[1] | strip | default: '#' }}">{{ fparts[0] | strip }}</a></li>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+          </ul>
+        </div>
+      {%- endfor -%}
+    </nav>
+  </div>
+  {%- if section.settings.copyright != blank -%}<p class="wr-ft__copy">© Copyright {{ 'now' | date: '%Y' }} {{ section.settings.copyright }}</p>{%- endif -%}
+</footer>
+
+{% schema %}
+{
+  "name": "WR Footer",
+  "max_blocks": 5,
+  "settings": [
+    { "type": "header", "content": "Brand card" },
+    { "type": "text", "id": "brand_name", "label": "Name", "default": "Walls Republic US" },
+    { "type": "text", "id": "phone_label", "label": "Phone label", "default": "PH-" },
+    { "type": "text", "id": "phone_note", "label": "Phone note", "default": "US | Canada Toll Free:" },
+    { "type": "text", "id": "phone", "label": "Phone number", "default": "1-888-990-2250" },
+    { "type": "text", "id": "email", "label": "Email", "default": "sales@wallsrepublic.com" },
+    { "type": "header", "content": "Social links" },
+    { "type": "url", "id": "facebook", "label": "Facebook" },
+    { "type": "url", "id": "instagram", "label": "Instagram" },
+    { "type": "url", "id": "tiktok", "label": "TikTok" },
+    { "type": "url", "id": "pinterest", "label": "Pinterest" },
+    { "type": "url", "id": "x", "label": "X (Twitter)" },
+    { "type": "header", "content": "Bottom" },
+    { "type": "text", "id": "copyright", "label": "Copyright text (the year is added automatically)", "default": "Walls Republic. All Rights Reserved." },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Link column",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Heading", "default": "About & Partners" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "info": "Optional. If chosen, it is used instead of the links below." },
+        { "type": "textarea", "id": "links", "label": "Links (one per line)", "info": "Format: Label | URL", "default": "About Us | /pages/about" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "WR Footer",
+      "blocks": [
+        { "type": "column", "settings": { "title": "About & Partners", "links": "About Us | /pages/about\nBe our Trade Partner | /pages/trade-program\nCollaborate with Us | /pages/contact" } },
+        { "type": "column", "settings": { "title": "Customer Service", "links": "Contact Us | /pages/contact\nShipping | /pages/shipping\nFree Wallpaper Samples | /pages/free-samples\nWallpaper Substrate Guide | /pages/substrate-guide\nFrequently Asked Questions | /pages/faq" } },
+        { "type": "column", "settings": { "title": "Resources", "links": "Blog | /blogs/news\nWalls Republic University | /pages/university\nHome Wallpaper Glossary | /pages/glossary\nTestimonials | /pages/testimonials\nInspirations | /pages/inspirations" } },
+        { "type": "column", "settings": { "title": "Policies & Legal", "links": "Return Policy | /policies/refund-policy\nPrivacy Policy | /policies/privacy-policy\nTerms Of Use | /policies/terms-of-service\nTerms of Sales | /policies/terms-of-service" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

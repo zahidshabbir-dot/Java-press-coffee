@@ -1,0 +1,644 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "wr_hero_slider": {
+      "type": "wr-hero-slider",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/qwaszx.png",
+            "pill": "Just in: Bohème Collection",
+            "rating_text": "4.8 · 810+ reviews",
+            "feature_1": "Free measurement check",
+            "feature_2": "Free shipping over $350",
+            "heading": "Unapologetically Eclectic.\nEffortlessly Bohème.",
+            "text": "Layered, expressive wallcoverings inspired by faraway places and vintage curiosities.",
+            "button_label": "Shop Bohème",
+            "button_link": "",
+            "slide_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_1"
+      ],
+      "settings": {
+        "height": 490,
+        "height_mobile": 440,
+        "autoplay": false,
+        "autoplay_speed": 6
+      }
+    },
+    "wr_usp_strip": {
+      "type": "wr-usp-strip",
+      "blocks": {
+        "usp_1": {
+          "type": "usp",
+          "settings": {
+            "icon": "layers",
+            "title": "Premium substrates",
+            "text": "Non-woven, vinyl & textile options built to last"
+          }
+        },
+        "usp_2": {
+          "type": "usp",
+          "settings": {
+            "icon": "shield",
+            "title": "Scrubbable & strippable",
+            "text": "Wipe-clean finishes that peel off cleanly later"
+          }
+        },
+        "usp_3": {
+          "type": "usp",
+          "settings": {
+            "icon": "pin",
+            "title": "Low-VOC, Class A rated",
+            "text": "Fire-rated, low-VOC options for homes & commercial"
+          }
+        },
+        "usp_4": {
+          "type": "usp",
+          "settings": {
+            "icon": "sample",
+            "title": "Free 3 Samples",
+            "text": "See it on your wall before you buy a roll"
+          }
+        }
+      },
+      "block_order": [
+        "usp_1",
+        "usp_2",
+        "usp_3",
+        "usp_4"
+      ],
+      "settings": {}
+    },
+    "wr_shop_by_style": {
+      "type": "wr-shop-by-style",
+      "blocks": {
+        "c1": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/Image_Wall_Murals.png",
+            "title": "Wall Murals",
+            "subtitle": "1199 items",
+            "link": "",
+            "highlight": false
+          }
+        },
+        "c2": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/Image_Home_Wallpaper.png",
+            "title": "Home Wallpaper",
+            "subtitle": "3319 items",
+            "link": "",
+            "highlight": false
+          }
+        },
+        "c3": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/Image_Commercial.png",
+            "title": "Commercial",
+            "subtitle": "432 items",
+            "link": "",
+            "highlight": false
+          }
+        },
+        "c4": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/Image_Floral.png",
+            "title": "Floral",
+            "subtitle": "217 items",
+            "link": "",
+            "highlight": false
+          }
+        },
+        "c5": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/Image_Stripes.png",
+            "title": "Stripes",
+            "subtitle": "31 items",
+            "link": "",
+            "highlight": false
+          }
+        },
+        "c6": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/Image_Natural.png",
+            "title": "Natural",
+            "subtitle": "144 items",
+            "link": "",
+            "highlight": false
+          }
+        },
+        "c7": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/Image_Metallic.png",
+            "title": "Metallic",
+            "subtitle": "221 items",
+            "link": "",
+            "highlight": false
+          }
+        },
+        "c8": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/Image_Outlet.png",
+            "title": "Outlet",
+            "subtitle": "Up to 80% off",
+            "link": "",
+            "highlight": true
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8"
+      ],
+      "settings": {
+        "heading": "Shop by Style",
+        "eyebrow": "Who do you call when ordinary just won't do?",
+        "bg": "#f6f5f2"
+      }
+    },
+    "wr_best_sellers": {
+      "type": "wr-best-sellers",
+      "settings": {
+        "eyebrow": "Most-loved designs",
+        "heading": "Shop the Best Sellers",
+        "collection": "",
+        "limit": 4,
+        "show_badge": true,
+        "badge_text": "Best Seller",
+        "show_rating": true,
+        "rating_text": "4.8 (810)",
+        "button_label": "Choose Size",
+        "cta_label": "Shop All Best Sellers",
+        "cta_link": "",
+        "bg": "#ffffff"
+      }
+    },
+    "wr_community_carousel": {
+      "type": "wr-community-carousel",
+      "blocks": {
+        "look_1": {
+          "type": "look",
+          "settings": {
+            "video": "shopify://files/videos/d9379e478bc64ac9b93d012ec20a9de6.HD-1080p-2.5Mbps-97856723.mp4",
+            "product": "amber-gold-bauhaus-abstract-curve-residential-mural-rm9356"
+          }
+        },
+        "look_2": {
+          "type": "look",
+          "settings": {
+            "video": "shopify://files/videos/f3517971459a451898ce987598dfb815.HD-1080p-2.5Mbps-97855767.mp4",
+            "product": "bracken-green-bauhaus-abstract-curve-residential-mural-rm9357"
+          }
+        },
+        "look_3": {
+          "type": "look",
+          "settings": {
+            "video": "shopify://files/videos/095f5a3b28944291a80032c2ebaba355.HD-1080p-2.5Mbps-97860202_17a7ee7d-3d64-44bc-9aa2-93aa0990b583.mp4",
+            "product": "loquat-brown-bauhaus-abstract-curve-residential-mural-rm9354"
+          }
+        },
+        "look_4": {
+          "type": "look",
+          "settings": {
+            "video": "shopify://files/videos/f814daf5e0c14ac2a66e0f70cc9eecee.HD-1080p-2.5Mbps-91614545.mp4",
+            "product": "rurikon-blue-misty-jungle-lemon-tree-residential-mural-rm9361"
+          }
+        }
+      },
+      "block_order": [
+        "look_1",
+        "look_2",
+        "look_3",
+        "look_4"
+      ],
+      "settings": {
+        "eyebrow": "Seen on real walls",
+        "heading": "Styled by our community",
+        "bg": "#f3f0ea"
+      }
+    },
+    "wr_shop_by_room": {
+      "type": "wr-shop-by-room",
+      "blocks": {
+        "r1": {
+          "type": "room",
+          "settings": {
+            "image": "shopify://shop_images/Image_Living_Room.png",
+            "title": "Living Room",
+            "subtitle": "Statement walls",
+            "link": "",
+            "collection": ""
+          }
+        },
+        "r2": {
+          "type": "room",
+          "settings": {
+            "image": "shopify://shop_images/Image_Bedroom.png",
+            "title": "Bedroom",
+            "subtitle": "Calm & cozy",
+            "link": "",
+            "collection": ""
+          }
+        },
+        "r3": {
+          "type": "room",
+          "settings": {
+            "image": "shopify://shop_images/Image_Bathroom.png",
+            "title": "Bathroom",
+            "subtitle": "Moisture-friendly picks",
+            "link": "",
+            "collection": ""
+          }
+        },
+        "r4": {
+          "type": "room",
+          "settings": {
+            "image": "shopify://shop_images/Image_Nursery_Kids.png",
+            "title": "Nursery & Kids",
+            "subtitle": "Playful patterns",
+            "link": "",
+            "collection": ""
+          }
+        },
+        "r5": {
+          "type": "room",
+          "settings": {
+            "image": "shopify://shop_images/Image_Commercial_-1.png",
+            "title": "Commercial",
+            "subtitle": "Hotels, offices, retail",
+            "link": "",
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ],
+      "settings": {
+        "eyebrow": "Find the right fit",
+        "heading": "Shop by Room",
+        "link_label": "All rooms",
+        "link": "",
+        "row_height": 250,
+        "bg": "#ffffff"
+      }
+    },
+    "wr_style_finder": {
+      "type": "wr-style-finder",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "title": "Which room are you decorating?",
+            "options": "Living room | | #bfae92\nBedroom | | #c9c4be\nBathroom | | #d8cfc0\nDining or kitchen | | #d9c9a8\nKids' room | | #c5d0da\nOffice or business | | #e6dfd0\nNursery | | #cfd3d6\nPowder room | | #4a4a4a"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "title": "Which vibe feels most like you?",
+            "options": "Calm & natural | calm | #b5c0a3\nBold & colorful | bold | #e9c9c1\nClassic & elegant | classic | #1a1a1a\nModern & textured | modern | #e4dccb"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "title": "Which colors do you love?",
+            "options": "Neutrals & creams | | #ece6da\nGreens & blues | | #a8bfb4\nWarm & earthy | | #c9a27c\nDark & dramatic | | #2a2a2a"
+          }
+        },
+        "r1": {
+          "type": "result",
+          "settings": {
+            "key": "calm",
+            "title": "Calm Naturalist",
+            "text": "Soft botanicals and organic textures that quiet the room. We'll show the lighter colorways first.",
+            "links": "Natural Wallpaper | /collections/all\nGrasscloth | /collections/all",
+            "swatch": "#dfe6d3"
+          }
+        },
+        "r2": {
+          "type": "result",
+          "settings": {
+            "key": "bold",
+            "title": "Bold Botanist",
+            "text": "Big blooms and color that make the wall the star of the room. We'll show the lighter colorways first.",
+            "links": "Floral Wallpaper | /collections/all\nTropical | /collections/all\nWall Murals | /collections/all\nBotanical | /collections/all",
+            "swatch": "#f4d6d2"
+          }
+        },
+        "r3": {
+          "type": "result",
+          "settings": {
+            "key": "classic",
+            "title": "Classic Romantic",
+            "text": "Damasks, stripes and timeless patterns with a refined finish.",
+            "links": "Damask | /collections/all\nStripes | /collections/all",
+            "swatch": "#e9e0cf"
+          }
+        },
+        "r4": {
+          "type": "result",
+          "settings": {
+            "key": "modern",
+            "title": "Modern Minimalist",
+            "text": "Quiet textures and clean geometry for a contemporary space.",
+            "links": "Textured | /collections/all\nGeometric | /collections/all",
+            "swatch": "#e4dccb"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
+      "settings": {
+        "eyebrow": "Style finder",
+        "heading": "Not sure where to start? Find your style in 30 seconds.",
+        "text": "Answer 3 quick questions and we'll match you with collections that suit your room, plus samples to try at home.",
+        "bg": "#000000"
+      }
+    },
+    "wr_free_samples": {
+      "type": "wr-free-samples",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Pick up to 3 designs",
+            "text": "Tap \"Free Sample\" on any product."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Tape them up at home",
+            "text": "Check them morning and evening, next to your furniture."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Order your favorite",
+            "text": "Use the roll calculator on PDP to get the quantity right."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "image_1": "shopify://shop_images/Image.png",
+        "image_2": "shopify://shop_images/Image-2.png",
+        "image_3": "shopify://shop_images/Image-1.png",
+        "badge_text": "3 free samples",
+        "trim": 0,
+        "eyebrow": "Try before you commit",
+        "heading": "See it on your wall before you buy a roll",
+        "text": "<p>Screens can't show texture, sheen or how color shifts in your light. Order 3 free samples and decide with confidence. <strong>Join our list and sample shipping is on us.</strong></p>",
+        "button_label": "Order Free Samples",
+        "button_link": "",
+        "bg": "#f6f5f2"
+      }
+    },
+    "wr_custom_murals": {
+      "type": "wr-custom-murals",
+      "settings": {
+        "image": "shopify://shop_images/Image_Forest_wall_mural_in_a_living_room.png",
+        "eyebrow": "Custom wall murals",
+        "heading": "Printed to your exact wall size",
+        "text": "Choose from 1,100+ mural designs and enter your wall's width and height. We print it to fit, so there's no guesswork.",
+        "checklist": "Misty forests, botanicals, landscapes and more\nOrder a sample first to check color and texture\nOptions for homes and commercial spaces",
+        "form_label": "Enter your wall size",
+        "width_label": "Width",
+        "height_label": "Height",
+        "unit": "ft",
+        "button_label": "See Murals",
+        "form_action": "",
+        "height": 420,
+        "bg": "#1f2a29",
+        "page_bg": "#ffffff"
+      }
+    },
+    "wr_tabbed_products": {
+      "type": "wr-tabbed-products",
+      "blocks": {
+        "t1": {
+          "type": "tab",
+          "settings": {
+            "title": "Wall Murals",
+            "collection": ""
+          }
+        },
+        "t2": {
+          "type": "tab",
+          "settings": {
+            "title": "Wallcovering for Commercial Spaces",
+            "collection": ""
+          }
+        },
+        "t3": {
+          "type": "tab",
+          "settings": {
+            "title": "Wallpaper for Residential Living",
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "settings": {
+        "heading": "Wallpaper for Every Wall",
+        "limit": 4,
+        "show_badge": true,
+        "badge_text": "Best Seller",
+        "show_rating": true,
+        "rating_text": "4.8 (810)",
+        "bg": "#ffffff"
+      }
+    },
+    "wr_image_banner": {
+      "type": "wr-image-banner",
+      "settings": {
+        "image": "shopify://shop_images/hhhhhhh.png",
+        "alt": "Trade Partner Spotlight: Luma Designs x Walls Republic",
+        "link": "",
+        "layout": "full",
+        "radius": 0,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "bg": "#ffffff"
+      }
+    },
+    "wr_faq": {
+      "type": "wr-faq",
+      "blocks": {
+        "f1": {
+          "type": "faq",
+          "settings": {
+            "question": "How many free samples can I order?",
+            "answer": "<p>You can try 3 free samples in your actual space. Add them with the <em>Free Sample</em> button on any product, or from our <a href=\"/pages/free-samples\">Free Wallpaper Samples</a> page.</p>",
+            "open": true
+          }
+        },
+        "f2": {
+          "type": "faq",
+          "settings": {
+            "question": "How much wallpaper do I need?",
+            "answer": "<p>Add your answer here.</p>",
+            "open": false
+          }
+        },
+        "f3": {
+          "type": "faq",
+          "settings": {
+            "question": "Is shipping free?",
+            "answer": "<p>Add your answer here.</p>",
+            "open": false
+          }
+        },
+        "f4": {
+          "type": "faq",
+          "settings": {
+            "question": "Are prices per single or double roll?",
+            "answer": "<p>Add your answer here.</p>",
+            "open": false
+          }
+        },
+        "f5": {
+          "type": "faq",
+          "settings": {
+            "question": "Can I return wallpaper?",
+            "answer": "<p>Add your answer here.</p>",
+            "open": false
+          }
+        },
+        "f6": {
+          "type": "faq",
+          "settings": {
+            "question": "How do I install it?",
+            "answer": "<p>Add your answer here.</p>",
+            "open": false
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6"
+      ],
+      "settings": {
+        "eyebrow": "Before you buy",
+        "heading": "Frequently Asked Questions",
+        "note": "<p>Still have a question? <a href=\"/pages/contact\">Contact us</a> or call 1-888-990-2250.</p>",
+        "bg": "#ffffff"
+      }
+    },
+    "image_banner": {
+      "type": "image-banner",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Browse our latest products",
+            "heading_size": "h0"
+          }
+        },
+        "button": {
+          "type": "buttons",
+          "settings": {
+            "button_label_1": "Shop all",
+            "button_link_1": "shopify://collections/all",
+            "button_style_secondary_1": true,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "button"
+      ],
+      "disabled": true,
+      "settings": {
+        "image_overlay_opacity": 40,
+        "image_height": "large",
+        "image_behavior": "none",
+        "desktop_content_position": "bottom-center",
+        "desktop_content_alignment": "center",
+        "show_text_box": false,
+        "color_scheme": "scheme-3",
+        "stack_images_on_mobile": false,
+        "mobile_content_alignment": "center",
+        "show_text_below": false
+      }
+    }
+  },
+  "order": [
+    "wr_hero_slider",
+    "wr_usp_strip",
+    "wr_shop_by_style",
+    "wr_best_sellers",
+    "wr_community_carousel",
+    "wr_shop_by_room",
+    "wr_style_finder",
+    "wr_free_samples",
+    "wr_custom_murals",
+    "wr_tabbed_products",
+    "wr_image_banner",
+    "wr_faq",
+    "image_banner"
+  ]
+}

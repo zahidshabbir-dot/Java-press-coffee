@@ -1,0 +1,89 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{% style %}
+  .wr-faq-{{ section.id }} { background:{{ section.settings.bg }}; font-family:'Instrument Sans',sans-serif; padding:56px 0 64px; }
+  .wr-faq-{{ section.id }} * { box-sizing:border-box; }
+  .wr-faq-{{ section.id }} .wr-faq__inner { max-width:1360px; margin:0 auto; padding:0 40px; }
+  .wr-faq-{{ section.id }} .wr-faq__head { text-align:center; margin-bottom:26px; }
+  .wr-faq-{{ section.id }} .wr-faq__eyebrow { margin:0; font-size:12px; line-height:normal; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; }
+  .wr-faq-{{ section.id }} .wr-faq__title { margin:6px 0 0; font-family:'Instrument Sans',sans-serif; font-size:32px; line-height:36px; font-weight:600; color:#111; text-transform:none; letter-spacing:0; }
+  .wr-faq-{{ section.id }} .wr-faq__list { border-bottom:1px solid #e5e5e5; }
+  .wr-faq-{{ section.id }} .wr-faq__item { border-top:1px solid #e5e5e5; }
+  .wr-faq-{{ section.id }} .wr-faq__q { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 0; cursor:pointer; list-style:none; font-size:15px; line-height:1.4; font-weight:400; color:#111; }
+  .wr-faq-{{ section.id }} .wr-faq__q::-webkit-details-marker { display:none; }
+  .wr-faq-{{ section.id }} .wr-faq__q::marker { content:''; }
+  .wr-faq-{{ section.id }} .wr-faq__icon { flex:0 0 24px; width:24px; height:24px; border:1px solid #cfcfcf; border-radius:50%; display:grid; place-items:center; color:#111; transition:background .15s; }
+  .wr-faq-{{ section.id }} .wr-faq__q:hover .wr-faq__icon { background:#f1f1f1; }
+  .wr-faq-{{ section.id }} .wr-faq__icon svg { width:10px; height:10px; transition:transform .2s ease; }
+  .wr-faq-{{ section.id }} details[open] .wr-faq__icon svg { transform:rotate(45deg); }
+  .wr-faq-{{ section.id }} .wr-faq__a { max-width:780px; padding:0 0 22px; font-size:14px; line-height:1.65; color:#6b6b6b; }
+  .wr-faq-{{ section.id }} .wr-faq__a p { margin:0 0 8px; }
+  .wr-faq-{{ section.id }} .wr-faq__a a { color:#444; text-decoration:underline; }
+  .wr-faq-{{ section.id }} .wr-faq__note { margin:20px 0 0; font-size:13.5px; line-height:1.5; color:#8a8a8a; }
+  .wr-faq-{{ section.id }} .wr-faq__note p { margin:0; }
+  .wr-faq-{{ section.id }} .wr-faq__note a { color:#111; font-weight:700; text-decoration:underline; }
+  @media (max-width:749px) {
+    .wr-faq-{{ section.id }} { padding:40px 0 48px; }
+    .wr-faq-{{ section.id }} .wr-faq__inner { padding:0 20px; }
+    .wr-faq-{{ section.id }} .wr-faq__title { font-size:28px; line-height:32px; }
+    .wr-faq-{{ section.id }} .wr-faq__q { padding:16px 0; font-size:14.5px; }
+  }
+{% endstyle %}
+
+<section class="wr-faq-{{ section.id }}">
+  <div class="wr-faq__inner">
+    <div class="wr-faq__head">
+      {%- if section.settings.eyebrow != blank -%}<p class="wr-faq__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="wr-faq__title">{{ section.settings.heading }}</h2>{%- endif -%}
+    </div>
+    <div class="wr-faq__list">
+      {%- for block in section.blocks -%}
+        <details class="wr-faq__item" {{ block.shopify_attributes }}{% if block.settings.open %} open{% endif %}>
+          <summary class="wr-faq__q">
+            <span>{{ block.settings.question }}</span>
+            <span class="wr-faq__icon" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M5 1v8M1 5h8"/></svg></span>
+          </summary>
+          <div class="wr-faq__a">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.note != blank -%}<div class="wr-faq__note">{{ section.settings.note }}</div>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "WR FAQ",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small text", "default": "Before you buy" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Frequently Asked Questions" },
+    { "type": "richtext", "id": "note", "label": "Text below the list", "default": "<p>Still have a question? <a href=\"/pages/contact\">Contact us</a> or call 1-888-990-2250.</p>" },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "How many free samples can I order?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Add your answer here.</p>" },
+        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "WR FAQ",
+      "blocks": [
+        { "type": "faq", "settings": { "question": "How many free samples can I order?", "answer": "<p>You can try 3 free samples in your actual space. Add them with the <em>Free Sample</em> button on any product, or from our <a href=\"/pages/free-samples\">Free Wallpaper Samples</a> page.</p>", "open": true } },
+        { "type": "faq", "settings": { "question": "How much wallpaper do I need?" } },
+        { "type": "faq", "settings": { "question": "Is shipping free?" } },
+        { "type": "faq", "settings": { "question": "Are prices per single or double roll?" } },
+        { "type": "faq", "settings": { "question": "Can I return wallpaper?" } },
+        { "type": "faq", "settings": { "question": "How do I install it?" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

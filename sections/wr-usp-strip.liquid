@@ -1,0 +1,83 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{% style %}
+  .wr-usp-{{ section.id }} { background:#fff; border-bottom:1px solid #e5e5e5; font-family:'Instrument Sans',sans-serif; }
+  .wr-usp-{{ section.id }} * { box-sizing:border-box; }
+  .wr-usp-{{ section.id }} .wr-usp__grid { display:grid; grid-template-columns:repeat(4,1fr); max-width:1360px; margin:0 auto; padding:0 40px; }
+  .wr-usp-{{ section.id }} .wr-usp__item { display:flex; align-items:center; gap:14px; padding:22px 24px; border-right:1px solid #e5e5e5; }
+  .wr-usp-{{ section.id }} .wr-usp__item:last-child { border-right:0; }
+  .wr-usp-{{ section.id }} .wr-usp__icon { width:46px; height:46px; flex:0 0 46px; border-radius:50%; background:#eaf3ea; display:grid; place-items:center; color:#128a3d; }
+  .wr-usp-{{ section.id }} .wr-usp__icon svg { width:22px; height:22px; }
+  .wr-usp-{{ section.id }} .wr-usp__title { margin:0; font-family:'Instrument Sans',sans-serif; font-size:15px; font-weight:600; color:#1a1a1a; line-height:normal; }
+  .wr-usp-{{ section.id }} .wr-usp__text { margin:3px 0 0; font-size:13px; line-height:17.55px; color:#6b6b6b; }
+  @media (max-width:989px) {
+    .wr-usp-{{ section.id }} .wr-usp__grid { grid-template-columns:repeat(2,1fr); padding:0 16px; }
+    .wr-usp-{{ section.id }} .wr-usp__item:nth-child(2n) { border-right:0; }
+    .wr-usp-{{ section.id }} .wr-usp__item:nth-child(-n+2) { border-bottom:1px solid #e5e5e5; }
+  }
+  @media (max-width:749px) {
+    .wr-usp-{{ section.id }} .wr-usp__grid { padding:0; }
+    .wr-usp-{{ section.id }} .wr-usp__item { flex-direction:column; justify-content:flex-start; text-align:center; gap:10px; padding:20px 14px; }
+    .wr-usp-{{ section.id }} .wr-usp__item:nth-child(2n) { border-right:0; }
+    .wr-usp-{{ section.id }} .wr-usp__item:nth-child(n+3) { border-top:0; }
+    .wr-usp-{{ section.id }} .wr-usp__item:nth-child(-n+2) { border-bottom:1px solid #e5e5e5; }
+    .wr-usp-{{ section.id }} .wr-usp__item:nth-child(2n+1) { border-right:1px solid #e5e5e5; }
+    .wr-usp-{{ section.id }} .wr-usp__text { margin-top:4px; }
+  }
+{% endstyle %}
+
+<div class="wr-usp-{{ section.id }}">
+  <div class="wr-usp__grid">
+    {%- for block in section.blocks -%}
+      <div class="wr-usp__item" {{ block.shopify_attributes }}>
+        <span class="wr-usp__icon">
+          {%- case block.settings.icon -%}
+            {%- when 'layers' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/><path d="M8 4v4M16 10v4M8 16v4"/></svg>
+            {%- when 'shield' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+            {%- when 'pin' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+            {%- when 'sample' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 14l5-4 4 3 3-2 4 3"/></svg>
+          {%- endcase -%}
+        </span>
+        <div>
+          <p class="wr-usp__title">{{ block.settings.title }}</p>
+          <p class="wr-usp__text">{{ block.settings.text }}</p>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "WR USP strip",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "usp",
+      "name": "USP item",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "layers", "options": [
+          { "value": "layers", "label": "Layers" },
+          { "value": "shield", "label": "Shield" },
+          { "value": "pin", "label": "Pin" },
+          { "value": "sample", "label": "Sample" }
+        ] },
+        { "type": "text", "id": "title", "label": "Title", "default": "Premium substrates" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Non-woven, vinyl & textile options built to last" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "WR USP strip",
+      "blocks": [
+        { "type": "usp", "settings": { "icon": "layers", "title": "Premium substrates", "text": "Non-woven, vinyl & textile options built to last" } },
+        { "type": "usp", "settings": { "icon": "shield", "title": "Scrubbable & strippable", "text": "Wipe-clean finishes that peel off cleanly later" } },
+        { "type": "usp", "settings": { "icon": "pin", "title": "Low-VOC, Class A rated", "text": "Fire-rated, low-VOC options for homes & commercial" } },
+        { "type": "usp", "settings": { "icon": "sample", "title": "Free 3 Samples", "text": "See it on your wall before you buy a roll" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

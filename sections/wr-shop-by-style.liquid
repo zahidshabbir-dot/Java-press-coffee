@@ -1,0 +1,105 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{% style %}
+  .wr-sbs-{{ section.id }} { background:{{ section.settings.bg }}; font-family:'Instrument Sans',sans-serif; padding:30px 0; }
+  .wr-sbs-{{ section.id }} * { box-sizing:border-box; }
+  .wr-sbs-{{ section.id }} .wr-sbs__inner { max-width:1360px; margin:0 auto; padding:0 40px; }
+  .wr-sbs-{{ section.id }} .wr-sbs__head { display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center; }
+  .wr-sbs-{{ section.id }} .wr-sbs__title { margin:0; padding-top:6px; font-family:'Instrument Sans',sans-serif; font-size:32px; line-height:36px; font-weight:600; color:#1a1a1a; text-transform:none; letter-spacing:0; }
+  .wr-sbs-{{ section.id }} .wr-sbs__eyebrow { margin:0; font-size:14px; line-height:normal; font-weight:600; color:#6b6b6b; letter-spacing:1.75px; text-transform:uppercase; }
+  .wr-sbs-{{ section.id }} .wr-sbs__list { display:flex; flex-wrap:wrap; justify-content:center; gap:20px clamp(10px, calc((100vw - 1000px) * 0.07 + 10px), 30px); margin:0; padding:30px 0 0; list-style:none; }
+  .wr-sbs-{{ section.id }} .wr-sbs__item { flex:0 0 112px; width:112px; margin:0; padding:0; }
+  .wr-sbs-{{ section.id }} .wr-sbs__link { display:flex; flex-direction:column; align-items:center; text-decoration:none; color:inherit; }
+  .wr-sbs-{{ section.id }} .wr-sbs__circle { position:relative; width:100px; height:100px; border-radius:50%; overflow:hidden; background:#efece6; box-shadow:0 0 0 1px #e5e5e5; transition:box-shadow .2s; }
+  .wr-sbs-{{ section.id }} .wr-sbs__link:hover .wr-sbs__circle { box-shadow:0 0 0 1px #1a1a1a; }
+  .wr-sbs-{{ section.id }} .wr-sbs__circle img, .wr-sbs-{{ section.id }} .wr-sbs__circle svg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .wr-sbs-{{ section.id }} .wr-sbs__label { width:112px; padding-top:10px; text-align:center; font-size:13px; line-height:16.25px; font-weight:500; text-transform:uppercase; letter-spacing:0.52px; color:#1a1a1a; }
+  .wr-sbs-{{ section.id }} .wr-sbs__label.is-hl { color:#c62828; }
+  .wr-sbs-{{ section.id }} .wr-sbs__sub { width:112px; padding-top:3px; text-align:center; font-size:12px; line-height:normal; color:#6b6b6b; }
+  @media (max-width:749px) {
+    .wr-sbs-{{ section.id }} { padding:28px 0 24px; }
+    .wr-sbs-{{ section.id }} .wr-sbs__inner { padding:0; }
+    .wr-sbs-{{ section.id }} .wr-sbs__head { flex-direction:column-reverse; gap:12px; padding:0 20px; }
+    .wr-sbs-{{ section.id }} .wr-sbs__eyebrow { font-size:12.5px; line-height:1.4; }
+    .wr-sbs-{{ section.id }} .wr-sbs__title { font-size:28px; line-height:32px; padding-top:0; }
+    .wr-sbs-{{ section.id }} .wr-sbs__list { flex-wrap:nowrap; justify-content:flex-start; overflow-x:auto; gap:16px; padding:26px 20px 4px; scroll-snap-type:x proximity; scrollbar-width:none; }
+    .wr-sbs-{{ section.id }} .wr-sbs__list::-webkit-scrollbar { display:none; }
+    .wr-sbs-{{ section.id }} .wr-sbs__item { flex:0 0 124px; width:124px; scroll-snap-align:start; }
+    .wr-sbs-{{ section.id }} .wr-sbs__circle { width:116px; height:116px; }
+    .wr-sbs-{{ section.id }} .wr-sbs__label, .wr-sbs-{{ section.id }} .wr-sbs__sub { width:124px; }
+  }
+{% endstyle %}
+
+<section class="wr-sbs-{{ section.id }}">
+  <div class="wr-sbs__inner">
+    <div class="wr-sbs__head">
+      {%- if section.settings.heading != blank -%}<h2 class="wr-sbs__title">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.eyebrow != blank -%}<p class="wr-sbs__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+    </div>
+    <ul class="wr-sbs__list" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign col = block.settings.collection -%}
+        {%- assign item_title = block.settings.title | default: col.title -%}
+        {%- assign item_sub = block.settings.subtitle -%}
+        {%- if item_sub == blank and col != blank -%}{%- assign item_sub = col.products_count | append: ' items' -%}{%- endif -%}
+        {%- assign item_url = block.settings.link | default: col.url -%}
+        {%- assign item_img = block.settings.image | default: col.image -%}
+        <li class="wr-sbs__item" {{ block.shopify_attributes }}>
+          <a class="wr-sbs__link" href="{{ item_url | default: '#' }}">
+            <span class="wr-sbs__circle">
+              {%- if item_img != blank -%}
+                {{ item_img | image_url: width: 300 | image_tag: loading: 'lazy', widths: '116, 232, 300', sizes: '116px', alt: item_title }}
+              {%- else -%}
+                {{ 'collection-1' | placeholder_svg_tag }}
+              {%- endif -%}
+            </span>
+            <span class="wr-sbs__label{% if block.settings.highlight %} is-hl{% endif %}">{{ item_title }}</span>
+            {%- if item_sub != blank -%}<span class="wr-sbs__sub">{{ item_sub }}</span>{%- endif -%}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "WR Shop by style",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by Style" },
+    { "type": "text", "id": "eyebrow", "label": "Small text", "default": "Who do you call when ordinary just won't do?" },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#f6f5f2" }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection (optional)", "info": "Fills in the name, item count, image and link automatically." },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Name", "default": "Wall Murals" },
+        { "type": "text", "id": "subtitle", "label": "Small text under the name", "default": "1199 items" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "checkbox", "id": "highlight", "label": "Show the name in red", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "WR Shop by style",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Wall Murals", "subtitle": "1199 items" } },
+        { "type": "category", "settings": { "title": "Home Wallpaper", "subtitle": "3319 items" } },
+        { "type": "category", "settings": { "title": "Commercial", "subtitle": "432 items" } },
+        { "type": "category", "settings": { "title": "Floral", "subtitle": "217 items" } },
+        { "type": "category", "settings": { "title": "Stripes", "subtitle": "31 items" } },
+        { "type": "category", "settings": { "title": "Natural", "subtitle": "144 items" } },
+        { "type": "category", "settings": { "title": "Metallic", "subtitle": "221 items" } },
+        { "type": "category", "settings": { "title": "Outlet", "subtitle": "Up to 80% off", "highlight": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}

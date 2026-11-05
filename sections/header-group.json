@@ -1,0 +1,109 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "wr-header": {
+      "type": "wr-header",
+      "settings": {
+        "logo_width": 96,
+        "search_placeholder": "Search style, room or code (R9135)",
+        "phone": "1-888-990-2250",
+        "email": "sales@wallsrepublic.com",
+        "menu": "main-menu",
+        "highlight_title": "Sale",
+        "highlight_color": "#c10007"
+      }
+    },
+    "wr-announcement-bar": {
+      "type": "wr-announcement-bar",
+      "blocks": {
+        "m1": {
+          "type": "message",
+          "settings": {
+            "show_rating": true,
+            "before": "Rated 4.8 by 810+ customers",
+            "underline": true
+          }
+        },
+        "m2": {
+          "type": "message",
+          "settings": {
+            "before": "✦ Free shipping on all orders over ",
+            "highlight": "$350"
+          }
+        },
+        "m3": {
+          "type": "message",
+          "settings": {
+            "before": "✦ Try 3 free samples in your actual space"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3"
+      ],
+      "settings": {}
+    },
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement-bar-0": {
+          "type": "announcement",
+          "settings": {
+            "text": "Welcome to our store",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement-bar-0"
+      ],
+      "disabled": true,
+      "settings": {
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "color_scheme": "scheme-1",
+        "show_line_separator": true,
+        "show_social": false,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
+    },
+    "header": {
+      "type": "header",
+      "disabled": true,
+      "settings": {
+        "logo_position": "middle-left",
+        "mobile_logo_position": "center",
+        "menu": "main-menu",
+        "menu_type_desktop": "dropdown",
+        "sticky_header_type": "on-scroll-up",
+        "show_line_separator": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "margin_bottom": 0,
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    }
+  },
+  "order": [
+    "wr-announcement-bar",
+    "wr-header",
+    "announcement-bar",
+    "header"
+  ]
+}

@@ -1,0 +1,106 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{%- liquid
+  assign source = section.settings.collection
+  if source == blank
+    assign source = collections.all
+  endif
+-%}
+
+{% style %}
+  .wr-bs-{{ section.id }} { background:{{ section.settings.bg }}; font-family:'Instrument Sans',sans-serif; padding:30px 0; }
+  .wr-bs-{{ section.id }} * { box-sizing:border-box; }
+  .wr-bs-{{ section.id }} .wr-bs__inner { max-width:1360px; margin:0 auto; padding:0 40px; }
+  .wr-bs-{{ section.id }} .wr-bs__head { display:flex; flex-direction:column; align-items:center; text-align:center; }
+  .wr-bs-{{ section.id }} .wr-bs__eyebrow { margin:0; font-size:14px; line-height:normal; font-weight:600; color:#6b6b6b; letter-spacing:1.75px; text-transform:uppercase; }
+  .wr-bs-{{ section.id }} .wr-bs__title { margin:0; padding-top:6px; font-family:'Instrument Sans',sans-serif; font-size:32px; line-height:36px; font-weight:600; color:#1a1a1a; text-transform:none; letter-spacing:0; }
+  .wr-bs-{{ section.id }} .wr-bs__grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px 22px; padding-top:28px; }
+  .wr-bs-{{ section.id }} .wr-bs__card { display:flex; flex-direction:column; min-width:0; }
+  .wr-bs-{{ section.id }} .wr-bs__media { position:relative; display:block; width:100%; aspect-ratio:4 / 5; background:#efece6; overflow:hidden; }
+  .wr-bs-{{ section.id }} .wr-bs__media img, .wr-bs-{{ section.id }} .wr-bs__media svg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .wr-bs-{{ section.id }} .wr-bs__badge { position:absolute; left:10px; top:10px; z-index:1; padding:4px 8px; background:#128a3d; color:#fff; font-size:10.5px; line-height:normal; font-weight:700; letter-spacing:0.63px; text-transform:uppercase; }
+  .wr-bs-{{ section.id }} .wr-bs__name { display:block; padding-top:12px; font-size:15px; line-height:20.25px; font-weight:400; color:#1a1a1a; text-decoration:none; }
+  .wr-bs-{{ section.id }} .wr-bs__name:hover { text-decoration:underline; }
+  .wr-bs-{{ section.id }} .wr-bs__rating { display:flex; align-items:center; gap:6px; padding-top:5px; line-height:normal; }
+  .wr-bs-{{ section.id }} .wr-bs__stars { font-size:12px; letter-spacing:1px; color:#1f8f5f; }
+  .wr-bs-{{ section.id }} .wr-bs__rating-text { font-size:12.5px; color:#6b6b6b; }
+  .wr-bs-{{ section.id }} .wr-bs__price { padding-top:6px; padding-bottom:10px; font-size:15px; line-height:normal; font-weight:600; color:#1a1a1a; }
+  .wr-bs-{{ section.id }} .wr-bs__price s { font-weight:400; color:#6b6b6b; margin-left:6px; }
+  .wr-bs-{{ section.id }} .wr-bs__btn { display:flex; align-items:center; justify-content:center; width:100%; margin-top:auto; padding:11px 24px; border:1px solid #000; background:#fff; color:#000; font-size:15px; line-height:18px; font-weight:600; text-align:center; text-decoration:none; transition:background .15s, color .15s; }
+  .wr-bs-{{ section.id }} .wr-bs__card:hover .wr-bs__btn, .wr-bs-{{ section.id }} .wr-bs__btn:hover { background:#000; color:#fff; }
+  .wr-bs-{{ section.id }} .wr-bs__more { display:flex; justify-content:center; padding-top:48px; }
+  .wr-bs-{{ section.id }} .wr-bs__more a { display:inline-flex; padding:14px 24px; border:1px solid #000; background:#fff; color:#000; font-size:15px; line-height:18px; font-weight:600; text-decoration:none; transition:background .15s, color .15s; }
+  .wr-bs-{{ section.id }} .wr-bs__more a:hover { background:#000; color:#fff; }
+  @media (max-width:989px) {
+    .wr-bs-{{ section.id }} .wr-bs__grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width:749px) {
+    .wr-bs-{{ section.id }} { padding:24px 0; }
+    .wr-bs-{{ section.id }} .wr-bs__inner { padding:0 16px; }
+    .wr-bs-{{ section.id }} .wr-bs__title { font-size:28px; line-height:32px; }
+    .wr-bs-{{ section.id }} .wr-bs__grid { gap:24px 12px; padding-top:22px; }
+    .wr-bs-{{ section.id }} .wr-bs__name { font-size:14px; line-height:19px; }
+    .wr-bs-{{ section.id }} .wr-bs__btn { padding:10px 12px; font-size:14px; }
+    .wr-bs-{{ section.id }} .wr-bs__more { padding-top:32px; }
+  }
+{% endstyle %}
+
+<section class="wr-bs-{{ section.id }}">
+  <div class="wr-bs__inner">
+    <div class="wr-bs__head">
+      {%- if section.settings.eyebrow != blank -%}<p class="wr-bs__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="wr-bs__title">{{ section.settings.heading }}</h2>{%- endif -%}
+    </div>
+
+    <div class="wr-bs__grid">
+      {%- for product in source.products limit: section.settings.limit -%}
+        <article class="wr-bs__card">
+          <a class="wr-bs__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+            {%- if product.featured_media != blank -%}
+              {{ product.featured_media | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 450, 600, 800', sizes: '(min-width: 990px) 25vw, 50vw', alt: product.featured_media.alt | default: product.title }}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag }}
+            {%- endif -%}
+            {%- if section.settings.show_badge and section.settings.badge_text != blank -%}<span class="wr-bs__badge">{{ section.settings.badge_text }}</span>{%- endif -%}
+          </a>
+          <a class="wr-bs__name" href="{{ product.url }}">{{ product.title }}</a>
+          {%- if section.settings.show_rating -%}
+            <div class="wr-bs__rating"><span class="wr-bs__stars">★★★★★</span><span class="wr-bs__rating-text">{{ section.settings.rating_text }}</span></div>
+          {%- endif -%}
+          <div class="wr-bs__price">{{ product.price | money | remove: cart.currency.iso_code | strip }}{%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money | remove: cart.currency.iso_code | strip }}</s>{%- endif -%}</div>
+          <a class="wr-bs__btn" href="{{ product.url }}">{{ section.settings.button_label }}</a>
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.cta_label != blank -%}
+      <div class="wr-bs__more"><a href="{{ section.settings.cta_link | default: source.url | default: routes.all_products_collection_url }}">{{ section.settings.cta_label }}</a></div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "WR Best sellers",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small text", "default": "Most-loved designs" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop the Best Sellers" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Leave empty to use all products." },
+    { "type": "range", "id": "limit", "label": "Number of products", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "header", "content": "Product card" },
+    { "type": "checkbox", "id": "show_badge", "label": "Show badge", "default": true },
+    { "type": "text", "id": "badge_text", "label": "Badge text", "default": "Best Seller" },
+    { "type": "checkbox", "id": "show_rating", "label": "Show rating", "default": true },
+    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "4.8 (810)" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Choose Size" },
+    { "type": "header", "content": "Bottom button" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop All Best Sellers" },
+    { "type": "url", "id": "cta_link", "label": "Button link", "info": "Leave empty to link to the collection." },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#ffffff" }
+  ],
+  "presets": [
+    { "name": "WR Best sellers" }
+  ]
+}
+{% endschema %}

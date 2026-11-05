@@ -1,0 +1,671 @@
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign product_form_id = 'wr-product-form-' | append: section.id
+  assign p_alt = product.title | escape
+  assign map_lines = section.settings.swatch_colors | newline_to_br | strip_newlines | split: '<br />'
+  assign show_badge = false
+  if section.settings.badge_mode == 'always'
+    assign show_badge = true
+  elsif section.settings.badge_mode == 'tag' and product.tags contains 'New'
+    assign show_badge = true
+  endif
+-%}
+
+{% style %}
+  #wr-pdp-{{ section.id }} { font-family:'Instrument Sans',sans-serif; background:#fff; color:#111; padding:20px 0 56px; }
+  #wr-pdp-{{ section.id }} * { box-sizing:border-box; }
+  #wr-pdp-{{ section.id }} [hidden] { display:none !important; }
+  #wr-pdp-{{ section.id }} .wr-pdp__inner { max-width:1440px; margin:0 auto; padding:0 24px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px 56px; align-items:start; }
+  #wr-pdp-{{ section.id }} .wr-pdp__gallery { display:grid; grid-template-columns:100px minmax(0,1fr); gap:14px; align-items:start; }
+  #wr-pdp-{{ section.id }} .wr-pdp__thumbs { display:grid; gap:11px; align-content:start; max-height:900px; overflow-y:auto; scrollbar-width:none; }
+  #wr-pdp-{{ section.id }} .wr-pdp__thumbs::-webkit-scrollbar { display:none; }
+  #wr-pdp-{{ section.id }} .wr-pdp__thumb { position:relative; display:block; width:100%; aspect-ratio:1 / 1; padding:0; border:2px solid transparent; border-radius:10px; overflow:hidden; background:#f1eeea; cursor:pointer; }
+  #wr-pdp-{{ section.id }} .wr-pdp__thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  #wr-pdp-{{ section.id }} .wr-pdp__thumb.is-active { border-color:#111; }
+  #wr-pdp-{{ section.id }} .wr-pdp__main { position:relative; border-radius:16px; overflow:hidden; background:#f1eeea; }
+  #wr-pdp-{{ section.id }} .wr-pdp__slide { display:none; }
+  #wr-pdp-{{ section.id }} .wr-pdp__slide.is-active { display:block; }
+  #wr-pdp-{{ section.id }} .wr-pdp__slide img, #wr-pdp-{{ section.id }} .wr-pdp__slide svg { display:block; width:100%; height:auto; }
+  #wr-pdp-{{ section.id }} .wr-pdp__badge { position:absolute; z-index:2; right:14px; top:20px; padding:8px 14px; border-radius:8px; background:#e2621b; color:#fff; font-size:15px; line-height:normal; font-weight:600; }
+  #wr-pdp-{{ section.id }} .wr-pdp__rating { display:flex; align-items:center; gap:10px; font-size:15px; line-height:normal; }
+  #wr-pdp-{{ section.id }} .wr-pdp__rating svg { display:block; height:20px; width:auto; }
+  #wr-pdp-{{ section.id }} .wr-pdp__rating a, #wr-pdp-{{ section.id }} .wr-pdp__rating span.t { color:#111; text-decoration:underline; text-underline-offset:2px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__title { margin:14px 0 10px; font-family:'Instrument Sans',sans-serif; font-size:38px; line-height:1.12; font-weight:600; color:#000; letter-spacing:-0.3px; text-transform:none; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sku { margin:0; font-size:15px; color:#6b6b6b; }
+  #wr-pdp-{{ section.id }} .wr-pdp__opt { margin-top:28px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__opt-label { margin:0 0 12px; font-size:16px; line-height:normal; font-weight:500; color:#111; }
+  #wr-pdp-{{ section.id }} .wr-pdp__opt-label span { font-weight:400; color:#6b6b6b; }
+  #wr-pdp-{{ section.id }} .wr-pdp__swatches { display:flex; flex-wrap:wrap; gap:12px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sw { position:relative; width:54px; height:54px; padding:0; border:1px solid #d9d9d9; border-radius:10px; overflow:hidden; background:var(--sw, #ddd); cursor:pointer; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sw img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sw.is-selected { outline:2px solid #1a1a1a; outline-offset:2px; border-color:transparent; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sw:disabled { opacity:0.4; cursor:not-allowed; }
+  #wr-pdp-{{ section.id }} .wr-pdp__pill { padding:12px 18px; border:1px solid #cfcfcf; border-radius:10px; background:#fff; font-family:inherit; font-size:15px; color:#111; cursor:pointer; }
+  #wr-pdp-{{ section.id }} .wr-pdp__pill.is-selected { border-color:#111; box-shadow:inset 0 0 0 1px #111; }
+  #wr-pdp-{{ section.id }} .wr-pdp__price { margin:26px 0 4px; font-size:36px; line-height:1.1; font-weight:700; color:#000; }
+  #wr-pdp-{{ section.id }} .wr-pdp__price s { margin-left:10px; font-size:20px; font-weight:400; color:#8a8a8a; }
+  #wr-pdp-{{ section.id }} .wr-pdp__pnote { display:flex; align-items:center; gap:8px; margin:0; font-size:15px; line-height:1.3; color:#6b6b6b; }
+  #wr-pdp-{{ section.id }} .wr-pdp__pnote svg { width:16px; height:16px; flex:0 0 16px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__buyrow { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:32px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__qty { display:flex; align-items:center; width:134px; height:50px; border:2px solid #111; border-radius:14px; background:#fff; }
+  #wr-pdp-{{ section.id }} .wr-pdp__qty button { flex:0 0 42px; height:100%; border:0; background:transparent; font-size:24px; line-height:1; color:#111; cursor:pointer; }
+  #wr-pdp-{{ section.id }} .wr-pdp__qty input { flex:1 1 auto; min-width:0; width:100%; height:100%; border:0; background:transparent; text-align:center; font-family:inherit; font-size:17px; color:#111; -moz-appearance:textfield; outline:none; padding:0; }
+  #wr-pdp-{{ section.id }} .wr-pdp__qty input::-webkit-outer-spin-button, #wr-pdp-{{ section.id }} .wr-pdp__qty input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  #wr-pdp-{{ section.id }} .wr-pdp__link { font-size:15px; color:#111; text-decoration:underline; text-underline-offset:2px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__calc { margin-top:26px; padding:20px 18px 22px; background:#f6f6f6; border-radius:14px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__calc-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__calc-head h3 { margin:0; font-family:'Instrument Sans',sans-serif; font-size:18px; line-height:normal; font-weight:600; color:#111; text-transform:none; letter-spacing:0; }
+  #wr-pdp-{{ section.id }} .wr-pdp__wall { display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; margin-top:18px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__dim-label { display:flex; align-items:center; gap:8px; margin:0 0 8px; font-size:16px; color:#666; }
+  #wr-pdp-{{ section.id }} .wr-pdp__dim-label svg { width:18px; height:18px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__dim-box { display:grid; grid-template-columns:1fr 1fr; border:1px solid #d3d3d3; border-radius:10px; background:#f3f3f3; overflow:hidden; }
+  #wr-pdp-{{ section.id }} .wr-pdp__dim-box label { display:block; padding:9px 14px 8px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__dim-box label + label { border-left:1px solid #d3d3d3; }
+  #wr-pdp-{{ section.id }} .wr-pdp__dim-box span { display:block; font-size:14px; line-height:1.2; color:#777; }
+  #wr-pdp-{{ section.id }} .wr-pdp__dim-box input { display:block; width:100%; border:0; background:transparent; padding:2px 0 0; font-family:inherit; font-size:19px; color:#111; outline:none; -moz-appearance:textfield; }
+  #wr-pdp-{{ section.id }} .wr-pdp__dim-box input::placeholder { color:#9a9a9a; }
+  #wr-pdp-{{ section.id }} .wr-pdp__dim-box input::-webkit-outer-spin-button, #wr-pdp-{{ section.id }} .wr-pdp__dim-box input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  #wr-pdp-{{ section.id }} .wr-pdp__addwall { display:inline-block; margin-top:16px; padding:0; border:0; background:none; font-family:inherit; font-size:16px; color:#111; text-decoration:underline; text-underline-offset:2px; cursor:pointer; }
+  #wr-pdp-{{ section.id }} .wr-pdp__result { margin-top:18px; padding:16px 18px; border-radius:10px; background:#4f6b4f; color:#fff; }
+  #wr-pdp-{{ section.id }} .wr-pdp__result strong { display:block; font-size:18px; line-height:1.25; font-weight:600; }
+  #wr-pdp-{{ section.id }} .wr-pdp__result span { display:block; margin-top:3px; font-size:15px; line-height:1.3; opacity:0.92; }
+  #wr-pdp-{{ section.id }} .wr-pdp__tips { margin-top:22px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__tips-title { display:flex; align-items:center; gap:10px; margin:0 0 10px; font-size:17px; font-weight:600; color:#111; }
+  #wr-pdp-{{ section.id }} .wr-pdp__tips-title svg { width:20px; height:20px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__tips ul { list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__tips li { position:relative; margin:0; padding-left:16px; font-size:15.5px; line-height:1.45; color:#444; }
+  #wr-pdp-{{ section.id }} .wr-pdp__tips li::before { content:''; position:absolute; left:2px; top:0.6em; width:4px; height:4px; background:#666; }
+  #wr-pdp-{{ section.id }} .wr-pdp__atc { display:flex; align-items:center; justify-content:center; gap:16px; width:100%; height:58px; margin-top:26px; border:0; border-radius:14px; background:#000; color:#fff; font-family:inherit; font-size:20px; font-weight:600; cursor:pointer; }
+  #wr-pdp-{{ section.id }} .wr-pdp__atc i { width:1px; height:26px; background:rgba(255,255,255,0.5); }
+  #wr-pdp-{{ section.id }} .wr-pdp__atc:hover { background:#222; }
+  #wr-pdp-{{ section.id }} .wr-pdp__atc:disabled { background:#8a8a8a; cursor:not-allowed; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sample { margin-top:22px; padding:16px; border-radius:14px; background:#f6f6f6; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sample-btn { display:flex; align-items:center; justify-content:center; height:56px; border:1px solid #dcdcdc; border-radius:12px; background:#fff; color:#111; font-size:19px; font-weight:600; text-decoration:none; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sample-btn:hover { border-color:#111; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sample ul { list-style:none; margin:18px 0 0; padding:0; display:grid; gap:14px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sample li { display:flex; align-items:center; gap:14px; margin:0; font-size:17px; line-height:1.3; color:#222; }
+  #wr-pdp-{{ section.id }} .wr-pdp__sample li svg { width:24px; height:24px; flex:0 0 24px; }
+  #wr-pdp-{{ section.id }} .wr-pdp__desc { margin-top:36px; font-size:16.5px; line-height:1.7; color:#333; }
+  #wr-pdp-{{ section.id }} .wr-pdp__desc p { margin:0 0 14px; }
+  @media (max-width:989px) {
+    #wr-pdp-{{ section.id }} { padding:12px 0 40px; }
+    #wr-pdp-{{ section.id }} .wr-pdp__inner { grid-template-columns:1fr; padding:0 16px; gap:20px; }
+    #wr-pdp-{{ section.id }} .wr-pdp__gallery { grid-template-columns:1fr; }
+    #wr-pdp-{{ section.id }} .wr-pdp__main { order:1; }
+    #wr-pdp-{{ section.id }} .wr-pdp__thumbs { order:2; display:flex; max-height:none; overflow-x:auto; overflow-y:hidden; }
+    #wr-pdp-{{ section.id }} .wr-pdp__thumb { flex:0 0 76px; width:76px; }
+    #wr-pdp-{{ section.id }} .wr-pdp__title { font-size:28px; }
+    #wr-pdp-{{ section.id }} .wr-pdp__price { font-size:30px; }
+  }
+  @media (max-width:549px) {
+    #wr-pdp-{{ section.id }} .wr-pdp__wall { grid-template-columns:1fr; }
+    #wr-pdp-{{ section.id }} .wr-pdp__buyrow { flex-wrap:wrap; }
+  }
+{% endstyle %}
+
+<section id="wr-pdp-{{ section.id }}" data-currency="{{ cart.currency.symbol }}">
+  <div class="wr-pdp__inner">
+    <div class="wr-pdp__gallery">
+      <div class="wr-pdp__thumbs">
+        {%- for m in product.media -%}
+          {%- if m.media_type == 'image' -%}
+            <button type="button" class="wr-pdp__thumb{% if forloop.first %} is-active{% endif %}" data-media="{{ m.id }}" aria-label="{{ p_alt }}">{{ m | image_url: width: 220 | image_tag: loading: 'lazy', widths: '110, 220', sizes: '100px', alt: p_alt }}</button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <div class="wr-pdp__main">
+        {%- if show_badge and section.settings.badge_text != blank -%}<span class="wr-pdp__badge">{{ section.settings.badge_text }}</span>{%- endif -%}
+        {%- for m in product.media -%}
+          {%- if m.media_type == 'image' -%}
+            <div class="wr-pdp__slide{% if forloop.first %} is-active{% endif %}" data-media="{{ m.id }}">{{ m | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1400', sizes: '(min-width: 990px) 45vw, 100vw', alt: p_alt }}</div>
+          {%- endif -%}
+        {%- else -%}
+          <div class="wr-pdp__slide is-active">{{ 'product-1' | placeholder_svg_tag }}</div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <div class="wr-pdp__info">
+      {%- if section.settings.rating_text != blank -%}
+        <div class="wr-pdp__rating">
+          <svg viewBox="0 0 130 20" fill="none" aria-hidden="true"><rect width="20" height="20" rx="4" fill="#2fa89a"/><path d="M5 10.2l3.2 3.2L15 6.6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><g fill="#111"><path d="M36 3l2.1 4.4 4.8.6-3.5 3.3.9 4.7L36 13.7l-4.3 2.3.9-4.7-3.5-3.3 4.8-.6z"/><path d="M57 3l2.1 4.4 4.8.6-3.5 3.3.9 4.7L57 13.7l-4.3 2.3.9-4.7-3.5-3.3 4.8-.6z"/><path d="M78 3l2.1 4.4 4.8.6-3.5 3.3.9 4.7L78 13.7l-4.3 2.3.9-4.7-3.5-3.3 4.8-.6z"/><path d="M99 3l2.1 4.4 4.8.6-3.5 3.3.9 4.7L99 13.7l-4.3 2.3.9-4.7-3.5-3.3 4.8-.6z"/><path d="M120 3l2.1 4.4 4.8.6-3.5 3.3.9 4.7L120 13.7l-4.3 2.3.9-4.7-3.5-3.3 4.8-.6z"/></g></svg>
+          <span class="t">{{ section.settings.rating_text }}</span>
+        </div>
+      {%- endif -%}
+
+      <h1 class="wr-pdp__title">{{ product.title }}</h1>
+      {%- if current_variant.sku != blank -%}<p class="wr-pdp__sku">SKU: <span data-sku>{{ current_variant.sku }}</span></p>{%- endif -%}
+
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          {%- assign opt_idx = forloop.index0 -%}
+          {%- assign oname = option.name | downcase -%}
+          {%- assign is_color = false -%}
+          {%- if oname contains 'color' or oname contains 'colour' -%}{%- assign is_color = true -%}{%- endif -%}
+          <div class="wr-pdp__opt">
+            <p class="wr-pdp__opt-label">{% if is_color %}{{ section.settings.color_label }}{% else %}{{ option.name }}{% endif %}: <span data-opt-value="{{ opt_idx }}">{{ option.selected_value }}</span></p>
+            <div class="wr-pdp__swatches" role="radiogroup" aria-label="{{ option.name | escape }}">
+              {%- for value in option.values -%}
+                {%- if is_color -%}
+                  {%- assign sw_img = nil -%}
+                  {%- for v in product.variants -%}
+                    {%- if v.options[opt_idx] == value and v.featured_image != blank and sw_img == blank -%}{%- assign sw_img = v.featured_image -%}{%- endif -%}
+                  {%- endfor -%}
+                  {%- assign value_lc = value | downcase -%}
+                  {%- assign sw_hex = '' -%}
+                  {%- for ml in map_lines -%}
+                    {%- assign mp = ml | split: '|' -%}
+                    {%- assign mp_name = mp[0] | strip | downcase -%}
+                    {%- if mp_name == value_lc -%}{%- assign sw_hex = mp[1] | strip -%}{%- endif -%}
+                  {%- endfor -%}
+                  <button type="button" class="wr-pdp__sw{% if value == option.selected_value %} is-selected{% endif %}" data-opt="{{ opt_idx }}" data-value="{{ value | escape }}" title="{{ value | escape }}" aria-label="{{ value | escape }}" style="--sw:{{ sw_hex | default: '#dddddd' }}">{%- if sw_img != blank -%}{{ sw_img | image_url: width: 120 | image_tag: loading: 'lazy', alt: value }}{%- endif -%}</button>
+                {%- else -%}
+                  <button type="button" class="wr-pdp__pill{% if value == option.selected_value %} is-selected{% endif %}" data-opt="{{ opt_idx }}" data-value="{{ value | escape }}">{{ value }}</button>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endunless -%}
+
+      <p class="wr-pdp__price" data-price>{{ current_variant.price | money | remove: cart.currency.iso_code | strip }}{%- if current_variant.compare_at_price > current_variant.price -%}<s>{{ current_variant.compare_at_price | money | remove: cart.currency.iso_code | strip }}</s>{%- endif -%}</p>
+      {%- if section.settings.price_note != blank -%}
+        <p class="wr-pdp__pnote">{{ section.settings.price_note }}<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4M8 4.8v.1" stroke-linecap="round"/></svg></p>
+      {%- endif -%}
+
+      <product-form class="product-form" data-section-id="{{ section.id }}">
+        <div class="product-form__error-message-wrapper" role="alert" hidden><span class="product-form__error-message"></span></div>
+      {%- form 'product', product, id: product_form_id, class: 'wr-pdp__form form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+        <div class="wr-pdp__buyrow">
+          <div class="wr-pdp__qty">
+            <button type="button" data-qty-minus aria-label="Decrease quantity">&minus;</button>
+            <input type="number" name="quantity" value="1" min="1" step="1" inputmode="numeric" data-qty aria-label="Quantity">
+            <button type="button" data-qty-plus aria-label="Increase quantity">+</button>
+          </div>
+          <a class="wr-pdp__link" href="#wr-calc-{{ section.id }}">{{ section.settings.rolls_link }}</a>
+        </div>
+
+        <div class="wr-pdp__calc" id="wr-calc-{{ section.id }}" data-calc data-roll-h="{{ section.settings.roll_height_ft }}" data-roll-w="{{ section.settings.roll_width_in }}" data-trim="{{ section.settings.trim_in }}" data-coverage="{{ section.settings.coverage_sqft }}">
+          <div class="wr-pdp__calc-head">
+            <h3>Wallpaper Calculator</h3>
+            {%- if section.settings.learn_url != blank -%}<a class="wr-pdp__link" href="{{ section.settings.learn_url }}">Learn how to measure</a>{%- endif -%}
+          </div>
+          <div data-walls>
+            <div class="wr-pdp__wall" data-wall>
+              <div>
+                <p class="wr-pdp__dim-label"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="6" width="16" height="8" rx="1.5"/><path d="M6 6v3M10 6v4M14 6v3"/></svg>Width</p>
+                <div class="wr-pdp__dim-box"><label><span>ft</span><input type="number" min="0" step="1" inputmode="numeric" placeholder="0" data-w-ft></label><label><span>in</span><input type="number" min="0" step="1" inputmode="numeric" placeholder="0" data-w-in></label></div>
+              </div>
+              <div>
+                <p class="wr-pdp__dim-label"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true"><rect x="6" y="2" width="8" height="16" rx="1.5"/><path d="M6 6h3M6 10h4M6 14h3"/></svg>Height</p>
+                <div class="wr-pdp__dim-box"><label><span>ft</span><input type="number" min="0" step="1" inputmode="numeric" placeholder="0" data-h-ft></label><label><span>in</span><input type="number" min="0" step="1" inputmode="numeric" placeholder="0" data-h-in></label></div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="wr-pdp__addwall" data-add-wall>+ Add another wall</button>
+          <div class="wr-pdp__result" aria-live="polite"><strong data-result-title>Enter your wall measurements above</strong><span data-result-sub>We'll calculate how many rolls you need</span></div>
+          {%- if section.settings.tips != blank -%}
+            <div class="wr-pdp__tips">
+              <p class="wr-pdp__tips-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14L14 3l3 3L6 17H3z"/><path d="M11 6l3 3M8 9l2 2"/></svg>Measuring tips:</p>
+              <ul>
+                {%- assign tip_lines = section.settings.tips | newline_to_br | strip_newlines | split: '<br />' -%}
+                {%- for tl in tip_lines -%}{%- if tl != blank -%}<li>{{ tl | strip }}</li>{%- endif -%}{%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        </div>
+
+        <button type="submit" name="add" class="wr-pdp__atc" data-atc{% unless current_variant.available %} disabled{% endunless %}><span data-atc-label>{% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}</span><i></i><span data-atc-price>{{ current_variant.price | money | remove: cart.currency.iso_code | strip }}</span>{%- render 'loading-spinner' -%}</button>
+      {%- endform -%}
+      </product-form>
+
+      <div class="wr-pdp__sample">
+        <a class="wr-pdp__sample-btn" href="{{ section.settings.sample_url | default: '#' }}">{{ section.settings.sample_label }}</a>
+        {%- if section.settings.sample_points != blank -%}
+          <ul>
+            {%- assign pt_lines = section.settings.sample_points | newline_to_br | strip_newlines | split: '<br />' -%}
+            {%- for pl in pt_lines -%}
+              {%- if pl != blank -%}
+                <li>
+                  {%- case forloop.index -%}
+                    {%- when 1 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3l1.6 4.4L16 9l-4.4 1.6L10 15l-1.6-4.4L4 9l4.4-1.6z"/><path d="M18 14l.8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8z"/></svg>
+                    {%- when 2 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14c3-1 5-4 9-4l6 3c1 .5.8 2-.4 2.2L13 17l-3 3-6-3z"/><path d="M7 8c1-2 3-3 5-3"/></svg>
+                    {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h10v8H3zM13 10h4l3 3v2h-7"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg>
+                  {%- endcase -%}
+                  <span>{{ pl | strip }}</span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- if product.description != blank -%}<div class="wr-pdp__desc">{{ product.description }}</div>{%- endif -%}
+    </div>
+  </div>
+  <script type="application/json" data-variants>{{ product.variants | json }}</script>
+</section>
+
+<script>
+  (function () {
+    var root = document.getElementById('wr-pdp-{{ section.id }}');
+    if (!root || root.dataset.ready) return;
+
+    var variants = [];
+    try {
+      variants = JSON.parse(
+        root.querySelector('[data-variants]').textContent
+      );
+    } catch (e) {
+      console.error('Could not read product variants.', e);
+      return;
+    }
+
+    var symbol = root.dataset.currency || '$';
+    var selected = [];
+
+    [].forEach.call(
+      root.querySelectorAll('.wr-pdp__swatches'),
+      function (group, i) {
+        var on = group.querySelector('.is-selected');
+        selected[i] = on ? on.getAttribute('data-value') : null;
+      }
+    );
+
+    var qtyInput = root.querySelector('[data-qty]');
+    var atc = root.querySelector('[data-atc]');
+    var atcLabel = root.querySelector('[data-atc-label]');
+    var atcPrice = root.querySelector('[data-atc-price]');
+    var priceEl = root.querySelector('[data-price]');
+    var idInput = root.querySelector('[data-variant-id]');
+    var current = null;
+    var adding = false;
+
+    if (!qtyInput || !atc || !atcLabel || !atcPrice ||
+        !priceEl || !idInput) {
+      console.error('Product controls are missing.');
+      return;
+    }
+
+    root.dataset.ready = '1';
+
+    function fmt(cents) {
+      return symbol + (cents / 100).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function qty() {
+      var q = parseInt(qtyInput.value, 10);
+      return q > 0 ? q : 1;
+    }
+
+    function findVariant() {
+      return variants.filter(function (v) {
+        var opts = [v.option1, v.option2, v.option3];
+
+        return selected.every(function (val, i) {
+          return val === null || opts[i] === val;
+        });
+      })[0];
+    }
+
+    function showMedia(id) {
+      if (!id) return;
+
+      var found = false;
+
+      [].forEach.call(
+        root.querySelectorAll('.wr-pdp__slide'),
+        function (slide) {
+          if (slide.getAttribute('data-media') === String(id)) {
+            found = true;
+          }
+        }
+      );
+
+      if (!found) return;
+
+      [].forEach.call(
+        root.querySelectorAll('.wr-pdp__slide'),
+        function (slide) {
+          slide.classList.toggle(
+            'is-active',
+            slide.getAttribute('data-media') === String(id)
+          );
+        }
+      );
+
+      [].forEach.call(
+        root.querySelectorAll('.wr-pdp__thumb'),
+        function (thumb) {
+          thumb.classList.toggle(
+            'is-active',
+            thumb.getAttribute('data-media') === String(id)
+          );
+        }
+      );
+    }
+
+    function render() {
+      var v = findVariant();
+      current = v || null;
+
+      if (!v) {
+        atc.disabled = true;
+        atcLabel.textContent = 'Unavailable';
+        return;
+      }
+
+      idInput.value = v.id;
+
+      priceEl.innerHTML =
+        fmt(v.price) +
+        (v.compare_at_price > v.price
+          ? '<s>' + fmt(v.compare_at_price) + '</s>'
+          : '');
+
+      atcPrice.textContent = fmt(v.price * qty());
+      atc.disabled = adding || !v.available;
+      atcLabel.textContent = v.available ? 'Add to cart' : 'Sold out';
+
+      var sku = root.querySelector('[data-sku]');
+      if (sku && v.sku) sku.textContent = v.sku;
+
+      if (v.featured_media && v.featured_media.id) {
+        showMedia(v.featured_media.id);
+      }
+
+      try {
+        var url = new URL(window.location.href);
+        url.searchParams.set('variant', v.id);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {}
+    }
+
+    root.addEventListener('click', function (event) {
+      var swatch = event.target.closest('[data-opt]');
+
+      if (swatch) {
+        var i = parseInt(swatch.getAttribute('data-opt'), 10);
+        selected[i] = swatch.getAttribute('data-value');
+
+        [].forEach.call(swatch.parentNode.children, function (child) {
+          child.classList.toggle('is-selected', child === swatch);
+        });
+
+        var label = root.querySelector(
+          '[data-opt-value="' + i + '"]'
+        );
+
+        if (label) label.textContent = selected[i];
+
+        render();
+        return;
+      }
+
+      var thumb = event.target.closest('.wr-pdp__thumb');
+
+      if (thumb) {
+        showMedia(thumb.getAttribute('data-media'));
+        return;
+      }
+
+      if (event.target.closest('[data-qty-minus]')) {
+        event.preventDefault();
+        qtyInput.value = Math.max(1, qty() - 1);
+        render();
+        return;
+      }
+
+      if (event.target.closest('[data-qty-plus]')) {
+        event.preventDefault();
+        qtyInput.value = qty() + 1;
+        render();
+        return;
+      }
+
+      if (event.target.closest('[data-add-wall]')) {
+        event.preventDefault();
+
+        var walls = root.querySelector('[data-walls]');
+        var first = walls && walls.querySelector('[data-wall]');
+        if (!first) return;
+
+        var copy = first.cloneNode(true);
+
+        [].forEach.call(copy.querySelectorAll('input'), function (input) {
+          input.value = '';
+        });
+
+        walls.appendChild(copy);
+      }
+    });
+
+    var productForm = atc.closest('form');
+
+    if (productForm) {
+      var cartError = document.createElement('p');
+      cartError.setAttribute('role', 'alert');
+      cartError.hidden = true;
+      atc.insertAdjacentElement('afterend', cartError);
+
+      productForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        if (adding || atc.disabled) return;
+
+        cartError.hidden = true;
+
+        var drawer = document.querySelector('cart-drawer');
+
+        if (
+          !drawer ||
+          typeof drawer.renderContents !== 'function' ||
+          typeof drawer.getSectionsToRender !== 'function'
+        ) {
+          cartError.textContent =
+            'The cart drawer is unavailable. Please refresh and try again.';
+          cartError.hidden = false;
+          return;
+        }
+
+        adding = true;
+        atc.disabled = true;
+        atc.setAttribute('aria-busy', 'true');
+
+        var added = false;
+
+        try {
+          var formData = new FormData(productForm);
+          formData.set('id', idInput.value);
+          formData.set('quantity', String(qty()));
+
+          var sections = drawer.getSectionsToRender();
+
+          formData.set(
+            'sections',
+            sections.map(function (section) {
+              return section.id;
+            }).join(',')
+          );
+
+          formData.set('sections_url', window.location.pathname);
+
+          if (typeof drawer.setActiveElement === 'function') {
+            drawer.setActiveElement(atc);
+          }
+
+          var routeRoot =
+            window.Shopify && window.Shopify.routes
+              ? window.Shopify.routes.root
+              : '/';
+
+          var addUrl =
+            window.routes && window.routes.cart_add_url
+              ? window.routes.cart_add_url
+              : routeRoot + 'cart/add.js';
+
+          var response = await fetch(addUrl, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+          });
+
+          var data = await response.json();
+
+          if (!response.ok || data.status) {
+            throw new Error(
+              data.description ||
+              data.message ||
+              'Unable to add this item.'
+            );
+          }
+
+          added = true;
+
+          if (
+            !data.sections ||
+            sections.some(function (section) {
+              return !data.sections[section.id];
+            })
+          ) {
+            throw new Error('Missing cart drawer content.');
+          }
+
+          drawer.classList.remove('is-empty');
+          drawer.renderContents(data);
+        } catch (error) {
+          console.error(error);
+
+          cartError.textContent = added
+            ? 'Item added, but the drawer could not refresh. Refresh the page before adding again.'
+            : 'Could not confirm the item was added. Check your cart before trying again. ' +
+              error.message;
+
+          cartError.hidden = false;
+        } finally {
+          adding = false;
+          atc.removeAttribute('aria-busy');
+          render();
+        }
+      });
+    }
+
+    qtyInput.addEventListener('input', render);
+
+    var calc = root.querySelector('[data-calc]');
+    var resTitle = root.querySelector('[data-result-title]');
+    var resSub = root.querySelector('[data-result-sub]');
+
+    function num(element) {
+      var n = parseFloat(element && element.value);
+      return n > 0 ? n : 0;
+    }
+
+    function runCalc() {
+      if (!calc || !resTitle || !resSub) return;
+
+      var rollH = parseFloat(calc.dataset.rollH) * 12;
+      var rollW = parseFloat(calc.dataset.rollW);
+      var trim = parseFloat(calc.dataset.trim) || 0;
+      var coverage = parseFloat(calc.dataset.coverage) || 0;
+      var total = 0;
+      var any = false;
+
+      [].forEach.call(
+        calc.querySelectorAll('[data-wall]'),
+        function (wall) {
+          var wallW =
+            num(wall.querySelector('[data-w-ft]')) * 12 +
+            num(wall.querySelector('[data-w-in]'));
+
+          var wallH =
+            num(wall.querySelector('[data-h-ft]')) * 12 +
+            num(wall.querySelector('[data-h-in]'));
+
+          if (wallW > 0 && wallH > 0) {
+            any = true;
+
+            var strips = Math.ceil(wallW / rollW);
+            var perRoll = Math.max(
+              1,
+              Math.floor(rollH / (wallH + trim))
+            );
+
+            total += strips / perRoll;
+          }
+        }
+      );
+
+      if (!any) {
+        resTitle.textContent = 'Enter your wall measurements above';
+        resSub.textContent =
+          'We\u2019ll calculate how many rolls you need';
+        return;
+      }
+
+      var rolls = Math.max(1, Math.ceil(total));
+      qtyInput.value = rolls;
+      render();
+
+      resTitle.textContent =
+        'You need ' + rolls + (rolls === 1 ? ' roll' : ' rolls');
+
+      resSub.textContent =
+        'Quantity updated' +
+        (coverage
+          ? ' \u00b7 about ' +
+            Math.round(rolls * coverage) +
+            ' sq. ft. of coverage'
+          : '');
+    }
+
+    if (calc) calc.addEventListener('input', runCalc);
+
+    render();
+  })();
+</script>
+
+
+{% schema %}
+{
+  "name": "WR Product",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    { "type": "header", "content": "Top of the page" },
+    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "Rated 4.8 by 800+ customers" },
+    { "type": "select", "id": "badge_mode", "label": "Badge on the image", "default": "always", "options": [
+      { "value": "always", "label": "Always show" },
+      { "value": "tag", "label": "Only when the product has the tag New" },
+      { "value": "never", "label": "Never show" }
+    ] },
+    { "type": "text", "id": "badge_text", "label": "Badge text", "default": "New" },
+    { "type": "header", "content": "Colors" },
+    { "type": "text", "id": "color_label", "label": "Color option label", "default": "Colorways" },
+    { "type": "textarea", "id": "swatch_colors", "label": "Swatch colors (one per line)", "info": "Format: Color name | color code. Used when a color variant has no picture of its own.", "default": "Maroon | #6b2d2d\nGreen | #5b6b3a\nOlive | #6b6a3a\nGold | #c8923b\nMustard | #c8923b\nCream | #e9e0cc\nBeige | #d9c9a8\nBlue | #7f9bb5\nGrey | #a8a9b8\nBlack | #1f2433\nPink | #e0a0a8\nWhite | #f2f0ea" },
+    { "type": "header", "content": "Price and roll size" },
+    { "type": "text", "id": "price_note", "label": "Text under the price", "default": "Price per Double Roll (H:33\u2032 x W:21\u2033 | 57 Sq. Ft.)" },
+    { "type": "text", "id": "rolls_link", "label": "Link next to the quantity", "default": "How many rolls do I need?" },
+    { "type": "range", "id": "roll_height_ft", "label": "Roll length (feet)", "min": 5, "max": 100, "step": 1, "unit": "ft", "default": 33 },
+    { "type": "range", "id": "roll_width_in", "label": "Roll width (inches)", "min": 10, "max": 60, "step": 1, "unit": "in", "default": 21 },
+    { "type": "range", "id": "trim_in", "label": "Extra length per strip (inches)", "min": 0, "max": 12, "step": 1, "unit": "in", "default": 4 },
+    { "type": "range", "id": "coverage_sqft", "label": "Coverage per roll (sq. ft.)", "min": 10, "max": 110, "step": 1, "unit": "ft²", "default": 57 },
+    { "type": "header", "content": "Calculator" },
+    { "type": "url", "id": "learn_url", "label": "Link for \"Learn how to measure\"" },
+    { "type": "textarea", "id": "tips", "label": "Measuring tips (one per line)", "default": "Round up to the nearest whole inch\nFind the highest and the widest point and measure there\nWe recommend measuring the full height and width of the wall including the windows and doors\nDo not include baseboards or molding" },
+    { "type": "header", "content": "Free sample" },
+    { "type": "text", "id": "sample_label", "label": "Button label", "default": "Order a free sample" },
+    { "type": "url", "id": "sample_url", "label": "Button link" },
+    { "type": "textarea", "id": "sample_points", "label": "Points below the button (one per line)", "default": "Printed on Non-woven material (21x19 inches)\nCompare feel and finish of our materials\nSamples ship within 5\u20137 business days" }
+  ]
+}
+{% endschema %}

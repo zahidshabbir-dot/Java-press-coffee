@@ -1,0 +1,108 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "wr_newsletter": {
+      "type": "wr-newsletter",
+      "settings": {
+        "kicker": "Walls Republic Newsletter",
+        "heading": "First look at new collections.",
+        "text": "Join the list for early access to just-arrived designs, styling ideas and members-only offers.",
+        "placeholder": "Email",
+        "button_label": "Subscribe",
+        "success_text": "Thanks for subscribing!",
+        "bg": "#000000",
+        "text_color": "#ffffff"
+      }
+    },
+    "wr_footer": {
+      "type": "wr-footer",
+      "blocks": {
+        "c1": {
+          "type": "column",
+          "settings": {
+            "title": "About & Partners",
+            "menu": "",
+            "links": "About Us | /pages/about\nBe our Trade Partner | /pages/trade-program\nCollaborate with Us | /pages/contact"
+          }
+        },
+        "c2": {
+          "type": "column",
+          "settings": {
+            "title": "Customer Service",
+            "menu": "",
+            "links": "Contact Us | /pages/contact\nShipping | /pages/shipping\nFree Wallpaper Samples | /pages/free-samples\nWallpaper Substrate Guide | /pages/substrate-guide\nFrequently Asked Questions | /pages/faq"
+          }
+        },
+        "c3": {
+          "type": "column",
+          "settings": {
+            "title": "Resources",
+            "menu": "",
+            "links": "Blog | /blogs/news\nWalls Republic University | /pages/university\nHome Wallpaper Glossary | /pages/glossary\nTestimonials | /pages/testimonials\nInspirations | /pages/inspirations"
+          }
+        },
+        "c4": {
+          "type": "column",
+          "settings": {
+            "title": "Policies & Legal",
+            "menu": "",
+            "links": "Return Policy | /policies/refund-policy\nPrivacy Policy | /policies/privacy-policy\nTerms Of Use | /policies/terms-of-service\nTerms of Sales | /policies/terms-of-service"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "settings": {
+        "brand_name": "Walls Republic US",
+        "phone_label": "PH-",
+        "phone_note": "US | Canada Toll Free:",
+        "phone": "1-888-990-2250",
+        "email": "sales@wallsrepublic.com",
+        "facebook": "",
+        "instagram": "",
+        "tiktok": "",
+        "pinterest": "",
+        "x": "",
+        "copyright": "Walls Republic. All Rights Reserved.",
+        "bg": "#ffffff"
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "scheme-1",
+        "newsletter_enable": true,
+        "newsletter_heading": "Subscribe to our emails",
+        "enable_follow_on_shop": true,
+        "show_social": true,
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "payment_enable": true,
+        "show_policy": true,
+        "margin_top": 0,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "wr_newsletter",
+    "wr_footer",
+    "footer"
+  ]
+}

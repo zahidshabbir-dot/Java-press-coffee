@@ -1,0 +1,153 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{% style %}
+  #wr-hero-{{ section.id }} { position:relative; overflow:hidden; font-family:'Instrument Sans',sans-serif; background:#5a2a2a; }
+  #wr-hero-{{ section.id }} * { box-sizing:border-box; }
+  #wr-hero-{{ section.id }} .wr-hero__track { display:flex; height:{{ section.settings.height }}px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  #wr-hero-{{ section.id }} .wr-hero__track::-webkit-scrollbar { display:none; }
+  #wr-hero-{{ section.id }} .wr-hero__slide { position:relative; flex:0 0 100%; height:100%; scroll-snap-align:start; overflow:hidden; background:#6b3a3a; }
+  #wr-hero-{{ section.id }} .wr-hero__media, #wr-hero-{{ section.id }} .wr-hero__media img, #wr-hero-{{ section.id }} .wr-hero__media svg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  #wr-hero-{{ section.id }} .wr-hero__shade { position:absolute; inset:0; background:linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(102,102,102,0) 33.2%); pointer-events:none; }
+  #wr-hero-{{ section.id }} .wr-hero__cover { position:absolute; inset:0; z-index:1; }
+  #wr-hero-{{ section.id }} .wr-hero__content { position:absolute; z-index:2; left:clamp(20px, 6.3vw, 91px); top:50%; transform:translateY(-50%); width:calc(100% - 40px); max-width:660px; color:#fff; padding:0 20px 46px; }
+  #wr-hero-{{ section.id }} .wr-hero__pill { display:inline-block; border:1px solid rgba(255,255,255,0.5); border-radius:999px; padding:5px 11px; font-size:12px; line-height:16.5px; font-weight:600; letter-spacing:0.72px; color:#fff; margin:0 0 12px; white-space:nowrap; }
+  #wr-hero-{{ section.id }} .wr-hero__meta { display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; margin:0 0 12px; font-size:12.5px; line-height:normal; color:rgba(255,255,255,0.85); }
+  #wr-hero-{{ section.id }} .wr-hero__meta-item { display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
+  #wr-hero-{{ section.id }} .wr-hero__stars { color:#7ed3a5; letter-spacing:1px; }
+  #wr-hero-{{ section.id }} .wr-hero__meta svg { width:16px; height:16px; flex:0 0 16px; }
+  #wr-hero-{{ section.id }} .wr-hero__heading { margin:0; font-family:'Instrument Sans',sans-serif; font-size:38px; line-height:normal; font-weight:600; color:#fff; letter-spacing:0; text-transform:none; }
+  #wr-hero-{{ section.id }} .wr-hero__text { margin:0; padding:10px 0 16px; max-width:390px; font-size:14.5px; line-height:21.75px; color:rgba(255,255,255,0.88); }
+  #wr-hero-{{ section.id }} .wr-hero__btn { display:flex; align-items:center; justify-content:center; width:286px; max-width:100%; padding:13px 20px; background:#fff; border:1px solid #fff; color:#000; font-size:14.5px; line-height:17.4px; font-weight:600; text-decoration:none; text-align:center; }
+  #wr-hero-{{ section.id }} .wr-hero__btn:hover { background:#000; color:#fff; border-color:#000; }
+  #wr-hero-{{ section.id }} .wr-hero__arrow { position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:50px; height:50px; padding:0; border:0; border-radius:50%; background:rgba(0,0,0,0.4); color:#fff; display:grid; place-items:center; cursor:pointer; }
+  #wr-hero-{{ section.id }} .wr-hero__arrow:hover { background:rgba(0,0,0,0.65); }
+  #wr-hero-{{ section.id }} .wr-hero__arrow svg { width:16px; height:16px; }
+  #wr-hero-{{ section.id }} .wr-hero__arrow--prev { left:10px; }
+  #wr-hero-{{ section.id }} .wr-hero__arrow--next { right:10px; }
+  @media (max-width:749px) {
+    #wr-hero-{{ section.id }} .wr-hero__track { height:{{ section.settings.height_mobile }}px; }
+    #wr-hero-{{ section.id }} .wr-hero__shade { background:linear-gradient(90deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 100%); }
+    #wr-hero-{{ section.id }} .wr-hero__heading { font-size:28px; }
+    #wr-hero-{{ section.id }} .wr-hero__content { padding:0 56px 0 20px; left:0; width:100%; }
+    #wr-hero-{{ section.id }} .wr-hero__btn { width:100%; }
+    #wr-hero-{{ section.id }} .wr-hero__arrow { width:40px; height:40px; }
+  }
+{% endstyle %}
+
+<div id="wr-hero-{{ section.id }}" class="wr-hero" data-autoplay="{{ section.settings.autoplay }}" data-speed="{{ section.settings.autoplay_speed }}">
+  <div class="wr-hero__track">
+    {%- for block in section.blocks -%}
+      <div class="wr-hero__slide" {{ block.shopify_attributes }}>
+        <div class="wr-hero__media">
+          {%- if block.settings.image != blank -%}
+            {%- if block.settings.mobile_image != blank -%}
+              <picture>
+                <source media="(max-width: 749px)" srcset="{{ block.settings.mobile_image | image_url: width: 1000 }}">
+                {%- assign load = 'lazy' -%}{%- if forloop.first -%}{%- assign load = 'eager' -%}{%- endif -%}{%- assign hero_alt = block.settings.heading | strip_html | escape -%}{{ block.settings.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', loading: load, alt: hero_alt }}
+              </picture>
+            {%- else -%}
+              {%- assign load = 'lazy' -%}{%- if forloop.first -%}{%- assign load = 'eager' -%}{%- endif -%}{%- assign hero_alt = block.settings.heading | strip_html | escape -%}{{ block.settings.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', loading: load, alt: hero_alt }}
+            {%- endif -%}
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag }}
+          {%- endif -%}
+        </div>
+        <div class="wr-hero__shade"></div>
+        {%- if block.settings.slide_link != blank -%}<a class="wr-hero__cover" href="{{ block.settings.slide_link }}" aria-label="{{ block.settings.heading | strip_html | escape }}"></a>{%- endif -%}
+        {%- if block.settings.heading != blank or block.settings.pill != blank -%}
+          <div class="wr-hero__content">
+            {%- if block.settings.pill != blank -%}<span class="wr-hero__pill">{{ block.settings.pill }}</span>{%- endif -%}
+            {%- if block.settings.rating_text != blank or block.settings.feature_1 != blank or block.settings.feature_2 != blank -%}
+              <div class="wr-hero__meta">
+                {%- if block.settings.rating_text != blank -%}
+                  <span class="wr-hero__meta-item"><span class="wr-hero__stars">★★★★★</span><span>{{ block.settings.rating_text }}</span></span>
+                {%- endif -%}
+                {%- if block.settings.feature_1 != blank -%}
+                  <span class="wr-hero__meta-item"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 11.5l9-9 2 2-9 9z"/><path d="M5 9l1.2 1.2M7 7l1.2 1.2M9 5l1.2 1.2"/></svg><span>{{ block.settings.feature_1 }}</span></span>
+                {%- endif -%}
+                {%- if block.settings.feature_2 != blank -%}
+                  <span class="wr-hero__meta-item"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 4h8v6h-8zM9.5 6h3l2 2v2h-5z"/><circle cx="4.5" cy="11.5" r="1.3"/><circle cx="11.5" cy="11.5" r="1.3"/></svg><span>{{ block.settings.feature_2 }}</span></span>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+            {%- if block.settings.heading != blank -%}<h2 class="wr-hero__heading">{{ block.settings.heading | escape | newline_to_br }}</h2>{%- endif -%}
+            {%- if block.settings.text != blank -%}<p class="wr-hero__text">{{ block.settings.text | escape }}</p>{%- endif -%}
+            {%- if block.settings.button_label != blank -%}<a class="wr-hero__btn" href="{{ block.settings.button_link | default: '#' }}">{{ block.settings.button_label }}</a>{%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+  {%- if section.blocks.size > 1 -%}
+    <button type="button" class="wr-hero__arrow wr-hero__arrow--prev" aria-label="Previous slide"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg></button>
+    <button type="button" class="wr-hero__arrow wr-hero__arrow--next" aria-label="Next slide"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg></button>
+  {%- endif -%}
+</div>
+
+<script>
+  (function () {
+    var root = document.getElementById('wr-hero-{{ section.id }}');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
+    var track = root.querySelector('.wr-hero__track');
+    var prev = root.querySelector('.wr-hero__arrow--prev');
+    var next = root.querySelector('.wr-hero__arrow--next');
+    if (!track || !prev || !next) return;
+    function go(dir) {
+      var w = track.clientWidth;
+      var max = track.scrollWidth - w;
+      var x = track.scrollLeft + dir * w;
+      if (x > max + 2) x = 0;
+      if (x < -2) x = max;
+      track.scrollTo({ left: x, behavior: 'smooth' });
+    }
+    prev.addEventListener('click', function () { go(-1); });
+    next.addEventListener('click', function () { go(1); });
+    if (root.dataset.autoplay === 'true' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var speed = (parseInt(root.dataset.speed, 10) || 6) * 1000;
+      var timer = setInterval(function () { go(1); }, speed);
+      root.addEventListener('mouseenter', function () { clearInterval(timer); });
+      root.addEventListener('mouseleave', function () { timer = setInterval(function () { go(1); }, speed); });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "WR Hero slider",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "range", "id": "height", "label": "Height (desktop)", "min": 300, "max": 800, "step": 10, "unit": "px", "default": 490 },
+    { "type": "range", "id": "height_mobile", "label": "Height (mobile)", "min": 300, "max": 700, "step": 10, "unit": "px", "default": 440 },
+    { "type": "checkbox", "id": "autoplay", "label": "Auto-rotate slides", "default": true },
+    { "type": "range", "id": "autoplay_speed", "label": "Change slides every", "min": 3, "max": 12, "step": 1, "unit": "s", "default": 6 }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "image_picker", "id": "mobile_image", "label": "Mobile image (optional)" },
+        { "type": "header", "content": "Text" },
+        { "type": "text", "id": "pill", "label": "Label pill", "default": "Just in: Bohème Collection" },
+        { "type": "text", "id": "rating_text", "label": "Rating text (shows 5 stars before it)", "default": "4.8 · 810+ reviews" },
+        { "type": "text", "id": "feature_1", "label": "Feature 1 (ruler icon)", "default": "Free measurement check" },
+        { "type": "text", "id": "feature_2", "label": "Feature 2 (truck icon)", "default": "Free shipping over $350" },
+        { "type": "textarea", "id": "heading", "label": "Heading (new line = line break)", "default": "Unapologetically Eclectic.\nEffortlessly Bohème." },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Layered, expressive wallcoverings inspired by faraway places and vintage curiosities." },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop Bohème" },
+        { "type": "url", "id": "button_link", "label": "Button link" },
+        { "type": "url", "id": "slide_link", "label": "Link for the whole slide (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "WR Hero slider",
+      "blocks": [ { "type": "slide" } ]
+    }
+  ]
+}
+{% endschema %}

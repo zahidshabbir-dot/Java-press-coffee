@@ -1,0 +1,867 @@
+{{ 'section-project-quote.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign badge_blocks = section.blocks | where: 'type', 'trust_badge'
+  assign way_blocks = section.blocks | where: 'type', 'start_step'
+  assign card_blocks = section.blocks | where: 'type', 'pattern_card'
+  assign process_blocks = section.blocks | where: 'type', 'process_step'
+-%}
+
+<div class="project-quote color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+
+  {%- comment -%} ---------- Hero ---------- {%- endcomment -%}
+  <div class="project-quote__section page-width">
+    <div class="pq-hero">
+      <div class="pq-hero__content">
+        <h1 class="pq-hero__heading">{{ section.settings.hero_heading }}</h1>
+        <p class="pq-hero__subheading">{{ section.settings.hero_subheading }}</p>
+        <p class="pq-hero__description">{{ section.settings.hero_description }}</p>
+        <div class="pq-hero__actions">
+          {%- if section.settings.primary_button_label != blank -%}
+            <a href="#ProjectQuoteForm-{{ section.id }}" class="button button--primary">
+              {{ section.settings.primary_button_label | escape }}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.secondary_button_label != blank -%}
+            <a
+              href="{{ section.settings.secondary_button_link | default: '#' }}"
+              class="button button--secondary"
+            >
+              {{ section.settings.secondary_button_label | escape }}
+            </a>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.note_title != blank or section.settings.note_text != blank -%}
+          <div class="pq-hero__note">
+            {%- if section.settings.note_title != blank -%}
+              <p class="pq-hero__note-title">{{ section.settings.note_title }}</p>
+            {%- endif -%}
+            {%- if section.settings.note_text != blank -%}
+              <p class="pq-hero__note-text">{{ section.settings.note_text }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+      <div class="pq-hero__media">
+        <span class="pq-hero__media-mark" aria-hidden="true">WR</span>
+        {%- if section.settings.hero_image != blank -%}
+          {{
+            section.settings.hero_image
+            | image_url: width: 1100
+            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 533px, 100vw'
+          }}
+        {%- else -%}
+          <img src="{{ 'project-quote-hero.png' | asset_url }}" alt="" loading="lazy" width="1066" height="968">
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ---------- Quote form ---------- {%- endcomment -%}
+  <div class="pq-form-section" id="ProjectQuoteForm-{{ section.id }}">
+    <div class="page-width">
+      <div class="pq-form-section__head">
+        {%- if section.settings.form_heading != blank -%}
+          <h2 class="title inline-richtext h1">{{ section.settings.form_heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.form_description != blank -%}
+          <p>{{ section.settings.form_description }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="pq-form-card">
+        {%- form 'contact', id: 'ProjectQuoteForm', class: 'isolate' -%}
+          {%- if form.posted_successfully? -%}
+            <h2 class="form-status form-status-list form__message" tabindex="-1" autofocus>
+              {{- 'icon-success.svg' | inline_asset_content -}}
+              {{ section.settings.form_success_message | default: 'Thanks — your project brief has been sent to our Trade team.' }}
+            </h2>
+          {%- else -%}
+            {%- if form.errors -%}
+              <div class="form__message">
+                <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
+                  {{- 'icon-error.svg' | inline_asset_content -}}
+                  {{ 'templates.contact.form.error_heading' | t }}
+                </h2>
+              </div>
+            {%- endif -%}
+
+            <input type="hidden" name="contact[Form]" value="Project Quote Request">
+
+            <div class="pq-form-grid">
+              <div class="pq-field">
+                <label class="pq-field__label" for="ProjectQuoteForm-name-{{ section.id }}">
+                  Name <span class="pq-field__required">*</span>
+                </label>
+                <div class="field">
+                  <input
+                    class="field__input"
+                    autocomplete="name"
+                    type="text"
+                    id="ProjectQuoteForm-name-{{ section.id }}"
+                    name="contact[Name]"
+                    placeholder="Your name"
+                    required
+                  >
+                </div>
+              </div>
+              <div class="pq-field">
+                <label class="pq-field__label" for="ProjectQuoteForm-company-{{ section.id }}">
+                  Studio / Company <span class="pq-field__required">*</span>
+                </label>
+                <div class="field">
+                  <input
+                    class="field__input"
+                    type="text"
+                    id="ProjectQuoteForm-company-{{ section.id }}"
+                    name="contact[Studio / Company]"
+                    placeholder="Studio or company name"
+                    required
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="pq-form-grid">
+              <div class="pq-field">
+                <label class="pq-field__label" for="ProjectQuoteForm-email-{{ section.id }}">
+                  Email <span class="pq-field__required">*</span>
+                </label>
+                <div class="field">
+                  <input
+                    class="field__input"
+                    autocomplete="email"
+                    type="email"
+                    id="ProjectQuoteForm-email-{{ section.id }}"
+                    name="contact[email]"
+                    spellcheck="false"
+                    autocapitalize="off"
+                    placeholder="Your email"
+                    required
+                  >
+                </div>
+              </div>
+              <div class="pq-field">
+                <label class="pq-field__label" for="ProjectQuoteForm-project-{{ section.id }}">
+                  Project name / client <span class="pq-field__optional">— optional</span>
+                </label>
+                <div class="field">
+                  <input
+                    class="field__input"
+                    type="text"
+                    id="ProjectQuoteForm-project-{{ section.id }}"
+                    name="contact[Project name / client]"
+                    placeholder="Project or client name"
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="pq-form-grid">
+              <div class="pq-field">
+                <label class="pq-field__label" for="ProjectQuoteForm-type-{{ section.id }}">
+                  Project type <span class="pq-field__required">*</span>
+                </label>
+                <div class="select">
+                  <select class="select__select" id="ProjectQuoteForm-type-{{ section.id }}" name="contact[Project type]" required>
+                    <option value="" selected disabled>Select project type</option>
+                    <option value="Residential">Residential</option>
+                    <option value="Hospitality">Hospitality</option>
+                    <option value="Multifamily">Multifamily</option>
+                    <option value="Commercial">Commercial</option>
+                  </select>
+                  <span class="svg-wrapper">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+                </div>
+              </div>
+              <div class="pq-field">
+                <label class="pq-field__label" for="ProjectQuoteForm-quoting-{{ section.id }}">
+                  What are you quoting? <span class="pq-field__required">*</span>
+                </label>
+                <div class="select">
+                  <select class="select__select" id="ProjectQuoteForm-quoting-{{ section.id }}" name="contact[What are you quoting]" required>
+                    <option value="" selected disabled>Select an option</option>
+                    <option value="Design professional support">Wallpaper &amp; murals</option>
+                    <option value="Custom development">Custom development</option>
+                    <option value="Commercial wallcoverings">Commercial wallcoverings</option>
+                    <option value="Samples &amp; spec support">Samples &amp; spec support</option>
+                  </select>
+                  <span class="svg-wrapper">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pq-form-grid">
+              <div class="pq-field">
+                <label class="pq-field__label" for="ProjectQuoteForm-sku-{{ section.id }}">
+                  Product link / SKU <span class="pq-field__optional">— optional</span>
+                </label>
+                <div class="field">
+                  <input
+                    class="field__input"
+                    type="text"
+                    id="ProjectQuoteForm-sku-{{ section.id }}"
+                    name="contact[Product link / SKU]"
+                    placeholder="Paste product URL or SKU"
+                  >
+                </div>
+              </div>
+              <div class="pq-field">
+                <label class="pq-field__label" for="ProjectQuoteForm-dimensions-{{ section.id }}">
+                  Quantity / dimensions <span class="pq-field__optional">— optional</span>
+                </label>
+                <div class="field">
+                  <input
+                    class="field__input"
+                    type="text"
+                    id="ProjectQuoteForm-dimensions-{{ section.id }}"
+                    name="contact[Quantity / dimensions]"
+                    placeholder="Approx. wall size, square footage, roll quantity or room count"
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="pq-form-grid">
+              <div class="pq-field">
+                <label class="pq-field__label" for="ProjectQuoteForm-location-{{ section.id }}">
+                  Project location <span class="pq-field__required">*</span>
+                </label>
+                <div class="field">
+                  <input
+                    class="field__input"
+                    type="text"
+                    id="ProjectQuoteForm-location-{{ section.id }}"
+                    name="contact[Project location]"
+                    placeholder="City, State / Province"
+                    required
+                  >
+                </div>
+              </div>
+              <div class="pq-field">
+                <label class="pq-field__label" for="ProjectQuoteForm-date-{{ section.id }}">
+                  Target installation / required-by date <span class="pq-field__optional">— optional</span>
+                </label>
+                <div class="field">
+                  <input
+                    class="field__input"
+                    type="text"
+                    id="ProjectQuoteForm-date-{{ section.id }}"
+                    name="contact[Target installation date]"
+                    placeholder="When do you need it?"
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="pq-field">
+              <label class="pq-field__label" for="ProjectQuoteForm-files-{{ section.id }}">Project files</label>
+              <div class="pq-upload">
+                <div class="pq-upload-icon" aria-hidden="true">
+                  <span class="pq-upload-icon__a"><img src="{{ 'project-quote-upload-1.svg' | asset_url }}" alt="" loading="lazy" width="64" height="64"></span>
+                  <span class="pq-upload-icon__b"><img src="{{ 'project-quote-upload-2.svg' | asset_url }}" alt="" loading="lazy" width="64" height="64"></span>
+                  <span class="pq-upload-icon__c"><img src="{{ 'project-quote-upload-3.svg' | asset_url }}" alt="" loading="lazy" width="64" height="64"></span>
+                  <span class="pq-upload-icon__d"><img src="{{ 'project-quote-upload-4.svg' | asset_url }}" alt="" loading="lazy" width="64" height="64"></span>
+                  <span class="pq-upload-icon__e"><img src="{{ 'project-quote-upload-5.svg' | asset_url }}" alt="" loading="lazy" width="64" height="64"></span>
+                  <span class="pq-upload-icon__f"><img src="{{ 'project-quote-upload-6.svg' | asset_url }}" alt="" loading="lazy" width="64" height="64"></span>
+                </div>
+                <p class="pq-upload__title">Upload project information</p>
+                <p class="pq-upload__text">RFQ, finish schedule, elevation, artwork, moodboard, room image or reference. Multiple files welcome.</p>
+                <div class="pq-upload__types">
+                  <span class="pq-upload__type">PDF</span>
+                  <span class="pq-upload__type">JPG / PNG</span>
+                  <span class="pq-upload__type">DWG</span>
+                  <span class="pq-upload__type">XLS</span>
+                </div>
+                <input class="pq-upload__input" type="file" id="ProjectQuoteForm-files-{{ section.id }}" multiple>
+              </div>
+            </div>
+
+            <div class="pq-field">
+              <label class="pq-field__label" for="ProjectQuoteForm-notes-{{ section.id }}">
+                Project notes <span class="pq-field__optional">— optional</span>
+              </label>
+              <textarea
+                class="text-area field__input"
+                rows="4"
+                id="ProjectQuoteForm-notes-{{ section.id }}"
+                name="contact[Project notes]"
+                placeholder="Anything else we should know?"
+              ></textarea>
+            </div>
+
+            <button type="submit" class="button button--primary pq-form-submit">
+              Request project quote
+            </button>
+            <p class="pq-form-note">Your project brief will be reviewed by our Trade team.</p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      {%- comment -%} ---------- Trust badges ---------- {%- endcomment -%}
+      {%- if badge_blocks.size > 0 -%}
+        <div class="pq-badges">
+          {%- for block in badge_blocks -%}
+            {%- liquid
+              case forloop.index
+                when 1
+                  assign default_badge_icon = 'project-quote-badge-design.svg'
+                when 2
+                  assign default_badge_icon = 'project-quote-badge-development.svg'
+                when 3
+                  assign default_badge_icon = 'project-quote-badge-commercial.svg'
+                else
+                  assign default_badge_icon = 'project-quote-badge-samples.svg'
+              endcase
+            -%}
+            <div class="pq-badge" {{ block.shopify_attributes }}>
+              <div class="pq-badge__icon">
+                {%- if block.settings.icon != blank -%}
+                  <img src="{{ block.settings.icon | image_url: width: 40 }}" alt="" loading="lazy" width="19" height="19">
+                {%- else -%}
+                  <img src="{{ default_badge_icon | asset_url }}" alt="" loading="lazy" width="19" height="19">
+                {%- endif -%}
+              </div>
+              {%- if block.settings.title != blank -%}
+                <h3 class="pq-badge__title">{{ block.settings.title }}</h3>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <p class="pq-badge__text">{{ block.settings.text }}</p>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} ---------- Three simple ways to start ---------- {%- endcomment -%}
+  {%- if way_blocks.size > 0 -%}
+    <div class="project-quote__section pq-ways-section page-width">
+      <div class="pq-ways__head">
+        {%- if section.settings.ways_heading != blank -%}
+          <h2 class="title inline-richtext h1">{{ section.settings.ways_heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.ways_subheading != blank -%}
+          <p>{{ section.settings.ways_subheading }}</p>
+        {%- endif -%}
+      </div>
+      <div class="pq-ways">
+        <div class="pq-ways__media">
+          <span class="pq-hero__media-mark" aria-hidden="true">WR</span>
+          {%- if section.settings.ways_image != blank -%}
+            {{ section.settings.ways_image | image_url: width: 900 | image_tag: loading: 'lazy' }}
+          {%- else -%}
+            <img src="{{ 'project-quote-threeways.png' | asset_url }}" alt="" loading="lazy" width="960" height="892">
+          {%- endif -%}
+        </div>
+        <div class="pq-ways__list">
+          {%- for block in way_blocks -%}
+            <div class="pq-way" {{ block.shopify_attributes }}>
+              <span class="pq-way__index">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+              <div>
+                {%- if block.settings.title != blank -%}
+                  <h3 class="pq-way__title">{{ block.settings.title }}</h3>
+                {%- endif -%}
+                {%- if block.settings.text != blank -%}
+                  <p class="pq-way__text">{{ block.settings.text }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ---------- From selected pattern to fully custom wall ---------- {%- endcomment -%}
+  {%- if card_blocks.size > 0 -%}
+    <div class="pq-cards-section">
+      <div class="page-width">
+        <div class="pq-cards__head">
+          {%- if section.settings.cards_heading != blank -%}
+            <h2 class="title inline-richtext h1">{{ section.settings.cards_heading }}</h2>
+          {%- endif -%}
+          {%- if section.settings.cards_subheading != blank -%}
+            <p>{{ section.settings.cards_subheading }}</p>
+          {%- endif -%}
+        </div>
+        <div class="pq-cards">
+          {%- for block in card_blocks -%}
+            {%- liquid
+              case forloop.index
+                when 1
+                  assign default_card_image = 'project-quote-card-wallpaper.png'
+                  assign default_card_icon = 'project-quote-tag-wallpaper.svg'
+                when 2
+                  assign default_card_image = 'project-quote-card-development.png'
+                  assign default_card_icon = 'project-quote-tag-development.svg'
+                else
+                  assign default_card_image = 'project-quote-card-commercial.png'
+                  assign default_card_icon = 'project-quote-tag-commercial.svg'
+              endcase
+            -%}
+            <div class="pq-card" {{ block.shopify_attributes }}>
+              <div class="pq-card__media">
+                <span class="pq-hero__media-mark" aria-hidden="true">WR</span>
+                {%- if block.settings.image != blank -%}
+                  {{ block.settings.image | image_url: width: 700 | image_tag: loading: 'lazy' }}
+                {%- else -%}
+                  <img src="{{ default_card_image | asset_url }}" alt="" loading="lazy" width="700" height="524">
+                {%- endif -%}
+              </div>
+              <div class="pq-card__body">
+                <div class="pq-card__tag">
+                  {%- if block.settings.icon != blank -%}
+                    <img src="{{ block.settings.icon | image_url: width: 30 }}" alt="" loading="lazy" width="15" height="15">
+                  {%- else -%}
+                    <img src="{{ default_card_icon | asset_url }}" alt="" loading="lazy" width="15" height="15">
+                  {%- endif -%}
+                  <span class="pq-card__tag-index">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                  <span class="pq-card__tag-label">· {{ block.settings.label }}</span>
+                </div>
+                {%- if block.settings.text != blank -%}
+                  <p class="pq-card__text">{{ block.settings.text }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ---------- Clear process. Human review. ---------- {%- endcomment -%}
+  {%- if process_blocks.size > 0 -%}
+    <div class="project-quote__section pq-process-section page-width">
+      <div class="pq-process__head">
+        {%- if section.settings.process_heading != blank -%}
+          <h2 class="title inline-richtext h1">{{ section.settings.process_heading }}</h2>
+        {%- endif -%}
+      </div>
+      <div class="pq-process">
+        {%- for block in process_blocks -%}
+          {%- liquid
+            case forloop.index
+              when 1
+                assign default_process_icon = 'project-quote-step-1.svg'
+              when 2
+                assign default_process_icon = 'project-quote-step-2.svg'
+              else
+                assign default_process_icon = 'project-quote-step-3.svg'
+            endcase
+          -%}
+          {%- if block.settings.icon != blank -%}
+            {%- assign process_icon_url = block.settings.icon | image_url: width: 60 -%}
+          {%- else -%}
+            {%- assign process_icon_url = default_process_icon | asset_url -%}
+          {%- endif -%}
+          <div class="pq-process__step{% if forloop.index == 2 %} pq-process__step--active{% endif %}" {{ block.shopify_attributes }}>
+            <div class="pq-process__icon">
+              <span class="pq-process__icon-glyph" style="--pq-icon: url('{{ process_icon_url }}');" role="img" aria-label=""></span>
+            </div>
+            <span class="pq-process__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            {%- if block.settings.title != blank -%}
+              <h3 class="pq-process__title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="pq-process__text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ---------- Final CTA ---------- {%- endcomment -%}
+  {%- if section.settings.cta_heading != blank or section.settings.cta_text != blank -%}
+    <div class="pq-cta-section">
+      <div class="page-width">
+        <div class="pq-cta">
+          <div class="pq-cta__content">
+            {%- if section.settings.cta_heading != blank -%}
+              <h2 class="title inline-richtext h1">{{ section.settings.cta_heading }}</h2>
+            {%- endif -%}
+            {%- if section.settings.cta_text != blank -%}
+              <p>{{ section.settings.cta_text }}</p>
+            {%- endif -%}
+            {%- if section.settings.cta_button_label != blank -%}
+              <a href="#ProjectQuoteForm-{{ section.id }}" class="button button--primary">
+                {{ section.settings.cta_button_label | escape }}
+              </a>
+            {%- endif -%}
+          </div>
+          <div class="pq-cta__media">
+            {%- if section.settings.cta_image != blank -%}
+              {{ section.settings.cta_image | image_url: width: 900 | image_tag: loading: 'lazy' }}
+            {%- else -%}
+              <img src="{{ 'project-quote-cta.png' | asset_url }}" alt="" loading="lazy" width="900" height="1219">
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ---------- FAQ ---------- {%- endcomment -%}
+  {%- assign faq_blocks = section.blocks | where: 'type', 'faq_item' -%}
+  {%- if faq_blocks.size > 0 -%}
+    <div class="pq-faq-section page-width">
+      <div class="pq-faq__head">
+        <p class="pq-faq__eyebrow">
+          <img src="{{ 'project-quote-faq-icon.svg' | asset_url }}" alt="" loading="lazy" width="14" height="14">
+          {{ section.settings.faq_eyebrow | default: 'FAQ' }}
+        </p>
+        {%- if section.settings.faq_heading != blank -%}
+          <h2 class="title inline-richtext h1">{{ section.settings.faq_heading }}</h2>
+        {%- endif -%}
+      </div>
+      <div class="pq-faq">
+        {%- for block in faq_blocks -%}
+          <details class="pq-faq__item" {{ block.shopify_attributes }}>
+            <summary>{{ block.settings.question }}</summary>
+            {%- if block.settings.answer != blank -%}
+              <p class="pq-faq__answer">{{ block.settings.answer }}</p>
+            {%- endif -%}
+          </details>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ---------- Dark CTA ---------- {%- endcomment -%}
+  {%- if section.settings.dark_cta_heading != blank -%}
+    <div class="pq-dark-cta">
+      <div class="page-width pq-dark-cta__inner">
+        {%- if section.settings.dark_cta_heading != blank -%}
+          <h2 class="title inline-richtext h1">{{ section.settings.dark_cta_heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.dark_cta_text != blank -%}
+          <p>{{ section.settings.dark_cta_text }}</p>
+        {%- endif -%}
+        {%- if section.settings.dark_cta_button_label != blank -%}
+          <a href="#ProjectQuoteForm-{{ section.id }}" class="button button--primary">
+            {{ section.settings.dark_cta_button_label | escape }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Project quote",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "hero_heading",
+      "label": "Heading",
+      "default": "Get a project quote."
+    },
+    {
+      "type": "text",
+      "id": "hero_subheading",
+      "label": "Subheading",
+      "default": "Straightforward for your studio. Built around your project."
+    },
+    {
+      "type": "textarea",
+      "id": "hero_description",
+      "label": "Description",
+      "default": "Wallpaper, custom murals and commercial wallcoverings for residential, hospitality, multifamily and commercial interiors."
+    },
+    {
+      "type": "text",
+      "id": "primary_button_label",
+      "label": "Primary button label",
+      "default": "Get a project quote"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_label",
+      "label": "Secondary button label",
+      "default": "See how it works"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "text",
+      "id": "note_title",
+      "label": "Note title",
+      "default": "Not ready with every detail?"
+    },
+    {
+      "type": "textarea",
+      "id": "note_text",
+      "label": "Note text",
+      "default": "That's fine. A room image, product link, RFQ or approximate dimensions are enough to start. The form should move the project forward — not create more work."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "header",
+      "content": "Quote form"
+    },
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Form heading",
+      "default": "Tell us about the project."
+    },
+    {
+      "type": "textarea",
+      "id": "form_description",
+      "label": "Form description",
+      "default": "Only the essentials. If you already have an RFQ, finish schedule, elevation, moodboard or product reference, upload it and we can work from there."
+    },
+    {
+      "type": "text",
+      "id": "form_success_message",
+      "label": "Success message",
+      "default": "Thanks — your project brief has been sent to our Trade team."
+    },
+    {
+      "type": "header",
+      "content": "Three simple ways to start"
+    },
+    {
+      "type": "text",
+      "id": "ways_heading",
+      "label": "Heading",
+      "default": "Three simple ways to start."
+    },
+    {
+      "type": "text",
+      "id": "ways_subheading",
+      "label": "Subheading",
+      "default": "Choose whichever matches the stage your project is in."
+    },
+    {
+      "type": "image_picker",
+      "id": "ways_image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "From selected pattern to fully custom wall"
+    },
+    {
+      "type": "text",
+      "id": "cards_heading",
+      "label": "Heading",
+      "default": "From selected pattern to fully custom wall."
+    },
+    {
+      "type": "text",
+      "id": "cards_subheading",
+      "label": "Subheading",
+      "default": "The project can begin wherever your design currently is."
+    },
+    {
+      "type": "header",
+      "content": "Clear process. Human review."
+    },
+    {
+      "type": "text",
+      "id": "process_heading",
+      "label": "Heading",
+      "default": "Clear process. Human review."
+    },
+    {
+      "type": "header",
+      "content": "Final call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_heading",
+      "label": "Heading",
+      "default": "Wallpaper and custom wallcoverings quotes for interior design projects."
+    },
+    {
+      "type": "textarea",
+      "id": "cta_text",
+      "label": "Text",
+      "default": "Walls Republic supports interior designers and design studios with project quotes for wallpaper, murals, custom wallcoverings and commercial wallcoverings across residential, hospitality, multifamily and commercial interiors. Send a product link or upload your RFQ, finish schedule, moodboard, elevation, artwork or project reference to begin."
+    },
+    {
+      "type": "text",
+      "id": "cta_button_label",
+      "label": "Button label",
+      "default": "Get a project quote"
+    },
+    {
+      "type": "image_picker",
+      "id": "cta_image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "faq_eyebrow",
+      "label": "Eyebrow",
+      "default": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "faq_heading",
+      "label": "Heading",
+      "default": "Questions, before you send."
+    },
+    {
+      "type": "header",
+      "content": "Dark call to action"
+    },
+    {
+      "type": "text",
+      "id": "dark_cta_heading",
+      "label": "Heading",
+      "default": "Tell us what you need quoted."
+    },
+    {
+      "type": "textarea",
+      "id": "dark_cta_text",
+      "label": "Text",
+      "default": "A product link is enough to start. So is an RFQ, moodboard or room image."
+    },
+    {
+      "type": "text",
+      "id": "dark_cta_button_label",
+      "label": "Button label",
+      "default": "Get a project quote"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_badge",
+      "name": "Trust badge",
+      "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Icon" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "start_step",
+      "name": "Way to start",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "pattern_card",
+      "name": "Pattern card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "image_picker", "id": "icon", "label": "Tag icon" },
+        { "type": "text", "id": "label", "label": "Tag label" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "process_step",
+      "name": "Process step",
+      "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Icon" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "faq_item",
+      "name": "FAQ item",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "textarea", "id": "answer", "label": "Answer" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Project quote",
+      "blocks": [
+        { "type": "trust_badge", "settings": { "title": "Design professional support", "text": "Project-based assistance" } },
+        { "type": "trust_badge", "settings": { "title": "Custom development", "text": "Scale · color · artwork" } },
+        { "type": "trust_badge", "settings": { "title": "Commercial wallcoverings", "text": "Project-ready solutions" } },
+        { "type": "trust_badge", "settings": { "title": "Samples & spec support", "text": "Evaluate before approval" } },
+        { "type": "start_step", "settings": { "title": "I know the pattern.", "text": "Send the SKU or product link, dimensions and project location." } },
+        { "type": "start_step", "settings": { "title": "I have a direction.", "text": "Upload your moodboard, room image, palette, elevation or reference and tell us what you need." } },
+        { "type": "start_step", "settings": { "title": "I need something original.", "text": "Send the reference, artwork or concept and we can quote the custom direction." } },
+        { "type": "pattern_card", "settings": { "label": "Wallpaper & murals", "text": "Selected products, quantities and project-specific requirements." } },
+        { "type": "pattern_card", "settings": { "label": "Custom development", "text": "Artwork, recoloring, scaling, dimensions and creative adaptation." } },
+        { "type": "pattern_card", "settings": { "label": "Commercial wallcoverings", "text": "Project-specific substrates, performance requirements and specifications." } },
+        { "type": "process_step", "settings": { "title": "Share the project.", "text": "Complete the short form and upload whatever visual or technical information you already have." } },
+        { "type": "process_step", "settings": { "title": "We review it.", "text": "Our Trade team reviews the product, dimensions, quantity, application and any custom requirements." } },
+        { "type": "process_step", "settings": { "title": "Receive the quote.", "text": "We come back with project pricing and any next steps needed to move the project forward." } },
+        { "type": "faq_item", "settings": { "question": "Do I need to know the exact wallpaper before requesting a quote?", "answer": "No. Send us a room image, moodboard or reference and tell us what you are trying to achieve. We can start from there." } },
+        { "type": "faq_item", "settings": { "question": "Can I upload an RFQ, finish schedule, elevations or artwork?", "answer": "Yes. Upload one or multiple project files. If your project already has a schedule or RFQ, you do not need to enter every product individually." } },
+        { "type": "faq_item", "settings": { "question": "Can you quote a custom mural or wallcovering?", "answer": "Yes. Include your reference or artwork, dimensions and any scale, color or design requirements you already know." } },
+        { "type": "faq_item", "settings": { "question": "Can you quote hospitality, multifamily and commercial projects?", "answer": "Yes. Select the project type and share the relevant location, quantity, timing, application and specification requirements." } },
+        { "type": "faq_item", "settings": { "question": "Can I request samples for the project?", "answer": "Yes. If samples are needed to evaluate a product or custom direction, include that in your project brief." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

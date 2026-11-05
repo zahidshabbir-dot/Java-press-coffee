@@ -1,0 +1,129 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{% style %}
+  #wr-tp-{{ section.id }} { background:{{ section.settings.bg }}; font-family:'Instrument Sans',sans-serif; padding:56px 0 60px; }
+  #wr-tp-{{ section.id }} * { box-sizing:border-box; }
+  #wr-tp-{{ section.id }} [hidden] { display:none !important; }
+  #wr-tp-{{ section.id }} .wr-tp__inner { max-width:1360px; margin:0 auto; padding:0 40px; }
+  #wr-tp-{{ section.id }} .wr-tp__title { margin:0; text-align:center; font-family:'Instrument Sans',sans-serif; font-size:32px; line-height:36px; font-weight:600; color:#111; text-transform:none; letter-spacing:0; }
+  #wr-tp-{{ section.id }} .wr-tp__tabs { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:18px 0 26px; padding:0; }
+  #wr-tp-{{ section.id }} .wr-tp__tab { padding:8px 14px; border:1px solid #000; background:#000; color:#fff; font-family:inherit; font-size:13px; line-height:1.2; font-weight:600; cursor:pointer; transition:background .15s, color .15s; }
+  #wr-tp-{{ section.id }} .wr-tp__tab.is-active { background:#fff; color:#000; }
+  #wr-tp-{{ section.id }} .wr-tp__tab:hover:not(.is-active) { background:#333; }
+  #wr-tp-{{ section.id }} .wr-tp__grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px 22px; }
+  #wr-tp-{{ section.id }} .wr-tp__card { display:flex; flex-direction:column; min-width:0; }
+  #wr-tp-{{ section.id }} .wr-tp__media { position:relative; display:block; width:100%; aspect-ratio:4 / 5; background:#efece6; overflow:hidden; }
+  #wr-tp-{{ section.id }} .wr-tp__media img, #wr-tp-{{ section.id }} .wr-tp__media svg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  #wr-tp-{{ section.id }} .wr-tp__badge { position:absolute; left:10px; top:10px; z-index:1; padding:4px 8px; background:#128a3d; color:#fff; font-size:10.5px; line-height:normal; font-weight:700; letter-spacing:0.63px; text-transform:uppercase; }
+  #wr-tp-{{ section.id }} .wr-tp__name { display:block; padding-top:12px; font-size:15px; line-height:20.25px; color:#1a1a1a; text-decoration:none; }
+  #wr-tp-{{ section.id }} .wr-tp__name:hover { text-decoration:underline; }
+  #wr-tp-{{ section.id }} .wr-tp__rating { display:flex; align-items:center; gap:6px; padding-top:5px; line-height:normal; }
+  #wr-tp-{{ section.id }} .wr-tp__stars { font-size:12px; letter-spacing:1px; color:#1f8f5f; }
+  #wr-tp-{{ section.id }} .wr-tp__rtext { font-size:12.5px; color:#6b6b6b; }
+  #wr-tp-{{ section.id }} .wr-tp__price { padding-top:6px; font-size:15px; line-height:normal; font-weight:600; color:#1a1a1a; }
+  #wr-tp-{{ section.id }} .wr-tp__price s { font-weight:400; color:#6b6b6b; margin-left:6px; }
+  @media (max-width:989px) {
+    #wr-tp-{{ section.id }} .wr-tp__grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width:749px) {
+    #wr-tp-{{ section.id }} { padding:40px 0; }
+    #wr-tp-{{ section.id }} .wr-tp__inner { padding:0 16px; }
+    #wr-tp-{{ section.id }} .wr-tp__title { font-size:28px; line-height:32px; }
+    #wr-tp-{{ section.id }} .wr-tp__grid { gap:22px 12px; }
+    #wr-tp-{{ section.id }} .wr-tp__name { font-size:14px; line-height:19px; }
+  }
+{% endstyle %}
+
+<section id="wr-tp-{{ section.id }}">
+  <div class="wr-tp__inner">
+    {%- if section.settings.heading != blank -%}<h2 class="wr-tp__title">{{ section.settings.heading }}</h2>{%- endif -%}
+
+    <div class="wr-tp__tabs" role="tablist">
+      {%- for block in section.blocks -%}
+        <button type="button" role="tab" class="wr-tp__tab{% if forloop.first %} is-active{% endif %}" data-tab="{{ forloop.index0 }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.title }}</button>
+      {%- endfor -%}
+    </div>
+
+    {%- for block in section.blocks -%}
+      {%- assign source = block.settings.collection -%}
+      {%- if source == blank -%}{%- assign source = collections.all -%}{%- endif -%}
+      <div class="wr-tp__panel" data-panel="{{ forloop.index0 }}" role="tabpanel" {% unless forloop.first %}hidden{% endunless %}>
+        <div class="wr-tp__grid">
+          {%- for product in source.products limit: section.settings.limit -%}
+            <article class="wr-tp__card">
+              <a class="wr-tp__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+                {%- if product.featured_media != blank -%}
+                  {{ product.featured_media | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 450, 600, 800', sizes: '(min-width: 990px) 25vw, 50vw', alt: product.featured_media.alt | default: product.title }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag }}
+                {%- endif -%}
+                {%- if section.settings.show_badge and section.settings.badge_text != blank -%}<span class="wr-tp__badge">{{ section.settings.badge_text }}</span>{%- endif -%}
+              </a>
+              <a class="wr-tp__name" href="{{ product.url }}">{{ product.title }}</a>
+              {%- if section.settings.show_rating -%}<div class="wr-tp__rating"><span class="wr-tp__stars">★★★★★</span><span class="wr-tp__rtext">{{ section.settings.rating_text }}</span></div>{%- endif -%}
+              <div class="wr-tp__price">{{ product.price | money | remove: cart.currency.iso_code | strip }}{%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money | remove: cart.currency.iso_code | strip }}</s>{%- endif -%}</div>
+            </article>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+<script>
+  (function () {
+    var root = document.getElementById('wr-tp-{{ section.id }}');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
+    var tabs = [].slice.call(root.querySelectorAll('.wr-tp__tab'));
+    var panels = [].slice.call(root.querySelectorAll('.wr-tp__panel'));
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var n = tab.getAttribute('data-tab');
+        tabs.forEach(function (t) {
+          var on = t === tab;
+          t.classList.toggle('is-active', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        panels.forEach(function (p) { p.hidden = p.getAttribute('data-panel') !== n; });
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "WR Tabbed products",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Wallpaper for Every Wall" },
+    { "type": "range", "id": "limit", "label": "Products per tab", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "show_badge", "label": "Show badge", "default": true },
+    { "type": "text", "id": "badge_text", "label": "Badge text", "default": "Best Seller" },
+    { "type": "checkbox", "id": "show_rating", "label": "Show rating", "default": true },
+    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "4.8 (810)" },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Tab name", "default": "Wall Murals" },
+        { "type": "collection", "id": "collection", "label": "Collection", "info": "Leave empty to use all products." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "WR Tabbed products",
+      "blocks": [
+        { "type": "tab", "settings": { "title": "Wall Murals" } },
+        { "type": "tab", "settings": { "title": "Wallcovering for Commercial Spaces" } },
+        { "type": "tab", "settings": { "title": "Wallpaper for Residential Living" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

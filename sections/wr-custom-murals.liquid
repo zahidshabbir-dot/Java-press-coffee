@@ -1,0 +1,99 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{% style %}
+  .wr-cm-{{ section.id }} { background:{{ section.settings.page_bg }}; font-family:'Instrument Sans',sans-serif; padding:60px 0; }
+  .wr-cm-{{ section.id }} * { box-sizing:border-box; }
+  .wr-cm-{{ section.id }} .wr-cm__inner { max-width:1360px; margin:0 auto; padding:0 40px; }
+  .wr-cm-{{ section.id }} .wr-cm__grid { display:grid; grid-template-columns:1.1fr 1fr; background:{{ section.settings.bg }}; min-height:{{ section.settings.height }}px; }
+  .wr-cm-{{ section.id }} .wr-cm__media { position:relative; min-height:260px; overflow:hidden; background:#2e3b3a; }
+  .wr-cm-{{ section.id }} .wr-cm__media img, .wr-cm-{{ section.id }} .wr-cm__media svg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .wr-cm-{{ section.id }} .wr-cm__body { display:flex; flex-direction:column; justify-content:center; padding:44px 52px; color:#fff; }
+  .wr-cm-{{ section.id }} .wr-cm__eyebrow { margin:0 0 12px; font-size:12px; line-height:normal; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:#b7c3c0; }
+  .wr-cm-{{ section.id }} .wr-cm__title { margin:0; font-family:'Instrument Sans',sans-serif; font-size:32px; line-height:1.15; font-weight:600; color:#fff; text-transform:none; letter-spacing:0; }
+  .wr-cm-{{ section.id }} .wr-cm__text { margin:12px 0 0; font-size:14.5px; line-height:1.55; color:#d3dad8; }
+  .wr-cm-{{ section.id }} .wr-cm__list { list-style:none; margin:18px 0 0; padding:0; display:grid; gap:9px; }
+  .wr-cm-{{ section.id }} .wr-cm__list li { display:flex; align-items:center; gap:10px; margin:0; font-size:14px; line-height:normal; color:#e6ebe9; }
+  .wr-cm-{{ section.id }} .wr-cm__list svg { width:14px; height:14px; flex:0 0 14px; color:#7ed3a5; }
+  .wr-cm-{{ section.id }} .wr-cm__form { margin:24px 0 0; padding:16px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); }
+  .wr-cm-{{ section.id }} .wr-cm__label { margin:0 0 8px; font-size:12.5px; line-height:normal; font-weight:600; color:#fff; }
+  .wr-cm-{{ section.id }} .wr-cm__row { display:flex; gap:10px; align-items:stretch; }
+  .wr-cm-{{ section.id }} .wr-cm__field { position:relative; flex:1 1 0; min-width:0; }
+  .wr-cm-{{ section.id }} .wr-cm__field input { width:100%; height:44px; padding:0 34px 0 12px; border:0; border-radius:0; background:#fff; color:#1a1a1a; font-family:inherit; font-size:14px; }
+  .wr-cm-{{ section.id }} .wr-cm__field input::placeholder { color:#8a8a8a; }
+  .wr-cm-{{ section.id }} .wr-cm__field span { position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:12px; color:#8a8a8a; pointer-events:none; }
+  .wr-cm-{{ section.id }} .wr-cm__btn { flex:0 0 auto; height:44px; padding:0 20px; border:0; background:#fff; color:#000; font-family:inherit; font-size:14.5px; font-weight:600; cursor:pointer; white-space:nowrap; }
+  .wr-cm-{{ section.id }} .wr-cm__btn:hover { background:#e9e9e9; }
+  @media (max-width:989px) {
+    .wr-cm-{{ section.id }} { padding:40px 0; }
+    .wr-cm-{{ section.id }} .wr-cm__inner { padding:0 20px; }
+    .wr-cm-{{ section.id }} .wr-cm__grid { grid-template-columns:1fr; }
+    .wr-cm-{{ section.id }} .wr-cm__media { min-height:260px; }
+    .wr-cm-{{ section.id }} .wr-cm__body { padding:28px 22px; }
+    .wr-cm-{{ section.id }} .wr-cm__title { font-size:26px; }
+  }
+  @media (max-width:549px) {
+    .wr-cm-{{ section.id }} .wr-cm__row { flex-wrap:wrap; }
+    .wr-cm-{{ section.id }} .wr-cm__btn { width:100%; }
+  }
+{% endstyle %}
+
+<section class="wr-cm-{{ section.id }}">
+  <div class="wr-cm__inner">
+    <div class="wr-cm__grid">
+      <div class="wr-cm__media">
+        {%- if section.settings.image != blank -%}
+          {{ section.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw', alt: section.settings.heading }}
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag }}
+        {%- endif -%}
+      </div>
+      <div class="wr-cm__body">
+        {%- if section.settings.eyebrow != blank -%}<p class="wr-cm__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="wr-cm__title">{{ section.settings.heading }}</h2>{%- endif -%}
+        {%- if section.settings.text != blank -%}<p class="wr-cm__text">{{ section.settings.text }}</p>{%- endif -%}
+        {%- if section.settings.checklist != blank -%}
+          <ul class="wr-cm__list">
+            {%- assign items = section.settings.checklist | newline_to_br | strip_newlines | split: '<br />' -%}
+            {%- for item in items -%}
+              {%- if item != blank -%}<li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5"/></svg>{{ item | strip }}</li>{%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        <form class="wr-cm__form" action="{{ section.settings.form_action | default: routes.all_products_collection_url }}" method="get">
+          <p class="wr-cm__label">{{ section.settings.form_label }}</p>
+          <div class="wr-cm__row">
+            <label class="wr-cm__field"><input type="number" name="width" min="1" step="any" inputmode="decimal" placeholder="{{ section.settings.width_label }}" aria-label="{{ section.settings.width_label }}"><span>{{ section.settings.unit }}</span></label>
+            <label class="wr-cm__field"><input type="number" name="height" min="1" step="any" inputmode="decimal" placeholder="{{ section.settings.height_label }}" aria-label="{{ section.settings.height_label }}"><span>{{ section.settings.unit }}</span></label>
+            <button type="submit" class="wr-cm__btn">{{ section.settings.button_label }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "WR Custom murals",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "eyebrow", "label": "Small text", "default": "Custom wall murals" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Printed to your exact wall size" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Choose from 1,100+ mural designs and enter your wall's width and height. We print it to fit, so there's no guesswork." },
+    { "type": "textarea", "id": "checklist", "label": "Checklist (one per line)", "default": "Misty forests, botanicals, landscapes and more\nOrder a sample first to check color and texture\nOptions for homes and commercial spaces" },
+    { "type": "header", "content": "Wall size form" },
+    { "type": "text", "id": "form_label", "label": "Form label", "default": "Enter your wall size" },
+    { "type": "text", "id": "width_label", "label": "Width placeholder", "default": "Width" },
+    { "type": "text", "id": "height_label", "label": "Height placeholder", "default": "Height" },
+    { "type": "text", "id": "unit", "label": "Unit", "default": "ft" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "See Murals" },
+    { "type": "url", "id": "form_action", "label": "Button goes to", "info": "Usually your wall murals collection. Width and height are added to the link." },
+    { "type": "header", "content": "Style" },
+    { "type": "range", "id": "height", "label": "Minimum height", "min": 320, "max": 640, "step": 10, "unit": "px", "default": 420 },
+    { "type": "color", "id": "bg", "label": "Panel color", "default": "#1f2a29" },
+    { "type": "color", "id": "page_bg", "label": "Section background", "default": "#ffffff" }
+  ],
+  "presets": [ { "name": "WR Custom murals" } ]
+}
+{% endschema %}

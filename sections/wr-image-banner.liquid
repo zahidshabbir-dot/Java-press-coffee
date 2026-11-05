@@ -1,0 +1,53 @@
+{%- assign alt_text = section.settings.alt | escape -%}
+
+{% style %}
+  .wr-ib-{{ section.id }} { background:{{ section.settings.bg }}; padding:{{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px; }
+  .wr-ib-{{ section.id }} .wr-ib__inner { {% if section.settings.layout == 'contained' %}max-width:1360px; margin:0 auto; padding:0 40px;{% else %}width:100%; padding:0;{% endif %} }
+  .wr-ib-{{ section.id }} .wr-ib__media { display:block; width:100%; overflow:hidden; border-radius:{{ section.settings.radius }}px; line-height:0; }
+  .wr-ib-{{ section.id }} .wr-ib__media img, .wr-ib-{{ section.id }} .wr-ib__media svg { display:block; width:100%; height:auto; }
+  .wr-ib-{{ section.id }} a.wr-ib__media { text-decoration:none; }
+  @media (max-width:749px) {
+    .wr-ib-{{ section.id }} .wr-ib__inner { {% if section.settings.layout == 'contained' %}padding:0 16px;{% endif %} }
+    .wr-ib-{{ section.id }} .wr-ib__media { border-radius:{% if section.settings.layout == 'contained' %}{{ section.settings.radius }}{% else %}0{% endif %}px; }
+  }
+{% endstyle %}
+
+<section class="wr-ib-{{ section.id }}">
+  <div class="wr-ib__inner">
+    {%- if section.settings.link != blank -%}<a class="wr-ib__media" href="{{ section.settings.link }}">{%- else -%}<div class="wr-ib__media">{%- endif -%}
+      {%- if section.settings.image != blank -%}
+        {%- if section.settings.mobile_image != blank -%}
+          <picture>
+            <source media="(max-width: 749px)" srcset="{{ section.settings.mobile_image | image_url: width: 1000 }}">
+            {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'lazy', widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', alt: alt_text }}
+          </picture>
+        {%- else -%}
+          {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'lazy', widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', alt: alt_text }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag }}
+      {%- endif -%}
+    {%- if section.settings.link != blank -%}</a>{%- else -%}</div>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "WR Image banner",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "Upload the whole banner as one picture. It is shown exactly as it is." },
+    { "type": "image_picker", "id": "mobile_image", "label": "Mobile image (optional)", "info": "A different version for phones. If empty, the main image is used." },
+    { "type": "text", "id": "alt", "label": "Image description (alt text)", "default": "Trade Partner Spotlight: Luma Designs x Walls Republic" },
+    { "type": "url", "id": "link", "label": "Link (optional)" },
+    { "type": "select", "id": "layout", "label": "Width", "default": "full", "options": [
+      { "value": "full", "label": "Full width (edge to edge)" },
+      { "value": "contained", "label": "Page width (with side margins)" }
+    ] },
+    { "type": "range", "id": "radius", "label": "Rounded corners", "min": 0, "max": 32, "step": 2, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_top", "label": "Space above", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 0 },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#ffffff" }
+  ],
+  "presets": [ { "name": "WR Image banner" } ]
+}
+{% endschema %}
