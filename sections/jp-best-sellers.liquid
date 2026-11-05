@@ -303,9 +303,23 @@
     var next = root.querySelector('[data-jp-bs-next]');
     var dots = [];
 
-    function pages() { return Math.max(1, Math.ceil((track.scrollWidth - 2) / track.clientWidth)); }
-    function current() { return Math.round(track.scrollLeft / track.clientWidth); }
-    function go(i) { track.scrollTo({ left: i * track.clientWidth }); }
+    function visibleCards() { return cards.filter(function (c) { return !c.hidden; }); }
+    function step() {
+      var v = visibleCards();
+      if (v.length > 1) return Math.abs(v[1].offsetLeft - v[0].offsetLeft) || v[0].offsetWidth;
+      return v.length ? v[0].offsetWidth : track.clientWidth;
+    }
+    function perPage() { return Math.max(1, Math.round((track.clientWidth + 1) / step())); }
+    function maxScroll() { return Math.max(0, track.scrollWidth - track.clientWidth); }
+    function pages() { return Math.max(1, Math.ceil(visibleCards().length / perPage())); }
+    function current() {
+      if (track.scrollLeft >= maxScroll() - 2) return pages() - 1;
+      return Math.min(pages() - 1, Math.round(track.scrollLeft / (perPage() * step())));
+    }
+    function go(i) {
+      var left = Math.min(maxScroll(), i * perPage() * step());
+      track.scrollTo({ left: left, behavior: 'smooth' });
+    }
 
     function buildDots() {
       var n = pages();
