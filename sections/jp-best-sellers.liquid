@@ -101,6 +101,7 @@
     text-transform: capitalize;
     text-decoration: none;
   }
+  .jp-bs-{{ sid }} .jp-bs__star.is-off { color: #d3d3d3; }
   .jp-bs-{{ sid }} .jp-bs__stars { color: var(--jp-bs-red); letter-spacing: 0; font-size: 11.5px; }
   .jp-bs-{{ sid }} .jp-bs__rating { display: flex; align-items: center; gap: 8px; height: 16px; font-size: 14px; font-weight: 700; line-height: normal; }
   .jp-bs-{{ sid }} .jp-bs__price { display: flex; align-items: baseline; gap: 5px; margin: 0; }
@@ -173,8 +174,6 @@
     .jp-bs-{{ sid }} { --jp-bs-gap: 10px; }
     .jp-bs-{{ sid }} .jp-bs__title { font-size: 24px; margin-bottom: 48px; }
     .jp-bs-{{ sid }} .jp-bs__tabs { justify-content: flex-start; gap: 30px; margin-bottom: 38px; }
-    .jp-bs-{{ sid }} .jp-bs__tab:first-child { margin-left: 0; }
-    .jp-bs-{{ sid }} .jp-bs__tab:last-child { margin-right: 0; }
     .jp-bs-{{ sid }} .jp-bs__tab { font-size: 14px; line-height: 15px; padding: 0 0 11px; }
     .jp-bs-{{ sid }} .jp-bs__card { flex: 0 0 194px; }
     .jp-bs-{{ sid }} .jp-bs__name { font-size: 16px; line-height: 22px; }
@@ -244,13 +243,18 @@
                 {%- if section.settings.use_judgeme and product.metafields.judgeme.badge != blank -%}
                   <div class="jp-bs__rating jp-bs__rating--jm">{{ product.metafields.judgeme.badge }}</div>
                 {%- else -%}
-                  {%- assign full = 0 -%}
-                  {%- if rating != blank -%}{%- assign full = rating | round | at_most: 5 -%}{%- endif -%}
+                  {%- assign shown_rating = rating -%}
+                  {%- assign shown_count = rating_count -%}
+                  {%- if shown_rating == blank -%}
+                    {%- assign shown_rating = section.settings.default_stars -%}
+                    {%- assign shown_count = section.settings.default_reviews -%}
+                  {%- endif -%}
+                  {%- assign full = shown_rating | round | at_most: 5 -%}
                   <div class="jp-bs__rating">
-                    <span class="jp-bs__stars" role="img" aria-label="{{ rating | default: 0 }} out of 5 stars">
-                      {%- for n in (1..5) -%}{% if n <= full %}★{% else %}☆{% endif %}{%- endfor -%}
+                    <span class="jp-bs__stars" role="img" aria-label="{{ shown_rating }} out of 5 stars">
+                      {%- for n in (1..5) -%}<span class="jp-bs__star{% if n > full %} is-off{% endif %}">★</span>{%- endfor -%}
                     </span>
-                    {%- if rating_count != blank -%}<span class="jp-bs__reviews">( {{ rating_count }} Reviews )</span>{%- endif -%}
+                    {%- if shown_count != blank and shown_count != '0' -%}<span class="jp-bs__reviews">( {{ shown_count }} {{ section.settings.reviews_label }} )</span>{%- endif -%}
                   </div>
                 {%- endif -%}
                 <div class="jp-bs__price">
@@ -436,6 +440,28 @@
       "id": "sold_out_label",
       "label": "Sold out text",
       "default": "Sold out"
+    },
+    {
+      "type": "range",
+      "id": "default_stars",
+      "label": "Stars when a product has no reviews",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "default_reviews",
+      "label": "Review count when a product has no reviews",
+      "info": "Shown next to the stars until the product gets real reviews. Leave empty to hide.",
+      "default": "1171"
+    },
+    {
+      "type": "text",
+      "id": "reviews_label",
+      "label": "Reviews word",
+      "default": "Reviews"
     },
     {
       "type": "checkbox",
