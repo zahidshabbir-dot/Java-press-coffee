@@ -1,0 +1,224 @@
+{% render 'jp-fonts' %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comforter&display=swap" rel="stylesheet">
+
+{%- assign sid = section.id -%}
+
+{% style %}
+  .jp-ft-{{ sid }} {
+    --jp-ft-accent: {{ section.settings.accent_color }};
+    background: {{ section.settings.bg }};
+    color: {{ section.settings.text_color }};
+    font-family: 'Raleway', sans-serif;
+  }
+  .jp-ft-{{ sid }} * { box-sizing: border-box; }
+  .jp-ft-{{ sid }} a { color: inherit; text-decoration: none; }
+  .jp-ft-{{ sid }} a:hover { text-decoration: underline; }
+  .jp-ft-{{ sid }} a:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+  .jp-ft-{{ sid }} .jp-ft__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 49px clamp(40px, 8.334vw, 120px) 20px;
+  }
+  .jp-ft-{{ sid }} .jp-ft__top {
+    display: grid;
+    grid-template-columns: minmax(0, 512px) repeat(3, minmax(0, 207px));
+    justify-content: start;
+    align-items: start;
+  }
+
+  /* Brand column */
+  .jp-ft-{{ sid }} .jp-ft__brand { max-width: 378px; }
+  .jp-ft-{{ sid }} .jp-ft__logo {
+    display: block;
+    margin: 0 0 12px;
+    font-family: 'Comforter', 'Brush Script MT', cursive;
+    font-size: 32px;
+    line-height: normal;
+    font-weight: 400;
+    white-space: nowrap;
+    color: inherit;
+  }
+  .jp-ft-{{ sid }} .jp-ft__logo img { display: block; height: 45px; width: auto; }
+  .jp-ft-{{ sid }} .jp-ft__about { margin: 0 0 15px; font-size: 16px; line-height: 25px; font-weight: 500; }
+  .jp-ft-{{ sid }} .jp-ft__about p { margin: 0; }
+  .jp-ft-{{ sid }} .jp-ft__social { display: flex; gap: 8px; margin: 0 0 33px; padding: 0; list-style: none; }
+  .jp-ft-{{ sid }} .jp-ft__social a { display: block; width: 36px; height: 36px; }
+  .jp-ft-{{ sid }} .jp-ft__social img { display: block; width: 36px; height: 36px; }
+  .jp-ft-{{ sid }} .jp-ft__rating { display: flex; align-items: center; gap: 5px; height: 14px; font-size: 11px; line-height: normal; font-weight: 700; white-space: pre; }
+  .jp-ft-{{ sid }} .jp-ft__stars { display: flex; flex: 0 0 auto; }
+  .jp-ft-{{ sid }} .jp-ft__star {
+    width: 10.881px;
+    height: 11.548px;
+    background: linear-gradient(90deg, var(--jp-ft-accent) var(--fill), rgba(255, 255, 255, 0.35) var(--fill));
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  /* Link columns */
+  .jp-ft-{{ sid }} .jp-ft__title { margin: 0 0 31px; font-family: inherit; font-size: 20px; line-height: 26.37px; font-weight: 700; letter-spacing: normal; text-transform: none; color: inherit; }
+  .jp-ft-{{ sid }} .jp-ft__links { margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 19px; font-weight: 400; }
+  .jp-ft-{{ sid }} .jp-ft__links li { margin: 0 0 19px; }
+  .jp-ft-{{ sid }} .jp-ft__links li:last-child { margin-bottom: 0; }
+
+  /* Bottom bar */
+  .jp-ft-{{ sid }} .jp-ft__bar {
+    margin-top: 24px;
+    padding-top: 15px;
+    border-top: 1px solid {{ section.settings.line_color }};
+    text-align: center;
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 1199px) {
+    .jp-ft-{{ sid }} .jp-ft__top { grid-template-columns: minmax(0, 1.9fr) repeat(3, minmax(0, 1fr)); column-gap: 24px; }
+  }
+  @media (max-width: 749px) {
+    .jp-ft-{{ sid }} .jp-ft__inner { padding: 34px 16px 12px; }
+    .jp-ft-{{ sid }} .jp-ft__top { grid-template-columns: minmax(0, 240px) minmax(0, 1fr); column-gap: 0; row-gap: 49px; }
+    .jp-ft-{{ sid }} .jp-ft__brand { grid-column: 1 / -1; max-width: none; margin-bottom: 9px; }
+    .jp-ft-{{ sid }} .jp-ft__logo { margin-bottom: 15px; }
+    .jp-ft-{{ sid }} .jp-ft__social { margin-bottom: 0; }
+    .jp-ft-{{ sid }} .jp-ft__rating { display: none; }
+    .jp-ft-{{ sid }} .jp-ft__bar { margin: 60px 7px 0; padding-top: 15px; font-size: 12px; }
+  }
+{% endstyle %}
+
+<footer class="jp-ft-{{ sid }}">
+  <div class="jp-ft__inner">
+    <div class="jp-ft__top">
+      <div class="jp-ft__brand">
+        <a class="jp-ft__logo" href="{{ routes.root_url }}">
+          {%- if section.settings.logo != blank -%}
+            {{ section.settings.logo | image_url: width: 400 | image_tag: alt: section.settings.logo_text, loading: 'lazy' }}
+          {%- else -%}
+            {{ section.settings.logo_text }}
+          {%- endif -%}
+        </a>
+
+        {%- if section.settings.about != blank -%}
+          <div class="jp-ft__about">{{ section.settings.about }}</div>
+        {%- endif -%}
+
+        {%- assign socials = section.blocks | where: 'type', 'social' -%}
+        {%- if socials.size > 0 -%}
+          <ul class="jp-ft__social">
+            {%- for block in socials -%}
+              {%- assign icon = 'social-' | append: block.settings.network | append: '.svg' -%}
+              <li {{ block.shopify_attributes }}>
+                <a href="{{ block.settings.url | default: '#' }}" aria-label="{{ block.settings.network | capitalize }}" target="_blank" rel="noopener">
+                  <img src="{{ icon | asset_url }}" width="36" height="36" alt="" loading="lazy">
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if section.settings.rating_text != blank -%}
+          <div class="jp-ft__rating">
+            <span class="jp-ft__stars" role="img" aria-label="{{ section.settings.rating }} out of 5 stars">
+              {%- for n in (1..5) -%}
+                {%- assign fill = section.settings.rating | minus: forloop.index0 -%}
+                {%- if fill > 1 -%}{%- assign fill = 1 -%}{%- endif -%}
+                {%- if fill < 0 -%}{%- assign fill = 0 -%}{%- endif -%}
+                {%- assign pct = fill | times: 100 -%}
+                <span class="jp-ft__star" style="--fill: {{ pct }}%"></span>
+              {%- endfor -%}
+            </span>
+            <span>{{ section.settings.rating_text }}</span>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- assign columns = section.blocks | where: 'type', 'column' -%}
+      {%- for block in columns -%}
+        <nav class="jp-ft__col" aria-label="{{ block.settings.title | escape }}" {{ block.shopify_attributes }}>
+          <h2 class="jp-ft__title">{{ block.settings.title }}</h2>
+          <ul class="jp-ft__links">
+            {%- assign rows = block.settings.links | newline_to_br | split: '<br />' -%}
+            {%- for row in rows -%}
+              {%- assign parts = row | strip_newlines | split: '|' -%}
+              {%- assign label = parts[0] | strip -%}
+              {%- if label != blank -%}
+                {%- assign href = parts[1] | strip -%}
+                <li>
+                  {%- if href != blank -%}<a href="{{ href }}">{{ label }}</a>{%- else -%}{{ label }}{%- endif -%}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.copyright != blank -%}
+      <div class="jp-ft__bar">{{ section.settings.copyright }}</div>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "JP Footer",
+  "settings": [
+    { "type": "header", "content": "Brand" },
+    { "type": "text", "id": "logo_text", "label": "Logo text", "default": "Organic Cafe" },
+    { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Optional. Replaces the script logo text." },
+    { "type": "richtext", "id": "about", "label": "Description", "default": "<p>Our journey into coffee started in 2015 with a passion for developing the best entry level burr coffee grinder on the market.</p>" },
+
+    { "type": "header", "content": "Rating" },
+    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "4.9/5.00  (Serviced 6,000,000+ Coffee Lovers)", "info": "Leave empty to hide the rating. Hidden on mobile." },
+    { "type": "range", "id": "rating", "label": "Stars", "min": 1, "max": 5, "step": 0.1, "default": 4.9 },
+
+    { "type": "header", "content": "Bottom bar" },
+    { "type": "text", "id": "copyright", "label": "Copyright text", "default": "Copyright © 2023 JavaPresse. All Rights Reserved" },
+
+    { "type": "header", "content": "Style" },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#075d57" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#ffffff" },
+    { "type": "color", "id": "accent_color", "label": "Star color", "default": "#deb126" },
+    { "type": "color", "id": "line_color", "label": "Divider line", "default": "#478a85" }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Link column",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "About" },
+        { "type": "textarea", "id": "links", "label": "Links", "info": "One per line: Label | /link", "default": "My Account | /account\nShipping | /policies/shipping-policy\nReturns | /policies/refund-policy\nBeyond the Bean | /pages/beyond-the-bean" }
+      ]
+    },
+    {
+      "type": "social",
+      "name": "Social icon",
+      "limit": 3,
+      "settings": [
+        { "type": "select", "id": "network", "label": "Network", "default": "facebook", "options": [
+          { "value": "facebook", "label": "Facebook" },
+          { "value": "linkedin", "label": "LinkedIn" },
+          { "value": "twitter", "label": "Twitter" }
+        ] },
+        { "type": "url", "id": "url", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "JP Footer",
+      "blocks": [
+        { "type": "column", "settings": { "title": "About" } },
+        { "type": "column", "settings": { "title": "Company", "links": "FAQ’s | /pages/faq\nWarranty | /pages/warranty\nPrivacy Statements | /policies/privacy-policy\nTerms of Services | /policies/terms-of-service" } },
+        { "type": "column", "settings": { "title": "Contact", "links": "Contact Us | /pages/contact\nPhone: (+971 1234  567)" } },
+        { "type": "social", "settings": { "network": "facebook" } },
+        { "type": "social", "settings": { "network": "linkedin" } },
+        { "type": "social", "settings": { "network": "twitter" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
