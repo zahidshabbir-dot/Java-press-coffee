@@ -11,47 +11,69 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
-    "wr-header": {
-      "type": "wr-header",
-      "settings": {
-        "logo_width": 96,
-        "search_placeholder": "Search style, room or code (R9135)",
-        "phone": "1-888-990-2250",
-        "email": "sales@wallsrepublic.com",
-        "menu": "main-menu",
-        "highlight_title": "Sale",
-        "highlight_color": "#c10007"
-      }
-    },
-    "wr-announcement-bar": {
-      "type": "wr-announcement-bar",
+    "jp-header": {
+      "type": "jp-header",
       "blocks": {
-        "m1": {
-          "type": "message",
+        "l1": {
+          "type": "link",
           "settings": {
-            "show_rating": true,
-            "before": "Rated 4.8 by 810+ customers",
-            "underline": true
+            "label": "Learning Centre",
+            "url": "",
+            "dropdown_menu": "learning-centre"
           }
         },
-        "m2": {
-          "type": "message",
+        "l2": {
+          "type": "link",
           "settings": {
-            "before": "✦ Free shipping on all orders over ",
-            "highlight": "$350"
+            "label": "Our Coffee Solutions",
+            "url": "",
+            "dropdown_menu": "our-coffee-solutions"
           }
         },
-        "m3": {
-          "type": "message",
+        "l3": {
+          "type": "link",
           "settings": {
-            "before": "✦ Try 3 free samples in your actual space"
+            "label": "About Us",
+            "url": ""
+          }
+        },
+        "l4": {
+          "type": "link",
+          "settings": {
+            "label": "Blogs",
+            "url": ""
           }
         }
       },
       "block_order": [
-        "m1",
-        "m2",
-        "m3"
+        "l1",
+        "l2",
+        "l3",
+        "l4"
+      ],
+      "settings": {
+        "logo_width": 158,
+        "accent": "#ef4444",
+        "text_color": "#424242",
+        "cta_label": "Shop now →",
+        "cta_url": "shopify://collections/all",
+        "menu": "main-menu"
+      }
+    },
+    "jp-announcement-bar": {
+      "type": "jp-announcement-bar",
+      "blocks": {
+        "m1": {
+          "type": "message",
+          "settings": {
+            "text": "We are here to help as your coffee concierge!",
+            "link_label": "Take the survey",
+            "link_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "m1"
       ],
       "settings": {}
     },
@@ -101,8 +123,8 @@
     }
   },
   "order": [
-    "wr-announcement-bar",
-    "wr-header",
+    "jp-announcement-bar",
+    "jp-header",
     "announcement-bar",
     "header"
   ]

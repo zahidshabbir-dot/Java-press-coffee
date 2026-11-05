@@ -1,0 +1,410 @@
+{% render 'jp-fonts' %}
+
+{%- assign sid = section.id -%}
+
+{% style %}
+  .jp-hd-{{ sid }} {
+    --jp-hd-red: {{ section.settings.accent }};
+    --jp-hd-text: {{ section.settings.text_color }};
+    --jp-hd-sub-dark: {{ section.settings.dropdown_color }};
+    background: #fff;
+    font-family: 'Raleway', sans-serif;
+    position: relative;
+    z-index: 20;
+  }
+  .jp-hd-{{ sid }} * { box-sizing: border-box; }
+  .jp-hd-{{ sid }} .jp-hd__inner {
+    max-width: 1440px;
+    height: 74px;
+    margin: 0 auto;
+    padding: 0 120px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .jp-hd-{{ sid }} .jp-hd__logo { display: block; flex: 0 0 auto; line-height: 0; margin-right: auto; }
+  .jp-hd-{{ sid }} .jp-hd__logo img { display: block; width: {{ section.settings.logo_width }}px; height: auto; }
+  .jp-hd-{{ sid }} .jp-hd__nav { display: flex; align-items: center; gap: 44px; margin-right: 43px; }
+  .jp-hd-{{ sid }} .jp-hd__link {
+    color: var(--jp-hd-text);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 35px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .jp-hd-{{ sid }} .jp-hd__link:hover,
+  .jp-hd-{{ sid }} .jp-hd__link[aria-current='page'] { color: var(--jp-hd-red); }
+
+  /* Dropdowns (filled from Shopify Navigation menus) */
+  .jp-hd-{{ sid }} .jp-hd__item { position: relative; }
+  .jp-hd-{{ sid }} .jp-hd__sub-list { margin: 0; padding: 0; list-style: none; }
+  .jp-hd-{{ sid }} .jp-hd__sub-list a {
+    display: block;
+    color: var(--jp-hd-text);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 40px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  @media (min-width: 990px) {
+    .jp-hd-{{ sid }} .jp-hd__item.has-sub > .jp-hd__link { position: relative; }
+    .jp-hd-{{ sid }} .jp-hd__item.has-sub:hover > .jp-hd__link,
+    .jp-hd-{{ sid }} .jp-hd__item.has-sub:focus-within > .jp-hd__link { color: var(--jp-hd-red); font-weight: 600; }
+    .jp-hd-{{ sid }} .jp-hd__item.has-sub:hover > .jp-hd__link::after,
+    .jp-hd-{{ sid }} .jp-hd__item.has-sub:focus-within > .jp-hd__link::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -3px;
+      width: 5px;
+      height: 5px;
+      margin-left: -2.5px;
+      border-radius: 50%;
+      background: var(--jp-hd-red);
+    }
+    .jp-hd-{{ sid }} .jp-hd__sub {
+      display: none;
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      z-index: 30;
+      padding-top: 12px;
+      transform: translateX(-50%);
+    }
+    .jp-hd-{{ sid }} .jp-hd__item.has-sub:hover > .jp-hd__sub,
+    .jp-hd-{{ sid }} .jp-hd__item.has-sub:focus-within > .jp-hd__sub { display: block; }
+    .jp-hd-{{ sid }} .jp-hd__sub-list {
+      min-width: 150px;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+    .jp-hd-{{ sid }} .jp-hd__sub-list a { padding: 0 30px 0 22px; border-top: 1px solid #cdd9d6; }
+    .jp-hd-{{ sid }} .jp-hd__sub-list li:first-child a { border-top: 0; }
+    .jp-hd-{{ sid }} .jp-hd__sub-list:not(:hover) li:first-child a,
+    .jp-hd-{{ sid }} .jp-hd__sub-list a:hover,
+    .jp-hd-{{ sid }} .jp-hd__sub-list a:focus-visible { background: var(--jp-hd-sub-dark); color: #fff; font-weight: 500; outline: 0; }
+  }
+
+  .jp-hd-{{ sid }} .jp-hd__cart {
+    position: relative;
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    margin: 0 32px 0 0;
+    background: url('{{ 'icon-cart-jp.svg' | asset_url }}') center / 24px 24px no-repeat;
+    text-decoration: none;
+  }
+  .jp-hd-{{ sid }} .jp-hd__cart .svg-wrapper { display: none; }
+  .jp-hd-{{ sid }} .jp-hd__cart .cart-count-bubble {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--jp-hd-red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 16px;
+    text-align: center;
+  }
+  .jp-hd-{{ sid }} .jp-hd__cta {
+    flex: 0 0 auto;
+    width: 213.6px;
+    height: 50px;
+    padding: 0;
+    border-radius: 5px;
+    background: var(--jp-hd-red);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 50px;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .jp-hd-{{ sid }} .jp-hd__cta:hover { filter: brightness(0.93); }
+  .jp-hd-{{ sid }} .jp-hd__burger {
+    display: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--jp-hd-text);
+    cursor: pointer;
+  }
+  .jp-hd-{{ sid }} .jp-hd__burger svg { width: 24px; height: 24px; display: block; margin: auto; }
+  .jp-hd-{{ sid }} a:focus-visible,
+  .jp-hd-{{ sid }} button:focus-visible { outline: 2px solid var(--jp-hd-text); outline-offset: 2px; }
+
+  @media (max-width: 1199px) {
+    .jp-hd-{{ sid }} .jp-hd__inner { padding: 0 40px; }
+    .jp-hd-{{ sid }} .jp-hd__nav { gap: 24px; margin-right: 24px; }
+    .jp-hd-{{ sid }} .jp-hd__cart { margin-right: 20px; }
+  }
+  .jp-hd-{{ sid }} .jp-hd__cta-m { display: none; }
+  @media (max-width: 989px) {
+    .jp-hd-{{ sid }} .jp-hd__inner { padding: 0 16px 0 14px; gap: 0; height: 52px; }
+    .jp-hd-{{ sid }} .jp-hd__burger { display: block; order: 1; width: 36px; height: 36px; margin-right: 0; flex: 0 0 36px; }
+    .jp-hd-{{ sid }} .jp-hd__logo { order: 2; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; }
+    .jp-hd-{{ sid }} .jp-hd__logo img { width: {{ section.settings.logo_width_mobile }}px; }
+    .jp-hd-{{ sid }} .jp-hd__cart { order: 3; margin: 0 16px 0 auto; }
+    .jp-hd-{{ sid }} .jp-hd__cta:not(.jp-hd__nav-cta) { order: 4; display: block; width: 82px; height: 38px; border-radius: 4px; font-size: 14px; line-height: 38px; }
+    .jp-hd-{{ sid }} .jp-hd__cta-d { display: none; }
+    .jp-hd-{{ sid }} .jp-hd__cta-m { display: inline; }
+    .jp-hd-{{ sid }} .jp-hd__nav-cta { display: none; }
+    .jp-hd-{{ sid }} .jp-hd__nav {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 8px 20px 20px;
+      background: #fff;
+      border-top: 1px solid #eee;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    }
+    .jp-hd-{{ sid }}.is-open .jp-hd__nav { display: flex; }
+    .jp-hd-{{ sid }} .jp-hd__link { display: block; line-height: 48px; border-bottom: 1px solid #f0f0f0; }
+    .jp-hd-{{ sid }} .jp-hd__sub-list a { padding: 0 0 0 16px; line-height: 40px; border-bottom: 1px solid #f0f0f0; }
+  }
+  @media (min-width: 990px) {
+    .jp-hd-{{ sid }} .jp-hd__nav-cta { display: none; }
+  }
+{% endstyle %}
+
+<header class="jp-hd-{{ sid }}" data-jp-hd>
+  <div class="jp-hd__inner">
+    <a class="jp-hd__logo" href="{{ routes.root_url }}">
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 440 | image_tag: width: section.settings.logo_width, alt: shop.name, loading: 'eager' }}
+      {%- else -%}
+        <img src="{{ 'logo-organic-cafe.svg' | asset_url }}" width="158" height="39" alt="{{ shop.name | escape }}">
+      {%- endif -%}
+    </a>
+
+    <nav class="jp-hd__nav" id="jp-hd-nav-{{ sid }}" aria-label="Main">
+      {%- assign main_menu = section.settings.menu -%}
+      {%- if main_menu != blank and main_menu.links.size > 0 -%}
+        {%- for link in main_menu.links -%}
+          {%- assign has_sub = false -%}
+          {%- if link.links.size > 0 -%}{%- assign has_sub = true -%}{%- endif -%}
+          <div class="jp-hd__item{% if has_sub %} has-sub{% endif %}">
+            <a class="jp-hd__link" href="{{ link.url }}"{% if link.current or link.child_current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+            {%- if has_sub -%}
+              <div class="jp-hd__sub">
+                <ul class="jp-hd__sub-list">
+                  {%- for child in link.links -%}
+                    <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for block in section.blocks -%}
+          {%- assign sub_menu = block.settings.dropdown_menu -%}
+          {%- assign has_sub = false -%}
+          {%- if sub_menu != blank and sub_menu.links.size > 0 -%}{%- assign has_sub = true -%}{%- endif -%}
+          <div class="jp-hd__item{% if has_sub %} has-sub{% endif %}" {{ block.shopify_attributes }}>
+            <a class="jp-hd__link" href="{{ block.settings.url | default: '#' }}">{{ block.settings.label }}</a>
+            {%- if has_sub -%}
+              <div class="jp-hd__sub">
+                <ul class="jp-hd__sub-list">
+                  {%- for child in sub_menu.links -%}
+                    <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+      {%- if section.settings.cta_label != blank -%}
+        <a class="jp-hd__cta jp-hd__nav-cta" href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}">{{ section.settings.cta_label }}</a>
+      {%- endif -%}
+    </nav>
+
+    <a class="jp-hd__cart" href="{{ routes.cart_url }}" id="cart-icon-bubble" aria-label="{{ 'templates.cart.cart' | t }}">
+      <span class="svg-wrapper"></span>
+      <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+      {%- if cart != empty -%}
+        <div class="cart-count-bubble">
+          {%- if cart.item_count < 100 -%}<span aria-hidden="true">{{ cart.item_count }}</span>{%- endif -%}
+          <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+        </div>
+      {%- endif -%}
+    </a>
+
+    {%- if section.settings.cta_label != blank -%}
+      <a class="jp-hd__cta" href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}"><span class="jp-hd__cta-d">{{ section.settings.cta_label }}</span><span class="jp-hd__cta-m">{{ section.settings.cta_label_mobile | default: section.settings.cta_label }}</span></a>
+    {%- endif -%}
+
+    <button type="button" class="jp-hd__burger" aria-expanded="false" aria-controls="jp-hd-nav-{{ sid }}" aria-label="Menu" data-jp-hd-burger>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<script>
+  (function () {
+    var root = document.currentScript.previousElementSibling;
+    if (!root || !root.hasAttribute('data-jp-hd')) return;
+    var burger = root.querySelector('[data-jp-hd-burger]');
+    burger.addEventListener('click', function () {
+      var open = root.classList.toggle('is-open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && root.classList.contains('is-open')) {
+        root.classList.remove('is-open');
+        burger.setAttribute('aria-expanded', 'false');
+        burger.focus();
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "JP Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu",
+      "info": "Top-level links show in the header; each link's sub-items become its hover dropdown. Manage it in Content → Menus. If empty, the menu links below are used."
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Leave empty to use the default Organic Cafe logo."
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 100,
+      "max": 220,
+      "step": 2,
+      "unit": "px",
+      "default": 158
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "label": "Logo width (mobile)",
+      "min": 80,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Accent color",
+      "default": "#ef4444"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Menu text color",
+      "default": "#424242"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_color",
+      "label": "Dropdown highlight",
+      "default": "#1b4540"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button text",
+      "default": "Shop now →"
+    },
+    {
+      "type": "text",
+      "id": "cta_label_mobile",
+      "label": "Button text (mobile)",
+      "default": "Shop"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Menu link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Link"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        },
+        {
+          "type": "link_list",
+          "id": "dropdown_menu",
+          "label": "Dropdown menu",
+          "info": "Only used when no Menu is chosen above."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "JP Header",
+      "blocks": [
+        {
+          "type": "link",
+          "settings": {
+            "label": "Learning Centre"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "label": "Our Coffee Solutions"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "label": "About Us"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "label": "Blogs"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
