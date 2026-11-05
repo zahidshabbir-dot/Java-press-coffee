@@ -35,7 +35,7 @@
     display: grid;
     grid-template-columns: minmax(0, 481px) minmax(0, 1fr);
     align-items: center;
-    column-gap: 40px;
+    column-gap: 80px;
   }
   .jp-hero-{{ sid }} .jp-hero__content { position: relative; z-index: 2; padding: 48px 0; }
 
@@ -99,7 +99,7 @@
     align-self: stretch;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: {{ section.settings.image_align }};
     min-height: 320px;
   }
   .jp-hero-{{ sid }} .jp-hero__product {
@@ -112,7 +112,7 @@
   }
 
   @media (max-width: 1199px) {
-    .jp-hero-{{ sid }} .jp-hero__inner { padding: 0 40px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .jp-hero-{{ sid }} .jp-hero__inner { padding: 0 40px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 40px; }
     .jp-hero-{{ sid }} .jp-hero__title { font-size: 48px; }
     .jp-hero-{{ sid }} .jp-hero__script { font-size: 72px; }
   }
@@ -126,7 +126,7 @@
       background-position: center top;
     }
     .jp-hero-{{ sid }} .jp-hero__inner { grid-template-columns: 1fr; padding: 0 16px; min-height: 0; column-gap: 0; }
-    .jp-hero-{{ sid }} .jp-hero__visual { order: -1; min-height: 0; padding: 28px 0 0; }
+    .jp-hero-{{ sid }} .jp-hero__visual { order: -1; min-height: 0; padding: 28px 0 0; justify-content: center; }
     .jp-hero-{{ sid }} .jp-hero__product { max-width: min(100%, 340px); margin-top: 0; }
     .jp-hero-{{ sid }} .jp-hero__content { padding: 24px 0 46px; text-align: center; }
     .jp-hero-{{ sid }} .jp-hero__title { font-size: 42px; line-height: 1.051; margin-bottom: 16px; }
@@ -197,6 +197,11 @@
 
     { "type": "header", "content": "Images" },
     { "type": "image_picker", "id": "image", "label": "Product image", "info": "Leave empty to use the default coffee bags." },
+    { "type": "select", "id": "image_align", "label": "Product image position", "default": "flex-end", "options": [
+      { "value": "flex-start", "label": "Left (near the text)" },
+      { "value": "center", "label": "Center" },
+      { "value": "flex-end", "label": "Right" }
+    ] },
     { "type": "range", "id": "image_width", "label": "Product image width", "min": 280, "max": 640, "step": 10, "unit": "px", "default": 450 },
     { "type": "image_picker", "id": "bg_image", "label": "Background image", "info": "Leave empty to use the default banner." },
     { "type": "image_picker", "id": "bg_image_mobile", "label": "Background image (mobile)", "info": "Used on phones. Leave empty to use the default mobile banner." },
