@@ -1436,6 +1436,45 @@
       },
       {
         "type": "header",
+        "content": "Delivery date (cart drawer)"
+      },
+      {
+        "type": "checkbox",
+        "id": "jp_delivery_enabled",
+        "label": "Show delivery date picker",
+        "info": "The date is saved on the order as the cart attribute \"delivery_date\".",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "jp_cart_count_word",
+        "label": "Cart product count word",
+        "info": "Shown under the Cart title, for example \"2 products\". Remove the final s for one item.",
+        "default": "products"
+      },
+      {
+        "type": "text",
+        "id": "jp_delivery_label",
+        "label": "Delivery date label",
+        "default": "Choose Delivery Date:"
+      },
+      {
+        "type": "range",
+        "id": "jp_delivery_lead_days",
+        "label": "Earliest delivery (days from today)",
+        "min": 0,
+        "max": 30,
+        "step": 1,
+        "default": 2
+      },
+      {
+        "type": "checkbox",
+        "id": "jp_delivery_required",
+        "label": "Require a delivery date before checkout",
+        "default": false
+      },
+      {
+        "type": "header",
         "content": "t:settings_schema.cart.settings.cart_drawer.header"
       },
       {

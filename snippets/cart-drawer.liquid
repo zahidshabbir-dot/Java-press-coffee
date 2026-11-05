@@ -8,6 +8,9 @@
 {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
 <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
 
@@ -62,7 +65,12 @@
         </div>
       {%- endif -%}
       <div class="drawer__header">
-        <h2 class="drawer__heading">{{ 'sections.cart.title' | t }}</h2>
+        <div class="jp-cd__head">
+          <h2 class="drawer__heading">{{ 'sections.cart.title' | t }}</h2>
+          {%- if cart != empty -%}
+            <p class="jp-cd__count">{{ cart.item_count }} {% if cart.item_count == 1 %}{{ settings.jp_cart_count_word | default: 'products' | remove_last: 's' }}{% else %}{{ settings.jp_cart_count_word | default: 'products' }}{% endif %}</p>
+          {%- endif -%}
+        </div>
         <button
           class="drawer__close"
           type="button"
@@ -194,8 +202,7 @@
                                   <div class="product-option">
                                     <dt>{{ option.name }}:</dt>
                                     <dd>
-                                      {{ option.value -}}
-                                      {%- unless forloop.last %}, {% endunless %}
+                                      {{ option.value }}
                                     </dd>
                                   </div>
                                 {%- endfor -%}
@@ -488,6 +495,31 @@
         </form>
       </cart-drawer-items>
       <div class="drawer__footer">
+        {%- if settings.jp_delivery_enabled and cart != empty -%}
+          {%- assign jp_lead = settings.jp_delivery_lead_days | times: 86400 -%}
+          {%- assign jp_min = 'now' | date: '%s' | plus: jp_lead -%}
+          <div class="jp-cd__date">
+            <label class="jp-cd__date-label" for="CartDrawer-DeliveryDate">{{ settings.jp_delivery_label }}</label>
+            <div class="jp-cd__date-field" data-jp-cal>
+              <button type="button" class="jp-cd__date-btn" data-jp-cal-open aria-haspopup="dialog" aria-expanded="false">
+                <span data-jp-cal-label>{% if cart.attributes.delivery_date != blank %}{{ cart.attributes.delivery_date | date: '%d/%m/%Y' }}{% else %}dd/mm/yyyy{% endif %}</span>
+                <svg class="jp-cd__date-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1a3 3 0 0 1 3 3v2H2V7a3 3 0 0 1 3-3h1V3a1 1 0 0 1 1-1zM2 11h20v8a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-8z"/></svg>
+              </button>
+              <input
+                type="hidden"
+                id="CartDrawer-DeliveryDate"
+                name="attributes[delivery_date]"
+                form="CartDrawer-Form"
+                value="{{ cart.attributes.delivery_date }}"
+                data-jp-delivery-date
+                data-min="{{ jp_min | date: '%Y-%m-%d' }}"
+                data-required="{{ settings.jp_delivery_required }}"
+              >
+              <div class="jp-cal" role="dialog" aria-label="{{ settings.jp_delivery_label | escape }}" hidden></div>
+            </div>
+          </div>
+        {%- endif -%}
+
         {%- if settings.show_cart_note -%}
           <details id="Details-CartDrawer">
             <summary>
@@ -528,7 +560,7 @@
 
           <div class="totals" role="status">
             <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
-            <p class="totals__total-value">{{ cart.total_price | money_with_currency }}</p>
+            <p class="totals__total-value">{{ cart.total_price | money }}</p>
           </div>
 
           <small class="tax-note caption-large rte">

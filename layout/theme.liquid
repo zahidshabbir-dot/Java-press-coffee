@@ -287,6 +287,7 @@
       {{ 'component-totals.css' | asset_url | stylesheet_tag }}
       {{ 'component-price.css' | asset_url | stylesheet_tag }}
       {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+      {{ 'jp-cart-drawer.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
 
     {%- unless settings.type_body_font.system? -%}
@@ -400,6 +401,8 @@
 
     {%- if settings.cart_type == 'drawer' -%}
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'jp-ajax-cart.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'jp-cart-calendar.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
   </body>
 </html>
