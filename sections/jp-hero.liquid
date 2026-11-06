@@ -12,7 +12,7 @@
     {%- if section.settings.bg_image != blank %}
     background-image: url('{{ section.settings.bg_image | image_url: width: 2880 }}');
     {%- else %}
-    background-image: url('{{ 'hero-banner.png' | asset_url }}');
+    background-image: url('{{ 'hero-banner.webp' | asset_url }}');
     {%- endif %}
     background-size: cover;
     background-position: center right;
@@ -171,7 +171,7 @@
       {%- if section.settings.bg_image_mobile != blank %}
       background-image: url('{{ section.settings.bg_image_mobile | image_url: width: 1000 }}');
       {%- else %}
-      background-image: url('{{ 'hero-banner-mobile.png' | asset_url }}');
+      background-image: url('{{ 'hero-banner-mobile.webp' | asset_url }}');
       {%- endif %}
       background-position: center top;
     }
@@ -260,7 +260,7 @@
         {%- assign hero_alt = section.settings.image.alt | default: section.settings.title_before -%}
         {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'jp-hero__product', alt: hero_alt, loading: 'eager', fetchpriority: 'high' }}
       {%- else -%}
-        <img class="jp-hero__product" src="{{ 'hero-mask-group.png' | asset_url }}" width="1760" height="1773" alt="{{ section.settings.title_before | escape }}" loading="eager" fetchpriority="high">
+        <img class="jp-hero__product" src="{{ 'hero-mask-group.webp' | asset_url }}" width="1280" height="1289" alt="{{ section.settings.title_before | escape }}" loading="eager" fetchpriority="high">
       {%- endif -%}
     </div>
   </div>

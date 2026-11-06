@@ -9,7 +9,7 @@
     {%- if section.settings.bg_image != blank %}
     background-image: url('{{ section.settings.bg_image | image_url: width: 2880 }}');
     {%- else %}
-    background-image: url('{{ 'newsletter-bg.png' | asset_url }}');
+    background-image: url('{{ 'newsletter-bg.webp' | asset_url }}');
     {%- endif %}
     background-size: cover;
     background-position: center;
