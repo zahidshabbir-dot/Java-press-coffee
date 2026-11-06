@@ -1474,6 +1474,45 @@
         "default": false
       },
       {
+        "type": "text",
+        "id": "jp_delivery_placeholder",
+        "label": "Empty date text",
+        "info": "Shown before a date is chosen, for example dd/mm/yyyy.",
+        "default": "dd/mm/yyyy"
+      },
+      {
+        "type": "text",
+        "id": "jp_delivery_weekdays",
+        "label": "Week day letters",
+        "info": "Seven names separated by commas, starting on Monday.",
+        "default": "Mo,Tu,We,Th,Fr,Sa,Su"
+      },
+      {
+        "type": "text",
+        "id": "jp_delivery_set_label",
+        "label": "Set date button",
+        "default": "Set Date"
+      },
+      {
+        "type": "text",
+        "id": "jp_delivery_prev_label",
+        "label": "Previous month button (screen readers)",
+        "default": "Previous month"
+      },
+      {
+        "type": "text",
+        "id": "jp_delivery_next_label",
+        "label": "Next month button (screen readers)",
+        "default": "Next month"
+      },
+      {
+        "type": "checkbox",
+        "id": "jp_cart_show_currency",
+        "label": "Show the currency code in the cart total",
+        "info": "For example \"$31.98 USD\". Useful on stores that sell in several currencies.",
+        "default": false
+      },
+      {
         "type": "header",
         "content": "t:settings_schema.cart.settings.cart_drawer.header"
       },

@@ -619,10 +619,18 @@
     let nav = root.querySelector('.jp-hd__nav');
     let close = root.querySelector('[data-jp-hd-close]');
     let mq = window.matchMedia('(max-width: 989px)');
+    let savedOverflow = '';
     function setOpen(open) {
+      let wasOpen = root.classList.contains('is-open');
       root.classList.toggle('is-open', open);
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-      document.documentElement.style.overflow = open ? 'hidden' : '';
+      /* only undo the page scroll lock that this menu set itself */
+      if (open && !wasOpen) {
+        savedOverflow = document.documentElement.style.overflow;
+        document.documentElement.style.overflow = 'hidden';
+      } else if (!open && wasOpen) {
+        document.documentElement.style.overflow = savedOverflow;
+      }
       if (!open) {
         nav.classList.remove('has-active');
         let act = nav.querySelector('.jp-hd__item.is-active');
@@ -648,13 +656,20 @@
         grand.parentNode.classList.toggle('is-open');
       }
     });
-    mq.addEventListener('change', function () { if (!mq.matches) setOpen(false); });
-    document.addEventListener('keydown', function (e) {
+    /* document listeners remove themselves when the section is re-rendered (theme editor) */
+    function onMq() {
+      if (!root.isConnected) { mq.removeEventListener('change', onMq); return; }
+      if (!mq.matches) setOpen(false);
+    }
+    function onKey(e) {
+      if (!root.isConnected) { document.removeEventListener('keydown', onKey); return; }
       if (e.key === 'Escape' && root.classList.contains('is-open')) {
         setOpen(false);
         burger.focus();
       }
-    });
+    }
+    mq.addEventListener('change', onMq);
+    document.addEventListener('keydown', onKey);
   })();
 </script>
 

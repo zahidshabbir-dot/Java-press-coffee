@@ -187,7 +187,11 @@
         if (root.dataset.autoplay !== 'true') return;
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         stop();
-        timer = setInterval(function () { show(index + 1); }, parseInt(root.dataset.delay, 10) || 5000);
+        timer = setInterval(function () {
+          /* stop when the section was removed or re-rendered (theme editor) */
+          if (!root.isConnected) { stop(); return; }
+          show(index + 1);
+        }, parseInt(root.dataset.delay, 10) || 5000);
       }
 
       let prevButton = root.querySelector('[data-jp-ann-prev]');

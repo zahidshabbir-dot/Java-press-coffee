@@ -47,9 +47,15 @@
           }
           return;
         }
-        drawer.renderContents(state);
-      })
-      .catch(() => {
+        /* The product is already in the cart here. If drawing the drawer fails,
+           open the cart page instead of submitting the form again (that would add it twice). */
+        try {
+          drawer.renderContents(state);
+        } catch (error) {
+          window.location.href = `${routeRoot()}cart`;
+        }
+      }, () => {
+        /* The add request itself failed (network error or invalid response): use the normal form submit */
         form.dataset.jpBusy = 'false';
         form.submit();
       })

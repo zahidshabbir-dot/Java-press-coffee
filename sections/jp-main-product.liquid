@@ -685,7 +685,7 @@
     </div>
   </div>
 
-  <script type="application/json" data-jp-mp-variants>{{ product.variants | json }}</script>
+  <script type="application/json" data-jp-mp-variants>{% render 'jp-variants-json', product: product %}</script>
 </section>
 
 <script>
@@ -718,19 +718,14 @@
     let compare = root.querySelector('[data-jp-mp-compare]');
     let submit = root.querySelector('[data-jp-mp-submit]');
     let qty = root.querySelector('[data-jp-mp-qty]');
-    let money = function (cents) {
-      try {
-        return new Intl.NumberFormat(document.documentElement.lang || undefined, { style: 'currency', currency: {{ cart.currency.iso_code | json }} }).format(cents / 100);
-      } catch (e) { return (cents / 100).toFixed(2); }
-    };
     function update() {
       if (!selects.length) return;
       let chosen = selects.map(function (s) { return s.value; });
       let v = variants.find(function (x) { return chosen.every(function (c, i) { return x.options[i] === c; }); });
       if (!v) { submit.disabled = true; submit.textContent = submit.dataset.soldout; return; }
       idInput.value = v.id;
-      price.textContent = money(v.price);
-      if (v.compare_at_price && v.compare_at_price > v.price) { compare.textContent = money(v.compare_at_price); compare.hidden = false; }
+      price.textContent = v.price_formatted;
+      if (v.compare_at_price && v.compare_at_price > v.price) { compare.textContent = v.compare_formatted; compare.hidden = false; }
       else { compare.hidden = true; }
       submit.disabled = !v.available;
       submit.textContent = v.available ? submit.dataset.label : submit.dataset.soldout;

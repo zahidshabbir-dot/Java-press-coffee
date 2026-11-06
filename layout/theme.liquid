@@ -320,9 +320,18 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Comforter&family=Inter:wght@500;600&family=Manrope:wght@600&display=swap" rel="stylesheet">
+    {%- liquid
+      assign jp_fonts_url = 'https://fonts.googleapis.com/css2?family=Comforter&family=Inter:wght@500;600'
+      if template.name == 'collection'
+        assign jp_fonts_url = jp_fonts_url | append: '&family=Manrope:wght@600'
+      endif
+      assign jp_fonts_url = jp_fonts_url | append: '&display=swap'
+    -%}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {%- comment -%} Loaded without blocking the page: the fonts swap in when ready. {%- endcomment %}
+    <link rel="stylesheet" href="{{ jp_fonts_url }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ jp_fonts_url }}"></noscript>
 </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">

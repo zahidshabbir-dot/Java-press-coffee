@@ -572,7 +572,11 @@
     prev.addEventListener('click', function () { go(Math.max(0, current() - 1)); });
     next.addEventListener('click', function () { go(Math.min(pages() - 1, current() + 1)); });
     track.addEventListener('scroll', updateDots, { passive: true });
-    window.addEventListener('resize', buildDots);
+    function onResize() {
+      if (!root.isConnected) { window.removeEventListener('resize', onResize); return; }
+      buildDots();
+    }
+    window.addEventListener('resize', onResize);
 
     filter(tabs.length ? tabs[0].dataset.jpBsTab : '1');
   })();

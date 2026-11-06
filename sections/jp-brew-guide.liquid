@@ -518,6 +518,11 @@
       text: $('[data-step-text]'), controls: $('[data-controls]')
     };
 
+    /* Every reset starts a new session. Animations from an older session stop on their own,
+       so closing and reopening the pop-up during a pour cannot change the new game. */
+    let session = 0;
+    const CANCELLED = new Error('cancelled');
+
     /* ---------- helpers ---------- */
     function hex(c) {
       c = String(c).replace('#', '');
@@ -533,9 +538,11 @@
     function easeInOut(p) { return p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; }
     function anim(ms, fn, ease) {
       ms = ms * slow;
-      return new Promise(function (resolve) {
+      return new Promise(function (resolve, reject) {
         let t0 = performance.now();
+        let mine = session;
         (function frame(now) {
+          if (mine !== session) { reject(CANCELLED); return; }
           let p = Math.min(1, (now - t0) / ms);
           fn(ease ? ease(p) : p);
           if (p < 1) requestAnimationFrame(frame); else resolve();
@@ -552,6 +559,9 @@
     let state, busy = false;
     const stream = { on: false };
     function reset() {
+      session++;
+      busy = false;
+      stream.on = false;
       state = { i: 0, cup: Math.max(0, Math.min(2, (parseInt(cfg.defaultCup, 10) || 1) - 1)), layers: [], base: null, sugar: 0, done: false };
       el.layers.replaceChildren();
       el.fx.replaceChildren();
@@ -725,8 +735,13 @@
     }
     function run(promiseFn, then) {
       if (busy) return;
+      let mine = session;
       lock(true);
-      promiseFn().then(function () { lock(false); if (then) then(); });
+      promiseFn().then(function () {
+        if (mine !== session) return;
+        lock(false);
+        if (then) then();
+      }, function () { /* cancelled: the guide was restarted or closed meanwhile */ });
     }
     function next() {
       state.i++;
@@ -742,7 +757,7 @@
       el.controls.replaceChildren();
       el.stage.classList.add('is-done');
       let c = el.wrap;
-      anim(700, function (p) { c.style.translate = '0 ' + (-Math.sin(p * Math.PI) * 8) + 'px'; });
+      anim(700, function (p) { c.style.translate = '0 ' + (-Math.sin(p * Math.PI) * 8) + 'px'; }).catch(function () {});
     }
     function showStep() {
       let s = steps[state.i];
@@ -762,7 +777,7 @@
           b.addEventListener('click', function () {
             setCup(n);
             Array.prototype.forEach.call(sw.children, function (x, k) { x.classList.toggle('is-on', k === n); });
-            anim(420, function (p) { el.wrap.style.translate = '0 ' + (-Math.sin(p * Math.PI) * 10) + 'px'; });
+            anim(420, function (p) { el.wrap.style.translate = '0 ' + (-Math.sin(p * Math.PI) * 10) + 'px'; }).catch(function () {});
           });
           sw.appendChild(b);
         });
@@ -799,10 +814,16 @@
 
     /* ---------- open / close ---------- */
     function open() {
+      if (!steps.length) return; /* no step blocks yet: nothing to show */
       reset();
       if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else { dlg.setAttribute('open', ''); }
     }
-    function close() { if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
+    function close() {
+      session++; /* stops any running animation */
+      busy = false;
+      stream.on = false;
+      if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open');
+    }
     document.addEventListener('click', function (e) {
       let t = e.target.closest && e.target.closest('[data-jp-brew-open]');
       if (t) { e.preventDefault(); open(); }
@@ -810,6 +831,8 @@
     $('[data-close]').addEventListener('click', close);
     $('[data-restart]').addEventListener('click', function () { if (!busy) reset(); });
     dlg.addEventListener('click', function (e) { if (e.target === dlg) close(); });
+    /* Esc closes the dialog without going through close(): stop any running animation too */
+    dlg.addEventListener('close', function () { session++; busy = false; stream.on = false; });
 
     /* 3D tilt */
     el.stage.addEventListener('pointermove', function (e) {

@@ -711,9 +711,9 @@
                 <div class="jp-cl__panel">
                   {%- if filter.type == 'price_range' -%}
                     <div class="jp-cl__range">
-                      <input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}" min="0" placeholder="{{ filter.range_min | money_without_currency | replace: ',', '' }}" aria-label="Minimum price">
+                      <input type="number" name="{{ filter.min_value.param_name }}" value="{%- if filter.min_value.value != blank -%}{{ filter.min_value.value | divide: 100.0 }}{%- endif -%}" min="0" placeholder="{{ filter.range_min | divide: 100.0 }}" aria-label="Minimum price">
                       <span>–</span>
-                      <input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}" min="0" placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}" aria-label="Maximum price">
+                      <input type="number" name="{{ filter.max_value.param_name }}" value="{%- if filter.max_value.value != blank -%}{{ filter.max_value.value | divide: 100.0 }}{%- endif -%}" min="0" placeholder="{{ filter.range_max | divide: 100.0 }}" aria-label="Maximum price">
                     </div>
                   {%- else -%}
                     {%- for value in filter.values -%}
@@ -842,26 +842,47 @@
     let form = root.querySelector('form');
     if (!form) return;
     let timer;
+    let isOpen = false;
+    let savedOverflow = '';
     let mq = window.matchMedia('(max-width: 749px)');
     function setOpen(open) {
+      if (open === isOpen) return;
+      isOpen = open;
       root.classList.toggle('is-open', open);
       let ov = root.querySelector('.jp-cl__overlay');
       if (ov) ov.hidden = !open;
-      document.documentElement.style.overflow = open ? 'hidden' : '';
+      /* only undo the page scroll lock that this panel set itself */
+      if (open) {
+        savedOverflow = document.documentElement.style.overflow;
+        document.documentElement.style.overflow = 'hidden';
+      } else {
+        document.documentElement.style.overflow = savedOverflow;
+      }
+    }
+    /* document listeners remove themselves when the section is re-rendered (theme editor) */
+    function onKey(e) {
+      if (!root.isConnected) { document.removeEventListener('keydown', onKey); return; }
+      if (e.key === 'Escape' && isOpen) setOpen(false);
+    }
+    function onDocClick(e) {
+      if (!root.isConnected) { document.removeEventListener('click', onDocClick); return; }
+      if (mq.matches) return;
+      root.querySelectorAll('details.jp-cl__drop[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });
+    }
+    function onMq() {
+      if (!root.isConnected) { mq.removeEventListener('change', onMq); return; }
+      if (!mq.matches) setOpen(false);
     }
     root.querySelectorAll('[data-jp-cl-open]').forEach(function (b) { b.addEventListener('click', function () { setOpen(true); }); });
     root.querySelectorAll('[data-jp-cl-close]').forEach(function (b) { b.addEventListener('click', function () { setOpen(false); }); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
-    mq.addEventListener('change', function () { if (!mq.matches) setOpen(false); });
+    document.addEventListener('keydown', onKey);
+    mq.addEventListener('change', onMq);
     form.addEventListener('change', function (e) {
       if (mq.matches || !e.target.hasAttribute('data-jp-cl-auto')) return;
       clearTimeout(timer);
       timer = setTimeout(function () { form.submit(); }, 250);
     });
-    document.addEventListener('click', function (e) {
-      if (mq.matches) return;
-      root.querySelectorAll('details.jp-cl__drop[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });
-    });
+    document.addEventListener('click', onDocClick);
   })();
 </script>
 

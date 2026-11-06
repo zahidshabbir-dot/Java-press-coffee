@@ -16,6 +16,24 @@
   const show = (d) => `${pad(d.d)} / ${pad(d.m + 1)} / ${d.y}`;
   const monthName = (y, m) => new Date(y, m, 1).toLocaleString(document.documentElement.lang || undefined, { month: 'long' });
 
+  /* A saved date is only valid when it is on or after the minimum date */
+  const isValidDate = (input) => {
+    const saved = parse(input.value);
+    const min = parse(input.dataset.min);
+    if (!saved) return false;
+    return !min || isoOf(saved) >= isoOf(min);
+  };
+
+  /* Remove a saved date that is now in the past, and tell the cart */
+  const clearStale = (wrap) => {
+    const input = wrap.querySelector('[data-jp-delivery-date]');
+    if (!input || !input.value || isValidDate(input)) return;
+    input.value = '';
+    const label = wrap.querySelector('[data-jp-cal-label]');
+    if (label && label.dataset.empty) label.textContent = label.dataset.empty;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+
   const render = (wrap, state) => {
     const panel = wrap.querySelector('.jp-cal');
     const days = panel.querySelector('[data-jp-cal-days]');
@@ -63,6 +81,7 @@
     const input = wrap.querySelector('[data-jp-delivery-date]');
     const panel = wrap.querySelector('.jp-cal');
     if (!input || !panel) return;
+    clearStale(wrap);
     const today = new Date();
     const min = parse(input.dataset.min) || { y: today.getFullYear(), m: today.getMonth(), d: today.getDate() };
     const current = parse(input.value);
@@ -90,9 +109,10 @@
       // checkout needs a date?
       if (t.closest('#CartDrawer-Checkout')) {
         const input = document.querySelector('[data-jp-delivery-date]');
+        const field = input ? input.closest('[data-jp-cal]') : null;
+        if (field) clearStale(field); // a date that is already in the past counts as no date
         if (input && input.dataset.required === 'true' && !input.value) {
           e.preventDefault();
-          const field = input.closest('[data-jp-cal]');
           if (field) {
             field.classList.add('has-error');
             open(field);
