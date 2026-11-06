@@ -1,0 +1,314 @@
+{%- assign sid = section.id -%}
+
+{% style %}
+  .jp-nl-{{ sid }} {
+    --jp-nl-red: {{ section.settings.button_color }};
+    --jp-nl-text: {{ section.settings.text_color }};
+    --jp-nl-green: {{ section.settings.accent_color }};
+    background-color: {{ section.settings.bg }};
+    {%- if section.settings.bg_image != blank %}
+    background-image: url('{{ section.settings.bg_image | image_url: width: 2880 }}');
+    {%- else %}
+    background-image: url('{{ 'newsletter-bg.webp' | asset_url }}');
+    {%- endif %}
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: var(--jp-nl-text);
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+  }
+
+  .jp-nl-{{ sid }} * {
+    box-sizing: border-box;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__inner {
+    max-width: 991px;
+    margin: 0 auto;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__icon {
+    display: block;
+    width: 27px;
+    height: 22px;
+    margin: 0 auto 14px;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__eyebrow {
+    margin: 0 0 30px;
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--jp-nl-green);
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__title {
+    margin: 0 0 19px;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 700;
+    text-transform: capitalize;
+    color: var(--jp-nl-text);
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__line {
+    display: block;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__text {
+    margin: 0 0 32px;
+    font-size: 16px;
+    line-height: 25px;
+    font-weight: 400;
+    letter-spacing: -0.16px;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__text p {
+    margin: 0;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__text strong {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: #000;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__form {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 790px;
+    max-width: 100%;
+    height: 64px;
+    margin: 0 auto;
+    padding: 7px;
+    border-radius: 4px;
+    background: {{ section.settings.field_bg }};
+    text-align: left;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__field {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 50px;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__field img {
+    position: absolute;
+    left: 23px;
+    top: 50%;
+    width: 17px;
+    height: 15.4px;
+    margin-top: -7.7px;
+    pointer-events: none;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__input {
+    width: 100%;
+    height: 50px;
+    padding: 0 12px 0 52px;
+    border: 0;
+    background: transparent;
+    color: var(--jp-nl-text);
+    font: 400 16px/16px 'Raleway', sans-serif;
+    text-transform: capitalize;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__input::placeholder {
+    color: #888a8c;
+    opacity: 1;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__input:focus-visible {
+    outline: 2px solid var(--jp-nl-green);
+    outline-offset: -2px;
+    border-radius: 4px;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__btn {
+    flex: 0 0 267px;
+    width: 267px;
+    height: 50px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: var(--jp-nl-red);
+    color: #fff;
+    font: 700 16px/18px 'Raleway', sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__btn:hover {
+    filter: brightness(0.93);
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__btn:focus-visible {
+    outline: 2px solid var(--jp-nl-green);
+    outline-offset: 2px;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__msg {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 14px 0 0;
+    text-align: center;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__msg--ok {
+    color: var(--jp-nl-green);
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__msg--err {
+    color: #c0262d;
+  }
+
+  @media (max-width: 749px) {
+    .jp-nl-{{ sid }} {
+      {%- if section.settings.bg_image_mobile != blank %}
+      background-image: url('{{ section.settings.bg_image_mobile | image_url: width: 1000 }}');
+      {%- endif %}
+      padding: {{ section.settings.padding_top_mobile }}px 16px {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__icon {
+      margin-bottom: 13px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__eyebrow {
+      margin-bottom: 16px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__title {
+      font-size: 24px;
+      margin-bottom: 17px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__line {
+      display: inline;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__text {
+      margin-bottom: 21px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__field img {
+      left: 15px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__input {
+      padding-left: 44px;
+      font-size: 12px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__btn {
+      flex: 0 0 auto;
+      width: auto;
+      min-width: 130px;
+      padding: 0 14px;
+      font-size: 13px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__input {
+      padding-right: 6px;
+    }
+  }
+{% endstyle %}
+
+<section class="jp-nl-{{ sid }}" data-jp-nl>
+  <div class="jp-nl__inner">
+    {%- if section.settings.icon != blank -%}
+      {{ section.settings.icon | image_url: width: 120 | image_tag: class: 'jp-nl__icon', alt: '', loading: 'lazy' }}
+    {%- else -%}
+      <img class="jp-nl__icon" src="{{ 'newsletter-leaf.svg' | asset_url }}" width="27" height="22" alt="" loading="lazy">
+    {%- endif -%}
+
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="jp-nl__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="jp-nl__title">
+        {%- assign lines = section.settings.heading | newline_to_br | split: '<br />' -%}
+        {%- for line in lines -%}
+          <span class="jp-nl__line">{{ line | strip_newlines | strip }}</span>{% unless forloop.last %} {% endunless %}
+        {%- endfor -%}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.text != blank -%}
+      <div class="jp-nl__text">{{ section.settings.text }}</div>
+    {%- endif -%}
+
+    {%- form 'customer', id: 'jp-newsletter', class: 'jp-nl__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="jp-nl__field">
+        <img src="{{ 'icon-message.svg' | asset_url }}" width="17" height="15" alt="" aria-hidden="true">
+        <input
+          class="jp-nl__input"
+          type="email"
+          name="contact[email]"
+          autocomplete="email"
+          placeholder="{{ section.settings.placeholder | escape }}"
+          aria-label="{{ section.settings.placeholder | escape }}"
+          value="{{ form.email }}"
+          required
+        >
+      </div>
+      <button type="submit" class="jp-nl__btn">{{ section.settings.button_label }}</button>
+      {%- if form.posted_successfully? -%}
+        <p class="jp-nl__msg jp-nl__msg--ok" role="status">{{ section.settings.success_message }}</p>
+      {%- elsif form.errors -%}
+        <p class="jp-nl__msg jp-nl__msg--err" role="alert">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+    {%- endform -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "JP Newsletter",
+  "settings": [
+    { "type": "image_picker", "id": "icon", "label": "Top icon", "info": "Leave empty to use the default leaf icon." },
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Newsletter Subscription" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Join our newsletter and get updates on\npromotions and coupons.", "info": "A new line starts a second line on desktop; on mobile the text flows naturally." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Get <strong>“$20 discount”</strong> for your first order</p>" },
+
+    { "type": "header", "content": "Form" },
+    { "type": "text", "id": "placeholder", "label": "Email placeholder", "default": "Your Email Address" },
+    { "type": "text", "id": "button_label", "label": "Button text", "default": "Subscribe Now →" },
+    { "type": "text", "id": "success_message", "label": "Success message", "default": "Thanks for subscribing!" },
+
+    { "type": "header", "content": "Background" },
+    { "type": "image_picker", "id": "bg_image", "label": "Background image", "info": "Leave empty to use the default coffee illustration." },
+    { "type": "image_picker", "id": "bg_image_mobile", "label": "Background image (mobile)", "info": "Leave empty to use the desktop image." },
+
+    { "type": "header", "content": "Style" },
+    { "type": "color", "id": "bg", "label": "Background color", "default": "#f2f2f2" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#424242" },
+    { "type": "color", "id": "accent_color", "label": "Accent color (small heading)", "default": "#035d57" },
+    { "type": "color", "id": "button_color", "label": "Button", "default": "#ef4444" },
+    { "type": "color", "id": "field_bg", "label": "Email field background", "default": "#d9d9d9" },
+    { "type": "range", "id": "padding_top", "label": "Top padding (desktop)", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 36 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding (desktop)", "min": 0, "max": 120, "step": 2, "unit": "px", "default": 70 },
+    { "type": "range", "id": "padding_top_mobile", "label": "Top padding (mobile)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 33 },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Bottom padding (mobile)", "min": 1, "max": 101, "step": 1, "unit": "px", "default": 85 }
+  ],
+  "presets": [
+    { "name": "JP Newsletter" }
+  ]
+}
+{% endschema %}

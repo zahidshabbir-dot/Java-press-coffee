@@ -10,74 +10,68 @@
 {
   "sections": {
     "main": {
-      "type": "wr-product",
-      "settings": {
-        "rating_text": "Rated 4.8 by 800+ customers",
-        "badge_mode": "tag",
-        "badge_text": "New",
-        "color_label": "Colorways",
-        "swatch_colors": "Maroon | #6b2d2d\nGreen | #5b6b3a\nOlive | #6b6a3a\nGold | #c8923b\nMustard | #c8923b\nCream | #e9e0cc\nBeige | #d9c9a8\nBlue | #7f9bb5\nGrey | #a8a9b8\nBlack | #1f2433\nPink | #e0a0a8\nWhite | #f2f0ea",
-        "price_note": "Price per Double Roll (H:33′ x W:21″ | 57 Sq. Ft.)",
-        "rolls_link": "How many rolls do I need?",
-        "roll_height_ft": 33,
-        "roll_width_in": 21,
-        "trim_in": 4,
-        "coverage_sqft": 57,
-        "learn_url": "",
-        "tips": "Round up to the nearest whole inch\nFind the highest and the widest point and measure there\nWe recommend measuring the full height and width of the wall including the windows and doors\nDo not include baseboards or molding",
-        "sample_label": "Order a free sample",
-        "sample_url": "",
-        "sample_points": "Printed on Non-woven material (21x19 inches)\nCompare feel and finish of our materials\nSamples ship within 5–7 business days"
-      }
-    },
-    "wr_announcement_bar_BhXxRH": {
-      "type": "wr-announcement-bar",
+      "type": "jp-main-product",
       "blocks": {
-        "message_h8kDHq": {
-          "type": "message",
+        "pill_1": {
+          "type": "pill",
           "settings": {
-            "show_rating": true,
-            "before": "Rated 4.8 by 810+ customers",
-            "highlight": "",
-            "after": "",
-            "link": "",
-            "underline": true
+            "text": "Best Seller",
+            "bg": "#ece03a",
+            "color": "#434343"
           }
         },
-        "message_W8gxAd": {
-          "type": "message",
+        "pill_2": {
+          "type": "pill",
           "settings": {
-            "show_rating": false,
-            "before": "✦ Free shipping on all orders over",
-            "highlight": "$350",
-            "after": "",
-            "link": "",
-            "underline": false
+            "text": "Staff Pick",
+            "bg": "#424242",
+            "color": "#ffffff"
           }
         },
-        "message_VAFMxf": {
-          "type": "message",
+        "trust_1": {
+          "type": "trust",
           "settings": {
-            "show_rating": false,
-            "before": "✦ Try 3 free samples in your actual space",
-            "highlight": "",
-            "after": "",
-            "link": "",
-            "underline": false
+            "text": "Secure Checkout"
+          }
+        },
+        "trust_2": {
+          "type": "trust",
+          "settings": {
+            "text": "Secure Shipping"
+          }
+        },
+        "trust_3": {
+          "type": "trust",
+          "settings": {
+            "text": "Satisfaction Guarantee"
+          }
+        },
+        "acc_1": {
+          "type": "accordion",
+          "settings": {
+            "title": "About Product:",
+            "open": true,
+            "show_howto": true
+          }
+        },
+        "acc_2": {
+          "type": "accordion",
+          "settings": {
+            "title": "Ingredients:",
+            "content": "<p>Add your ingredients here.</p>"
           }
         }
       },
       "block_order": [
-        "message_h8kDHq",
-        "message_W8gxAd",
-        "message_VAFMxf"
+        "pill_1",
+        "pill_2",
+        "trust_1",
+        "trust_2",
+        "trust_3",
+        "acc_1",
+        "acc_2"
       ],
-      "name": "WR Announcement bar",
-      "settings": {
-        "bg": "#111111",
-        "text_color": "#ffffff",
-        "highlight_color": "#fffeac"
-      }
+      "settings": {}
     },
     "disclosures": {
       "type": "disclosures",
@@ -90,78 +84,114 @@
         "padding_bottom": 0
       }
     },
-    "wr_usp_strip_MJwgNm": {
-      "type": "wr-usp-strip",
+    "jp_callout": {
+      "type": "jp-callout",
       "blocks": {
-        "usp_gnALM8": {
-          "type": "usp",
+        "callout_1": {
+          "type": "callout",
           "settings": {
-            "icon": "layers",
-            "title": "Premium substrates",
-            "text": "Non-woven, vinyl & textile options built to last"
+            "title": "Top 1% of the world’s coffee",
+            "text": "Specialty grade, single origin, and hand-picked at peak ripeness for the highest quality."
           }
         },
-        "usp_UXt7U9": {
-          "type": "usp",
+        "callout_2": {
+          "type": "callout",
           "settings": {
-            "icon": "shield",
-            "title": "Scrubbable & strippable",
-            "text": "Wipe-clean finishes that peel off cleanly later"
+            "title": "A new coffee each month",
+            "text": "These coffees aren’t on the shelves, from Malawi to Myanmar, India to Ecuador, and more."
           }
         },
-        "usp_nQAze7": {
-          "type": "usp",
+        "callout_3": {
+          "type": "callout",
           "settings": {
-            "icon": "pin",
-            "title": "Low-VOC, Class A rated",
-            "text": "Fire-rated, low-VOC options for homes & commercial"
+            "title": "Roasted fresh to order",
+            "text": "And always roasted to your preference. Maximum freshness, maximum flavor."
           }
         },
-        "usp_ge3nLj": {
-          "type": "usp",
+        "callout_4": {
+          "type": "callout",
           "settings": {
-            "icon": "sample",
-            "title": "Free 3 Samples",
-            "text": "See it on your wall before you buy a roll"
+            "title": "Delivered on your schedule",
+            "text": "Skip or change your delivery date at any time, and set a schedule that works for you."
           }
         }
       },
       "block_order": [
-        "usp_gnALM8",
-        "usp_UXt7U9",
-        "usp_nQAze7",
-        "usp_ge3nLj"
+        "callout_1",
+        "callout_2",
+        "callout_3",
+        "callout_4"
       ],
-      "name": "WR USP strip",
       "settings": {}
     },
-    "related-products": {
-      "type": "related-products",
-      "custom_css": [
-        ".related-products {background: #faf4e8 !important; box-shadow: 0 0 0 100vmax #faf4e8; clip-path: inset(0 -100vmax);}"
+    "jp_recommended": {
+      "type": "jp-recommended",
+      "settings": {}
+    },
+    "jp_newsletter": {
+      "type": "jp-newsletter",
+      "settings": {}
+    },
+    "jp_brew_guide": {
+      "type": "jp-brew-guide",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "action": "cup",
+            "title": "Pick your cup",
+            "text": "Choose the cup you like best."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "action": "base",
+            "title": "Choose your base",
+            "text": "Hot water for a classic cup, or warm milk for a creamy one."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "action": "coffee",
+            "title": "Add the coffee",
+            "text": "One scoop of Java Press coffee per cup."
+          }
+        },
+        "step_4": {
+          "type": "step",
+          "settings": {
+            "action": "sugar",
+            "title": "Sweeten it",
+            "text": "Add sugar to taste, or skip this step."
+          }
+        },
+        "step_5": {
+          "type": "step",
+          "settings": {
+            "action": "stir",
+            "title": "Mix it up",
+            "text": "Stir for about 10 seconds until everything is blended."
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3",
+        "step_4",
+        "step_5"
       ],
-      "settings": {
-        "heading": "Related Designs",
-        "heading_size": "h1",
-        "products_to_show": 4,
-        "columns_desktop": 4,
-        "columns_mobile": "2",
-        "color_scheme": "scheme-1",
-        "image_ratio": "square",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "padding_top": 36,
-        "padding_bottom": 28
-      }
+      "settings": {}
     }
   },
   "order": [
     "main",
-    "wr_announcement_bar_BhXxRH",
+    "jp_brew_guide",
     "disclosures",
-    "wr_usp_strip_MJwgNm",
-    "related-products"
+    "jp_callout",
+    "jp_recommended",
+    "jp_newsletter"
   ]
 }
