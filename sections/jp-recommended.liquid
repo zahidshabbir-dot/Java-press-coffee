@@ -16,37 +16,194 @@
     font-family: 'Raleway', sans-serif;
     padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
   }
-  .jp-rc-{{ sid }} * { box-sizing: border-box; }
-  .jp-rc-{{ sid }} .jp-rc__inner { max-width: 1200px; margin: 0 auto; }
-  .jp-rc-{{ sid }} .jp-rc__title { margin: 0 0 48px; font-family: inherit; font-size: 32px; line-height: 1.201; font-weight: 700; letter-spacing: normal; text-align: center; text-transform: capitalize; color: var(--jp-rc-text); }
-  .jp-rc-{{ sid }} .jp-rc__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; margin: 0; padding: 0; list-style: none; }
-  .jp-rc-{{ sid }} .jp-rc__card { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-  .jp-rc-{{ sid }} .jp-rc__media { position: relative; display: block; aspect-ratio: 274 / 285; border-radius: 5px; background: {{ section.settings.tile_color }}; overflow: hidden; }
-  .jp-rc-{{ sid }} .jp-rc__img { position: absolute; left: 50%; top: 50%; width: 87%; height: auto; max-height: 90%; object-fit: contain; transform: translate(-50%, -50%); }
-  .jp-rc-{{ sid }} .jp-rc__badge { position: absolute; top: 11px; right: 7px; width: 21%; height: auto; }
-  .jp-rc-{{ sid }} .jp-rc__name { display: block; flex: 1 0 auto; margin: 0; color: var(--jp-rc-text); font-size: 20px; line-height: 25px; font-weight: 700; text-transform: capitalize; text-decoration: none; }
-  .jp-rc-{{ sid }} .jp-rc__rating { display: flex; align-items: center; gap: 8px; height: 16px; font-size: 14px; font-weight: 700; line-height: normal; }
-  .jp-rc-{{ sid }} .jp-rc__stars { color: var(--jp-rc-star); font-size: 11.5px; letter-spacing: 0; }
-  .jp-rc-{{ sid }} .jp-rc__star.is-off { color: #d3d3d3; }
-  .jp-rc-{{ sid }} .jp-rc__reviews { font-weight: 700; text-decoration: underline; }
-  .jp-rc-{{ sid }} .jp-rc__price { display: flex; align-items: baseline; gap: 5px; margin: 0; }
-  .jp-rc-{{ sid }} .jp-rc__now { font-size: 20px; line-height: 22px; font-weight: 700; }
-  .jp-rc-{{ sid }} .jp-rc__was { font-size: 14px; line-height: 22px; font-weight: 500; color: #929292; text-decoration: line-through; }
-  .jp-rc-{{ sid }} .jp-rc__btn { display: block; width: 100%; height: 50px; padding: 0; border: 0; border-radius: 5px; background: var(--jp-rc-red); color: #fff; font: 800 18px/50px 'Raleway', sans-serif; text-align: center; text-transform: uppercase; text-decoration: none; cursor: pointer; }
-  .jp-rc-{{ sid }} .jp-rc__btn:hover { filter: brightness(0.93); }
-  .jp-rc-{{ sid }} .jp-rc__btn--off { background: #b5b5b5; cursor: not-allowed; }
-  .jp-rc-{{ sid }} .jp-rc__form { margin: 0; }
-  .jp-rc-{{ sid }} a:focus-visible,
-  .jp-rc-{{ sid }} button:focus-visible { outline: 2px solid var(--jp-rc-text); outline-offset: 2px; }
-  @media (max-width: 989px) {
-    .jp-rc-{{ sid }} .jp-rc__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
+
+  .jp-rc-{{ sid }} * {
+    box-sizing: border-box;
   }
+
+  .jp-rc-{{ sid }} .jp-rc__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__title {
+    margin: 0 0 48px;
+    font-family: inherit;
+    font-size: 32px;
+    line-height: 1.201;
+    font-weight: 700;
+    letter-spacing: normal;
+    text-align: center;
+    text-transform: capitalize;
+    color: var(--jp-rc-text);
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 274 / 285;
+    border-radius: 5px;
+    background: {{ section.settings.tile_color }};
+    overflow: hidden;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 87%;
+    height: auto;
+    max-height: 90%;
+    object-fit: contain;
+    transform: translate(-50%, -50%);
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__badge {
+    position: absolute;
+    top: 11px;
+    right: 7px;
+    width: 21%;
+    height: auto;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__name {
+    display: block;
+    flex: 1 0 auto;
+    margin: 0;
+    color: var(--jp-rc-text);
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 700;
+    text-transform: capitalize;
+    text-decoration: none;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 16px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__stars {
+    color: var(--jp-rc-star);
+    font-size: 11.5px;
+    letter-spacing: 0;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__star.is-off {
+    color: #d3d3d3;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__reviews {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__price {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin: 0;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__now {
+    font-size: 20px;
+    line-height: 22px;
+    font-weight: 700;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__was {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 500;
+    color: #929292;
+    text-decoration: line-through;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__btn {
+    display: block;
+    width: 100%;
+    height: 50px;
+    padding: 0;
+    border: 0;
+    border-radius: 5px;
+    background: var(--jp-rc-red);
+    color: #fff;
+    font: 800 18px/50px 'Raleway', sans-serif;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__btn:hover {
+    filter: brightness(0.93);
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__btn--off {
+    background: #b5b5b5;
+    cursor: not-allowed;
+  }
+
+  .jp-rc-{{ sid }} .jp-rc__form {
+    margin: 0;
+  }
+
+  .jp-rc-{{ sid }} a:focus-visible,
+  .jp-rc-{{ sid }} button:focus-visible {
+    outline: 2px solid var(--jp-rc-text);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 989px) {
+    .jp-rc-{{ sid }} .jp-rc__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px 16px;
+    }
+  }
+
   @media (max-width: 749px) {
-    .jp-rc-{{ sid }} { padding: {{ section.settings.padding_top_mobile }}px 16px {{ section.settings.padding_bottom_mobile }}px; }
-    .jp-rc-{{ sid }} .jp-rc__title { font-size: 24px; margin-bottom: 28px; }
-    .jp-rc-{{ sid }} .jp-rc__name { font-size: 16px; line-height: 22px; }
-    .jp-rc-{{ sid }} .jp-rc__rating { font-size: 12px; }
-    .jp-rc-{{ sid }} .jp-rc__btn { font-size: 16px; }
+    .jp-rc-{{ sid }} {
+      padding: {{ section.settings.padding_top_mobile }}px 16px {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    .jp-rc-{{ sid }} .jp-rc__title {
+      font-size: 24px;
+      margin-bottom: 28px;
+    }
+
+    .jp-rc-{{ sid }} .jp-rc__name {
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .jp-rc-{{ sid }} .jp-rc__rating {
+      font-size: 12px;
+    }
+
+    .jp-rc-{{ sid }} .jp-rc__btn {
+      font-size: 16px;
+    }
   }
 {% endstyle %}
 

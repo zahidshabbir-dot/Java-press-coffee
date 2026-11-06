@@ -21,9 +21,23 @@
     text-align: center;
     padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
   }
-  .jp-nl-{{ sid }} * { box-sizing: border-box; }
-  .jp-nl-{{ sid }} .jp-nl__inner { max-width: 991px; margin: 0 auto; }
-  .jp-nl-{{ sid }} .jp-nl__icon { display: block; width: 27px; height: 22px; margin: 0 auto 14px; }
+
+  .jp-nl-{{ sid }} * {
+    box-sizing: border-box;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__inner {
+    max-width: 991px;
+    margin: 0 auto;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__icon {
+    display: block;
+    width: 27px;
+    height: 22px;
+    margin: 0 auto 14px;
+  }
+
   .jp-nl-{{ sid }} .jp-nl__eyebrow {
     margin: 0 0 30px;
     font-size: 16px;
@@ -32,6 +46,7 @@
     text-transform: uppercase;
     color: var(--jp-nl-green);
   }
+
   .jp-nl-{{ sid }} .jp-nl__title {
     margin: 0 0 19px;
     font-size: 32px;
@@ -40,10 +55,29 @@
     text-transform: capitalize;
     color: var(--jp-nl-text);
   }
-  .jp-nl-{{ sid }} .jp-nl__line { display: block; }
-  .jp-nl-{{ sid }} .jp-nl__text { margin: 0 0 32px; font-size: 16px; line-height: 25px; font-weight: 400; letter-spacing: -0.16px; }
-  .jp-nl-{{ sid }} .jp-nl__text p { margin: 0; }
-  .jp-nl-{{ sid }} .jp-nl__text strong { font-size: 20px; font-weight: 700; letter-spacing: -0.2px; color: #000; }
+
+  .jp-nl-{{ sid }} .jp-nl__line {
+    display: block;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__text {
+    margin: 0 0 32px;
+    font-size: 16px;
+    line-height: 25px;
+    font-weight: 400;
+    letter-spacing: -0.16px;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__text p {
+    margin: 0;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__text strong {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: #000;
+  }
 
   .jp-nl-{{ sid }} .jp-nl__form {
     position: relative;
@@ -59,8 +93,24 @@
     background: {{ section.settings.field_bg }};
     text-align: left;
   }
-  .jp-nl-{{ sid }} .jp-nl__field { position: relative; flex: 1 1 auto; min-width: 0; height: 50px; }
-  .jp-nl-{{ sid }} .jp-nl__field img { position: absolute; left: 23px; top: 50%; width: 17px; height: 15.4px; margin-top: -7.7px; pointer-events: none; }
+
+  .jp-nl-{{ sid }} .jp-nl__field {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 50px;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__field img {
+    position: absolute;
+    left: 23px;
+    top: 50%;
+    width: 17px;
+    height: 15.4px;
+    margin-top: -7.7px;
+    pointer-events: none;
+  }
+
   .jp-nl-{{ sid }} .jp-nl__input {
     width: 100%;
     height: 50px;
@@ -71,8 +121,18 @@
     font: 400 16px/16px 'Raleway', sans-serif;
     text-transform: capitalize;
   }
-  .jp-nl-{{ sid }} .jp-nl__input::placeholder { color: #888a8c; opacity: 1; }
-  .jp-nl-{{ sid }} .jp-nl__input:focus-visible { outline: 2px solid var(--jp-nl-green); outline-offset: -2px; border-radius: 4px; }
+
+  .jp-nl-{{ sid }} .jp-nl__input::placeholder {
+    color: #888a8c;
+    opacity: 1;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__input:focus-visible {
+    outline: 2px solid var(--jp-nl-green);
+    outline-offset: -2px;
+    border-radius: 4px;
+  }
+
   .jp-nl-{{ sid }} .jp-nl__btn {
     flex: 0 0 267px;
     width: 267px;
@@ -87,11 +147,35 @@
     cursor: pointer;
     white-space: nowrap;
   }
-  .jp-nl-{{ sid }} .jp-nl__btn:hover { filter: brightness(0.93); }
-  .jp-nl-{{ sid }} .jp-nl__btn:focus-visible { outline: 2px solid var(--jp-nl-green); outline-offset: 2px; }
-  .jp-nl-{{ sid }} .jp-nl__msg { position: absolute; top: 100%; left: 0; right: 0; margin: 14px 0 0; text-align: center; font-size: 14px; line-height: 20px; font-weight: 600; }
-  .jp-nl-{{ sid }} .jp-nl__msg--ok { color: var(--jp-nl-green); }
-  .jp-nl-{{ sid }} .jp-nl__msg--err { color: #c0262d; }
+
+  .jp-nl-{{ sid }} .jp-nl__btn:hover {
+    filter: brightness(0.93);
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__btn:focus-visible {
+    outline: 2px solid var(--jp-nl-green);
+    outline-offset: 2px;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__msg {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 14px 0 0;
+    text-align: center;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__msg--ok {
+    color: var(--jp-nl-green);
+  }
+
+  .jp-nl-{{ sid }} .jp-nl__msg--err {
+    color: #c0262d;
+  }
 
   @media (max-width: 749px) {
     .jp-nl-{{ sid }} {
@@ -100,15 +184,48 @@
       {%- endif %}
       padding: {{ section.settings.padding_top_mobile }}px 16px {{ section.settings.padding_bottom_mobile }}px;
     }
-    .jp-nl-{{ sid }} .jp-nl__icon { margin-bottom: 13px; }
-    .jp-nl-{{ sid }} .jp-nl__eyebrow { margin-bottom: 16px; }
-    .jp-nl-{{ sid }} .jp-nl__title { font-size: 24px; margin-bottom: 17px; }
-    .jp-nl-{{ sid }} .jp-nl__line { display: inline; }
-    .jp-nl-{{ sid }} .jp-nl__text { margin-bottom: 21px; }
-    .jp-nl-{{ sid }} .jp-nl__field img { left: 15px; }
-    .jp-nl-{{ sid }} .jp-nl__input { padding-left: 44px; font-size: 12px; }
-    .jp-nl-{{ sid }} .jp-nl__btn { flex: 0 0 auto; width: auto; min-width: 130px; padding: 0 14px; font-size: 13px; }
-    .jp-nl-{{ sid }} .jp-nl__input { padding-right: 6px; }
+
+    .jp-nl-{{ sid }} .jp-nl__icon {
+      margin-bottom: 13px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__eyebrow {
+      margin-bottom: 16px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__title {
+      font-size: 24px;
+      margin-bottom: 17px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__line {
+      display: inline;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__text {
+      margin-bottom: 21px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__field img {
+      left: 15px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__input {
+      padding-left: 44px;
+      font-size: 12px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__btn {
+      flex: 0 0 auto;
+      width: auto;
+      min-width: 130px;
+      padding: 0 14px;
+      font-size: 13px;
+    }
+
+    .jp-nl-{{ sid }} .jp-nl__input {
+      padding-right: 6px;
+    }
   }
 {% endstyle %}
 

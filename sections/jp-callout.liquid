@@ -9,8 +9,16 @@
     font-family: 'Raleway', sans-serif;
     padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
   }
-  .jp-co-{{ sid }} * { box-sizing: border-box; }
-  .jp-co-{{ sid }} .jp-co__inner { max-width: 1201px; margin: 0 auto; }
+
+  .jp-co-{{ sid }} * {
+    box-sizing: border-box;
+  }
+
+  .jp-co-{{ sid }} .jp-co__inner {
+    max-width: 1201px;
+    margin: 0 auto;
+  }
+
   .jp-co-{{ sid }} .jp-co__title {
     margin: 0 0 40px;
     font-family: inherit;
@@ -22,6 +30,7 @@
     text-transform: capitalize;
     color: {{ section.settings.heading_color }};
   }
+
   .jp-co-{{ sid }} .jp-co__grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -31,7 +40,11 @@
     padding: 0;
     list-style: none;
   }
-  .jp-co-{{ sid }} .jp-co__item { text-align: center; }
+
+  .jp-co-{{ sid }} .jp-co__item {
+    text-align: center;
+  }
+
   .jp-co-{{ sid }} .jp-co__icon {
     display: block;
     width: 64px;
@@ -41,13 +54,20 @@
     -webkit-mask: var(--jp-co-icon) center / contain no-repeat;
     mask: var(--jp-co-icon) center / contain no-repeat;
   }
+
   .jp-co-{{ sid }} .jp-co__icon--svg {
     background: none;
     -webkit-mask: none;
     mask: none;
     color: {{ section.settings.icon_color }};
   }
-  .jp-co-{{ sid }} .jp-co__icon--svg svg { display: block; width: 100%; height: 100%; }
+
+  .jp-co-{{ sid }} .jp-co__icon--svg svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   .jp-co-{{ sid }} .jp-co__item-title {
     margin: 0 0 16px;
     font-family: inherit;
@@ -58,6 +78,7 @@
     text-transform: capitalize;
     color: {{ section.settings.text_color }};
   }
+
   .jp-co-{{ sid }} .jp-co__text {
     margin: 0 auto;
     max-width: 276px;
@@ -67,13 +88,28 @@
     text-transform: capitalize;
     color: {{ section.settings.text_color }};
   }
+
   @media (max-width: 989px) {
-    .jp-co-{{ sid }} .jp-co__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .jp-co-{{ sid }} .jp-co__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
+
   @media (max-width: 749px) {
-    .jp-co-{{ sid }} { padding: {{ section.settings.padding_top_mobile }}px 20px {{ section.settings.padding_bottom_mobile }}px; }
-    .jp-co-{{ sid }} .jp-co__title { font-size: 24px; line-height: 32px; margin-bottom: 32px; }
-    .jp-co-{{ sid }} .jp-co__grid { grid-template-columns: 1fr; row-gap: 36px; }
+    .jp-co-{{ sid }} {
+      padding: {{ section.settings.padding_top_mobile }}px 20px {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    .jp-co-{{ sid }} .jp-co__title {
+      font-size: 24px;
+      line-height: 32px;
+      margin-bottom: 32px;
+    }
+
+    .jp-co-{{ sid }} .jp-co__grid {
+      grid-template-columns: 1fr;
+      row-gap: 36px;
+    }
   }
 {% endstyle %}
 
