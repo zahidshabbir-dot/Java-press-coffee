@@ -1,5 +1,3 @@
-{% render 'jp-fonts' %}
-
 {%- assign sid = section.id -%}
 {%- assign source = section.settings.collection | default: collections.all -%}
 {%- assign limit = section.settings.products_count -%}
@@ -215,7 +213,8 @@
     <ul class="jp-rc__grid">
       {%- assign shown = 0 -%}
       {%- for product in source.products -%}
-        {%- if shown < limit and product.handle != current_handle -%}
+        {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+        {%- if product.handle != current_handle -%}
           {%- assign shown = shown | plus: 1 -%}
           {%- assign rating = product.metafields.reviews.rating.value.rating -%}
           {%- assign rating_count = product.metafields.reviews.rating_count.value -%}

@@ -824,10 +824,13 @@
       stream.on = false;
       if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open');
     }
-    document.addEventListener('click', function (e) {
+    function onOpenClick(e) {
+      /* stop when the section was re-rendered (theme editor) */
+      if (!dlg.isConnected) { document.removeEventListener('click', onOpenClick); return; }
       let t = e.target.closest && e.target.closest('[data-jp-brew-open]');
       if (t) { e.preventDefault(); open(); }
-    });
+    }
+    document.addEventListener('click', onOpenClick);
     $('[data-close]').addEventListener('click', close);
     $('[data-restart]').addEventListener('click', function () { if (!busy) reset(); });
     dlg.addEventListener('click', function (e) { if (e.target === dlg) close(); });

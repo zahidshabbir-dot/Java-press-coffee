@@ -65,7 +65,13 @@
         <div class="jp-cd__head">
           <h2 class="drawer__heading">{{ 'sections.cart.title' | t }}</h2>
           {%- if cart != empty -%}
-            <p class="jp-cd__count">{{ cart.item_count }} {% if cart.item_count == 1 %}{{ settings.jp_cart_count_word | default: 'products' | remove_last: 's' }}{% else %}{{ settings.jp_cart_count_word | default: 'products' }}{% endif %}</p>
+            {%- assign jp_count_word = settings.jp_cart_count_word | default: 'products' -%}
+            {%- assign jp_count_last = jp_count_word | slice: -1 -%}
+            {%- if cart.item_count == 1 and jp_count_last == 's' -%}
+              {%- assign jp_count_len = jp_count_word | size | minus: 1 -%}
+              {%- assign jp_count_word = jp_count_word | slice: 0, jp_count_len -%}
+            {%- endif -%}
+            <p class="jp-cd__count">{{ cart.item_count }} {{ jp_count_word }}</p>
           {%- endif -%}
         </div>
         <button

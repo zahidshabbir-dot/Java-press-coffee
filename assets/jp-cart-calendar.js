@@ -159,10 +159,35 @@
     }
   });
 
+  /* Escape closes only the calendar, not the whole cart drawer.
+     The drawer listens for Escape on keyup, so that event is stopped too. */
+  let escapeUsed = false;
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     document.querySelectorAll('[data-jp-cal]').forEach((w) => {
-      if (w.__jpState) { close(w); e.stopPropagation(); }
+      if (w.__jpState) { close(w); e.stopPropagation(); escapeUsed = true; }
     });
   }, true);
+  document.addEventListener('keyup', (e) => {
+    if (e.key !== 'Escape' || !escapeUsed) return;
+    escapeUsed = false;
+    e.stopPropagation();
+  }, true);
+
+  /* Pressing Enter in the cart note submits the cart form to checkout without a click: check the date there too */
+  document.addEventListener('submit', (e) => {
+    const form = e.target;
+    if (!form || form.id !== 'CartDrawer-Form') return;
+    if (e.submitter && e.submitter.name !== 'checkout') return;
+    const input = document.querySelector('[data-jp-delivery-date]');
+    const field = input ? input.closest('[data-jp-cal]') : null;
+    if (field) clearStale(field);
+    if (input && input.dataset.required === 'true' && !input.value) {
+      e.preventDefault();
+      if (field) {
+        field.classList.add('has-error');
+        open(field);
+      }
+    }
+  });
 })();

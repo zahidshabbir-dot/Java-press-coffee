@@ -1,5 +1,3 @@
-{% render 'jp-fonts' %}
-
 {%- assign sid = section.id -%}
 
 {% style %}
@@ -259,7 +257,8 @@
 
     <div class="jp-hero__visual">
       {%- if section.settings.image != blank -%}
-        {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'jp-hero__product', alt: section.settings.image.alt | default: section.settings.title_before, loading: 'eager', fetchpriority: 'high' }}
+        {%- assign hero_alt = section.settings.image.alt | default: section.settings.title_before -%}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'jp-hero__product', alt: hero_alt, loading: 'eager', fetchpriority: 'high' }}
       {%- else -%}
         <img class="jp-hero__product" src="{{ 'hero-mask-group.png' | asset_url }}" width="1760" height="1773" alt="{{ section.settings.title_before | escape }}" loading="eager" fetchpriority="high">
       {%- endif -%}
