@@ -1,8 +1,3 @@
-{% render 'jp-fonts' %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
-
 {%- assign sid = section.id -%}
 {%- assign product = section.settings.product | default: collections.all.products.first -%}
 
@@ -16,7 +11,11 @@
     font-family: 'Raleway', sans-serif;
     padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
   }
-  .jp-fp-{{ sid }} * { box-sizing: border-box; }
+
+  .jp-fp-{{ sid }} * {
+    box-sizing: border-box;
+  }
+
   .jp-fp-{{ sid }} .jp-fp__inner {
     max-width: 1440px;
     margin: 0 auto;
@@ -26,12 +25,14 @@
     column-gap: 32px;
     align-items: start;
   }
+
   .jp-fp-{{ sid }} .jp-fp__media {
     position: relative;
     aspect-ratio: 369 / 332;
     background: {{ section.settings.tile_bg }};
     overflow: hidden;
   }
+
   .jp-fp-{{ sid }} .jp-fp__img {
     position: absolute;
     left: 50%;
@@ -42,9 +43,21 @@
     object-fit: contain;
     transform: translate(-50%, -50%);
   }
-  .jp-fp-{{ sid }} .jp-fp__badge { position: absolute; top: 5%; right: 6%; width: 17%; height: auto; }
 
-  .jp-fp-{{ sid }} .jp-fp__pills { display: flex; gap: 8px; margin: 0 0 16px; }
+  .jp-fp-{{ sid }} .jp-fp__badge {
+    position: absolute;
+    top: 5%;
+    right: 6%;
+    width: 17%;
+    height: auto;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__pills {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 16px;
+  }
+
   .jp-fp-{{ sid }} .jp-fp__pill {
     display: flex;
     align-items: center;
@@ -59,12 +72,57 @@
     font-weight: 500;
     text-align: center;
   }
-  .jp-fp-{{ sid }} .jp-fp__title { margin: 0 0 10px; font-size: 24px; line-height: 30px; font-weight: 700; text-transform: capitalize; color: var(--jp-fp-text); }
-  .jp-fp-{{ sid }} .jp-fp__rating { display: flex; align-items: center; gap: 8px; height: 14px; margin: 0 0 16px; font-size: 12px; line-height: normal; font-weight: 700; white-space: pre; }
-  .jp-fp-{{ sid }} .jp-fp__stars { color: #e5b21a; letter-spacing: 0; font-size: 11.5px; }
-  .jp-fp-{{ sid }} .jp-fp__price { display: flex; align-items: baseline; gap: 6px; margin: 0 0 16px; line-height: 22px; }
-  .jp-fp-{{ sid }} .jp-fp__now { font-size: 24px; line-height: 22px; font-weight: 700; color: var(--jp-fp-red); }
-  .jp-fp-{{ sid }} .jp-fp__was { font-size: 14px; line-height: 22px; font-weight: 500; color: #929292; text-decoration: line-through; }
+
+  .jp-fp-{{ sid }} .jp-fp__title {
+    margin: 0 0 10px;
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: 700;
+    text-transform: capitalize;
+    color: var(--jp-fp-text);
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 14px;
+    margin: 0 0 16px;
+    font-size: 12px;
+    line-height: normal;
+    font-weight: 700;
+    white-space: pre;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__stars {
+    color: #e5b21a;
+    letter-spacing: 0;
+    font-size: 11.5px;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 0 0 16px;
+    line-height: 22px;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__now {
+    font-size: 24px;
+    line-height: 22px;
+    font-weight: 700;
+    color: var(--jp-fp-red);
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__was {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 500;
+    color: #929292;
+    text-decoration: line-through;
+  }
+
   .jp-fp-{{ sid }} .jp-fp__desc {
     margin: 0 0 16px;
     padding: 0 0 15px;
@@ -76,10 +134,28 @@
     opacity: 0.8;
     color: var(--jp-fp-text);
   }
-  .jp-fp-{{ sid }} .jp-fp__desc p { margin: 0; }
 
-  .jp-fp-{{ sid }} .jp-fp__options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin: 0 0 16px; }
-  .jp-fp-{{ sid }} .jp-fp__label { display: block; height: 24px; margin: 0 0 16px; font-size: 16px; line-height: 24px; font-weight: 700; text-transform: capitalize; }
+  .jp-fp-{{ sid }} .jp-fp__desc p {
+    margin: 0;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+    margin: 0 0 16px;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__label {
+    display: block;
+    height: 24px;
+    margin: 0 0 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+
   .jp-fp-{{ sid }} .jp-fp__select {
     width: 100%;
     height: 52px;
@@ -93,8 +169,17 @@
     -webkit-appearance: none;
     cursor: pointer;
   }
-  .jp-fp-{{ sid }} .jp-fp__buy { display: flex; align-items: flex-start; gap: 32px; }
-  .jp-fp-{{ sid }} .jp-fp__qty-wrap { flex: 0 0 173px; }
+
+  .jp-fp-{{ sid }} .jp-fp__buy {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__qty-wrap {
+    flex: 0 0 173px;
+  }
+
   .jp-fp-{{ sid }} .jp-fp__qty {
     display: flex;
     align-items: stretch;
@@ -105,6 +190,7 @@
     overflow: hidden;
     background: #fff;
   }
+
   .jp-fp-{{ sid }} .jp-fp__qty button {
     flex: 0 0 48px;
     border: 0;
@@ -115,7 +201,11 @@
     line-height: 1;
     cursor: pointer;
   }
-  .jp-fp-{{ sid }} .jp-fp__qty button:last-child { border-radius: 0 4px 4px 0; }
+
+  .jp-fp-{{ sid }} .jp-fp__qty button:last-child {
+    border-radius: 0 4px 4px 0;
+  }
+
   .jp-fp-{{ sid }} .jp-fp__qty input {
     flex: 1 1 auto;
     min-width: 0;
@@ -127,9 +217,20 @@
     color: var(--jp-fp-text);
     -moz-appearance: textfield;
   }
+
   .jp-fp-{{ sid }} .jp-fp__qty input::-webkit-outer-spin-button,
-  .jp-fp-{{ sid }} .jp-fp__qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .jp-fp-{{ sid }} .jp-fp__cart { flex: 1 1 auto; min-width: 0; padding-top: 40px; container-type: inline-size; }
+  .jp-fp-{{ sid }} .jp-fp__qty input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__cart {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-top: 40px;
+    container-type: inline-size;
+  }
+
   .jp-fp-{{ sid }} .jp-fp__btn {
     display: block;
     width: 100%;
@@ -143,34 +244,136 @@
     text-transform: uppercase;
     cursor: pointer;
   }
-  .jp-fp-{{ sid }} .jp-fp__btn:hover { filter: brightness(0.93); }
-  .jp-fp-{{ sid }} .jp-fp__btn:disabled { background: #b5b5b5; cursor: not-allowed; filter: none; }
-  .jp-fp-{{ sid }} .jp-fp__trust { display: flex; justify-content: space-between; gap: 4px; max-width: 100%; margin: 8px 0 0; padding: 0; list-style: none; flex-wrap: nowrap; }
-  .jp-fp-{{ sid }} .jp-fp__trust li { display: flex; align-items: center; gap: clamp(3px, 1.6cqw, 6px); color: var(--jp-fp-green); font-size: clamp(8px, 2.9cqw, 11px); line-height: normal; font-weight: 600; text-transform: capitalize; white-space: nowrap; }
-  .jp-fp-{{ sid }} .jp-fp__trust svg { width: clamp(10px, 3.4cqw, 13px); height: clamp(10px, 3.4cqw, 13px); flex: 0 0 auto; }
+
+  .jp-fp-{{ sid }} .jp-fp__btn:hover {
+    filter: brightness(0.93);
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__btn:disabled {
+    background: #b5b5b5;
+    cursor: not-allowed;
+    filter: none;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__trust {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    max-width: 100%;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    flex-wrap: nowrap;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__trust li {
+    display: flex;
+    align-items: center;
+    gap: clamp(3px, 1.6cqw, 6px);
+    color: var(--jp-fp-green);
+    font-size: clamp(8px, 2.9cqw, 11px);
+    line-height: normal;
+    font-weight: 600;
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+
+  .jp-fp-{{ sid }} .jp-fp__trust svg {
+    width: clamp(10px, 3.4cqw, 13px);
+    height: clamp(10px, 3.4cqw, 13px);
+    flex: 0 0 auto;
+  }
+
   .jp-fp-{{ sid }} button:focus-visible,
   .jp-fp-{{ sid }} select:focus-visible,
-  .jp-fp-{{ sid }} input:focus-visible { outline: 2px solid var(--jp-fp-red); outline-offset: 2px; }
+  .jp-fp-{{ sid }} input:focus-visible {
+    outline: 2px solid var(--jp-fp-red);
+    outline-offset: 2px;
+  }
 
   @media (max-width: 1199px) {
-    .jp-fp-{{ sid }} .jp-fp__inner { padding: 0 40px; column-gap: 24px; }
-    .jp-fp-{{ sid }} .jp-fp__options { gap: 20px; }
-    .jp-fp-{{ sid }} .jp-fp__buy { gap: 20px; }
+    .jp-fp-{{ sid }} .jp-fp__inner {
+      padding: 0 40px;
+      column-gap: 24px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__options {
+      gap: 20px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__buy {
+      gap: 20px;
+    }
   }
+
   @media (max-width: 989px) {
-    .jp-fp-{{ sid }} .jp-fp__inner { grid-template-columns: 1fr; row-gap: 8px; padding: 0 17px; }
-    .jp-fp-{{ sid }} .jp-fp__pills { margin-bottom: 8px; }
-    .jp-fp-{{ sid }} .jp-fp__pill { flex-basis: 53px; width: 53px; height: 53px; padding: 0 9px; font-size: 12px; line-height: 13px; }
-    .jp-fp-{{ sid }} .jp-fp__title { margin-bottom: 4px; }
-    .jp-fp-{{ sid }} .jp-fp__price { margin-bottom: 25px; }
-    .jp-fp-{{ sid }} .jp-fp__desc { line-height: 25px; padding-bottom: 15px; }
-    .jp-fp-{{ sid }} .jp-fp__options { grid-template-columns: 1fr; gap: 16px; }
-    .jp-fp-{{ sid }} .jp-fp__buy { flex-direction: column; align-items: stretch; gap: 0; }
-    .jp-fp-{{ sid }} .jp-fp__qty-wrap { flex-basis: auto; }
-    .jp-fp-{{ sid }} .jp-fp__qty button { flex-basis: 70px; }
-    .jp-fp-{{ sid }} .jp-fp__cart { padding-top: 35px; }
-    .jp-fp-{{ sid }} .jp-fp__btn { margin-top: 0; }
-    .jp-fp-{{ sid }} .jp-fp__trust { justify-content: flex-start; gap: 21px; margin-top: 16px; padding-left: 1px; flex-wrap: wrap; }
+    .jp-fp-{{ sid }} .jp-fp__inner {
+      grid-template-columns: 1fr;
+      row-gap: 8px;
+      padding: 0 17px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__pills {
+      margin-bottom: 8px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__pill {
+      flex-basis: 53px;
+      width: 53px;
+      height: 53px;
+      padding: 0 9px;
+      font-size: 12px;
+      line-height: 13px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__title {
+      margin-bottom: 4px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__price {
+      margin-bottom: 25px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__desc {
+      line-height: 25px;
+      padding-bottom: 15px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__options {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__buy {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__qty-wrap {
+      flex-basis: auto;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__qty button {
+      flex-basis: 70px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__cart {
+      padding-top: 35px;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__btn {
+      margin-top: 0;
+    }
+
+    .jp-fp-{{ sid }} .jp-fp__trust {
+      justify-content: flex-start;
+      column-gap: clamp(8px, 3cqw, 12px);
+      row-gap: 12px;
+      margin-top: 16px;
+      padding: 0 1px;
+      flex-wrap: wrap;
+    }
   }
 {% endstyle %}
 
@@ -216,7 +419,7 @@
               {%- for n in (1..5) -%}{% if n <= full %}★{% else %}☆{% endif %}{%- endfor -%}
             </span>
             <span>{{ rating | round: 1 }}/5.00</span>
-            {%- if rating_count != blank -%}<span>( {{ rating_count }} Reviews )</span>{%- endif -%}
+            {%- if rating_count != blank and rating_count != 0 -%}<span>( {{ rating_count }} {{ section.settings.reviews_label }} )</span>{%- endif -%}
           </div>
         {%- endif -%}
 
@@ -282,43 +485,43 @@
       </div>
     </div>
 
-    <script type="application/json" data-jp-fp-variants>{{ product.variants | json }}</script>
+    <script type="application/json" data-jp-fp-variants>{% render 'jp-variants-json', product: product %}</script>
   </section>
 
   <script>
     (function () {
-      var root = document.currentScript.previousElementSibling;
+      let root = document.currentScript.previousElementSibling;
       if (!root || !root.hasAttribute('data-jp-fp')) return;
-      var variants = JSON.parse(root.querySelector('[data-jp-fp-variants]').textContent);
-      var selects = Array.prototype.slice.call(root.querySelectorAll('[data-jp-fp-option]'));
-      var idInput = root.querySelector('[data-jp-fp-id]');
-      var price = root.querySelector('[data-jp-fp-price]');
-      var compare = root.querySelector('[data-jp-fp-compare]');
-      var submit = root.querySelector('[data-jp-fp-submit]');
-      var qty = root.querySelector('[data-jp-fp-qty]');
-      var money = function (cents) {
-        try {
-          return new Intl.NumberFormat(document.documentElement.lang || undefined, { style: 'currency', currency: {{ cart.currency.iso_code | json }} }).format(cents / 100);
-        } catch (e) { return (cents / 100).toFixed(2); }
-      };
+      let variantsNode = root.querySelector('[data-jp-fp-variants]');
+      let variants = variantsNode ? JSON.parse(variantsNode.textContent) : [];
+      let selects = Array.prototype.slice.call(root.querySelectorAll('[data-jp-fp-option]'));
+      let idInput = root.querySelector('[data-jp-fp-id]');
+      let price = root.querySelector('[data-jp-fp-price]');
+      let compare = root.querySelector('[data-jp-fp-compare]');
+      let submit = root.querySelector('[data-jp-fp-submit]');
+      let qty = root.querySelector('[data-jp-fp-qty]');
 
       function update() {
         if (!selects.length) return;
-        var chosen = selects.map(function (s) { return s.value; });
-        var v = variants.find(function (x) { return chosen.every(function (c, i) { return x.options[i] === c; }); });
+        let chosen = selects.map(function (s) { return s.value; });
+        let v = variants.find(function (x) { return chosen.every(function (c, i) { return x.options[i] === c; }); });
         if (!v) { submit.disabled = true; submit.textContent = submit.dataset.soldout; return; }
         idInput.value = v.id;
-        price.textContent = money(v.price);
-        if (v.compare_at_price && v.compare_at_price > v.price) { compare.textContent = money(v.compare_at_price); compare.hidden = false; }
+        price.textContent = v.price_formatted;
+        if (v.compare_at_price && v.compare_at_price > v.price) { compare.textContent = v.compare_formatted; compare.hidden = false; }
         else { compare.hidden = true; }
         submit.disabled = !v.available;
         submit.textContent = v.available ? submit.dataset.label : submit.dataset.soldout;
       }
       selects.forEach(function (s) { s.addEventListener('change', update); });
 
-      root.querySelector('[data-jp-fp-minus]').addEventListener('click', function () { qty.value = Math.max(1, (parseInt(qty.value, 10) || 1) - 1); });
-      root.querySelector('[data-jp-fp-plus]').addEventListener('click', function () { qty.value = (parseInt(qty.value, 10) || 1) + 1; });
-      qty.addEventListener('change', function () { qty.value = Math.max(1, parseInt(qty.value, 10) || 1); });
+      let minusButton = root.querySelector('[data-jp-fp-minus]');
+      let plusButton = root.querySelector('[data-jp-fp-plus]');
+      if (qty) {
+        if (minusButton) minusButton.addEventListener('click', function () { qty.value = Math.max(1, (parseInt(qty.value, 10) || 1) - 1); });
+        if (plusButton) plusButton.addEventListener('click', function () { qty.value = (parseInt(qty.value, 10) || 1) + 1; });
+        qty.addEventListener('change', function () { qty.value = Math.max(1, parseInt(qty.value, 10) || 1); });
+      }
     })();
   </script>
 {%- endif -%}
@@ -332,6 +535,13 @@
       "id": "product",
       "label": "Product",
       "info": "Leave empty to show the first product in the store."
+    },
+    {
+      "type": "text",
+      "id": "reviews_label",
+      "label": "Reviews word",
+      "info": "Shown after the review count, for example ( 117 Reviews ).",
+      "default": "Reviews"
     },
     {
       "type": "richtext",

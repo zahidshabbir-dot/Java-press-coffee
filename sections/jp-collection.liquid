@@ -1,0 +1,931 @@
+{%- assign sid = section.id -%}
+{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+
+{% style %}
+  .jp-cl-{{ sid }} {
+    --jp-cl-red: {{ section.settings.button_color }};
+    --jp-cl-text: {{ section.settings.text_color }};
+    --jp-cl-line: {{ section.settings.line_color }};
+    background: {{ section.settings.bg }};
+    color: var(--jp-cl-text);
+    font-family: 'Raleway', sans-serif;
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+  }
+
+  .jp-cl-{{ sid }} * {
+    box-sizing: border-box;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__desc {
+    max-width: 720px;
+    margin: -15px 0 28px;
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--jp-cl-text);
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__desc p {
+    margin: 0 0 10px;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__desc p:last-child {
+    margin-bottom: 0;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__title {
+    margin: 0 0 33px;
+    font-family: inherit;
+    font-size: 32px;
+    line-height: 30px;
+    font-weight: 700;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--jp-cl-text);
+  }
+  /* Toolbar */
+  .jp-cl-{{ sid }} .jp-cl__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 31px;
+    font-size: 18px;
+    line-height: 30px;
+    font-weight: 400;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__filters {
+    display: flex;
+    align-items: center;
+    gap: 0 32px;
+    min-width: 0;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__filter-label {
+    margin-right: -2px;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__drop {
+    position: relative;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__drop summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__drop summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__caret {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    margin: 0 -2px 0 -2px;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__drop[open] .jp-cl__caret {
+    transform: rotate(180deg);
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 20;
+    min-width: 220px;
+    max-height: 320px;
+    padding: 14px 16px;
+    overflow-y: auto;
+    border: 1px solid var(--jp-cl-line);
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 16px;
+    line-height: 22px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__opt input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--jp-cl-red);
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__opt.is-disabled {
+    opacity: 0.45;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__range input {
+    width: 90px;
+    height: 36px;
+    padding: 0 8px;
+    border: 1px solid var(--jp-cl-line);
+    border-radius: 5px;
+    font: 400 16px 'Raleway', sans-serif;
+    color: var(--jp-cl-text);
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__apply {
+    margin-top: 10px;
+    width: 100%;
+    height: 36px;
+    border: 0;
+    border-radius: 5px;
+    background: var(--jp-cl-red);
+    color: #fff;
+    font: 800 14px 'Raleway', sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__clear {
+    font-size: 14px;
+    text-decoration: underline;
+    color: inherit;
+    white-space: nowrap;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 0 0 auto;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__select {
+    display: block;
+    width: 171px;
+    height: 46px;
+    padding: 0 40px 0 15px;
+    border: 1px solid var(--jp-cl-line);
+    border-radius: 5px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5H7z' fill='%23424242'/%3E%3C/svg%3E") right 10px center / 24px 24px no-repeat;
+    color: #000;
+    font: 700 18px/30px 'Raleway', sans-serif;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__count {
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__mbar,
+  .jp-cl-{{ sid }} .jp-cl__dhead,
+  .jp-cl-{{ sid }} .jp-cl__dfoot,
+  .jp-cl-{{ sid }} .jp-cl__overlay {
+    display: none;
+  }
+  /* Grid */
+  .jp-cl-{{ sid }} .jp-cl__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 276 / 285;
+    border-radius: 5px;
+    background: {{ section.settings.tile_color }};
+    overflow: hidden;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 87%;
+    height: auto;
+    max-height: 90%;
+    object-fit: contain;
+    transform: translate(-50%, -50%);
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__badge {
+    position: absolute;
+    top: 13px;
+    right: 7px;
+    width: 21%;
+    height: auto;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__tag {
+    position: absolute;
+    top: 13px;
+    left: 0;
+    z-index: 1;
+    height: 28px;
+    padding: 0 10px;
+    background: {{ section.settings.tag_bg }};
+    color: #000;
+    font: 600 14px/28px 'Manrope', 'Raleway', sans-serif;
+    white-space: nowrap;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__name {
+    display: block;
+    flex: 1 0 auto;
+    margin: 0;
+    color: var(--jp-cl-text);
+    font-size: 20px;
+    line-height: 25px;
+    font-weight: 700;
+    text-transform: capitalize;
+    text-decoration: none;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 16px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__stars {
+    color: {{ section.settings.star_color }};
+    font-size: 11.5px;
+    letter-spacing: 0;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__star.is-off {
+    color: #d3d3d3;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__reviews {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__price {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin: 0;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__now {
+    font-size: 20px;
+    line-height: 22px;
+    font-weight: 700;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__was {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 500;
+    color: #929292;
+    text-decoration: line-through;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__btn {
+    display: block;
+    width: 100%;
+    height: 50px;
+    padding: 0;
+    border: 0;
+    border-radius: 5px;
+    background: var(--jp-cl-red);
+    color: #fff;
+    font: 800 18px/50px 'Raleway', sans-serif;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__btn:hover {
+    filter: brightness(0.93);
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__btn--off {
+    background: #b5b5b5;
+    cursor: not-allowed;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__form {
+    margin: 0;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__empty {
+    margin: 40px 0;
+    text-align: center;
+    font-size: 18px;
+  }
+  /* Pagination */
+  .jp-cl-{{ sid }} .jp-cl__pages {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin: 91px 0 0;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__page {
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #000;
+    color: #fff;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__page svg {
+    display: block;
+    width: 30px;
+    height: 30px;
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__page--prev svg {
+    transform: rotate(180deg);
+  }
+
+  .jp-cl-{{ sid }} .jp-cl__page.is-off {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  .jp-cl-{{ sid }} a:focus-visible,
+  .jp-cl-{{ sid }} button:focus-visible,
+  .jp-cl-{{ sid }} select:focus-visible,
+  .jp-cl-{{ sid }} summary:focus-visible {
+    outline: 2px solid var(--jp-cl-text);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 989px) {
+    .jp-cl-{{ sid }} .jp-cl__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px 16px;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__bar {
+      flex-wrap: wrap;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__pages {
+      margin-top: 48px;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .jp-cl-{{ sid }} {
+      padding: {{ section.settings.padding_top_mobile }}px 16px {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    /* Mobile: filter and sort side panel */
+    .jp-cl-{{ sid }} .jp-cl__mbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 20px;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__mopen {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__mopen svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 290;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .jp-cl-{{ sid }}.is-open .jp-cl__overlay {
+      display: block;
+    }
+
+    .jp-cl-{{ sid }}.is-open .jp-cl__overlay[hidden] {
+      display: block;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__bar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 0;
+      text-align: left;
+      width: min(100%, 440px);
+      margin: 0;
+      background: #fff;
+      font-size: 18px;
+      transform: translateX(-100%);
+      visibility: hidden;
+      transition: transform .25s, visibility .25s;
+    }
+
+    .jp-cl-{{ sid }}.is-open .jp-cl__bar {
+      transform: none;
+      visibility: visible;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__dhead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex: 0 0 auto;
+      padding: 14px 16px;
+      border-bottom: 1px solid #ececec;
+      text-align: center;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__dhead > div {
+      flex: 1;
+      padding-left: 24px;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__dtitle {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__dcount {
+      margin: 0;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 400;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__dclose {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__dclose svg {
+      display: block;
+      width: 24px;
+      height: 24px;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__filters {
+      display: block;
+      flex: 0 0 auto;
+      padding: 28px 16px 0;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__filter-label,
+    .jp-cl-{{ sid }} .jp-cl__filters > .jp-cl__clear {
+      display: none;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__drop summary {
+      justify-content: space-between;
+      padding: 17px 0;
+      font-size: 18px;
+      line-height: 30px;
+      font-weight: 400;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__caret {
+      display: none;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__drop summary::after {
+      content: '';
+      flex: 0 0 22px;
+      width: 22px;
+      height: 22px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M4 12h15M13 6l6 6-6 6' stroke='%23424242' stroke-width='1.5'/%3E%3C/svg%3E") center / 22px 22px no-repeat;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__drop[open] summary::after {
+      transform: rotate(90deg);
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__drop,
+    .jp-cl-{{ sid }} .jp-cl__drop summary,
+    .jp-cl-{{ sid }} .jp-cl__filters,
+    .jp-cl-{{ sid }} .jp-cl__right {
+      width: 100%;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__panel {
+      position: static;
+      min-width: 0;
+      max-height: none;
+      padding: 0 0 12px;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__right {
+      display: block;
+      flex: 0 0 auto;
+      width: auto;
+      padding: 0 16px;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__sort-wrap {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 17px 0;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__select {
+      flex: 1;
+      width: auto;
+      height: 30px;
+      padding: 0 30px 0 0;
+      border: 0;
+      font: 400 18px/30px 'Raleway', sans-serif;
+      color: inherit;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M4 12h15M13 6l6 6-6 6' stroke='%23424242' stroke-width='1.5'/%3E%3C/svg%3E") right center / 22px 22px no-repeat;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__count {
+      display: none;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__dfoot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: auto;
+      flex: 0 0 auto;
+      padding: 18px 16px;
+      border-top: 1px solid #ececec;
+      background: #fff;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__remove {
+      font-size: 16px;
+      line-height: 24px;
+      color: inherit;
+      text-decoration: underline;
+      white-space: nowrap;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__dapply {
+      flex: 0 1 233px;
+      height: 60px;
+      border: 0;
+      border-radius: 5px;
+      background: var(--jp-cl-red);
+      color: #fff;
+      font: 800 16px 'Raleway', sans-serif;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__name {
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__rating {
+      font-size: 12px;
+    }
+
+    .jp-cl-{{ sid }} .jp-cl__btn {
+      height: 44px;
+      font-size: 14px;
+      line-height: 44px;
+    }
+  }
+{% endstyle %}
+
+{%- paginate collection.products by section.settings.products_per_page -%}
+<section class="jp-cl-{{ sid }}" data-jp-cl>
+  <div class="jp-cl__inner">
+    <h1 class="jp-cl__title">{{ collection.title }}</h1>
+    {%- if section.settings.show_description and collection.description != blank -%}
+      <div class="jp-cl__desc rte">{{ collection.description }}</div>
+    {%- endif -%}
+
+    <div class="jp-cl__mbar">
+      <button type="button" class="jp-cl__mopen" data-jp-cl-open aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7h9M16 7h5M3 17h5M12 17h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="14" cy="7" r="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="17" r="2.2" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>{{ section.settings.filter_sort_label }}</span>
+      </button>
+      <span>{{ collection.products_count }} {{ section.settings.count_label }}</span>
+    </div>
+    <div class="jp-cl__overlay" data-jp-cl-close hidden></div>
+
+    <form class="jp-cl__form-bar" id="jp-cl-form-{{ sid }}" method="get" action="{{ collection.url }}">
+      <div class="jp-cl__bar" role="dialog" aria-label="{{ section.settings.filter_sort_label | escape }}">
+        <div class="jp-cl__dhead">
+          <div>
+            <p class="jp-cl__dtitle">{{ section.settings.filter_sort_label }}</p>
+            <p class="jp-cl__dcount">{{ collection.products_count }} {{ section.settings.count_label }}</p>
+          </div>
+          <button type="button" class="jp-cl__dclose" data-jp-cl-close aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="jp-cl__filters">
+          {%- if section.settings.enable_filtering and collection.filters.size > 0 -%}
+            <span class="jp-cl__filter-label">{{ section.settings.filter_label }}</span>
+            {%- for filter in collection.filters -%}
+              <details class="jp-cl__drop">
+                <summary>
+                  <span>{{ filter.label }}</span>
+                  <svg class="jp-cl__caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5H7z" fill="currentColor"/></svg>
+                </summary>
+                <div class="jp-cl__panel">
+                  {%- if filter.type == 'price_range' -%}
+                    <div class="jp-cl__range">
+                      <input type="number" name="{{ filter.min_value.param_name }}" value="{%- if filter.min_value.value != blank -%}{{ filter.min_value.value | divide: 100.0 }}{%- endif -%}" min="0" placeholder="{{ filter.range_min | divide: 100.0 }}" aria-label="Minimum price">
+                      <span>–</span>
+                      <input type="number" name="{{ filter.max_value.param_name }}" value="{%- if filter.max_value.value != blank -%}{{ filter.max_value.value | divide: 100.0 }}{%- endif -%}" min="0" placeholder="{{ filter.range_max | divide: 100.0 }}" aria-label="Maximum price">
+                    </div>
+                  {%- else -%}
+                    {%- for value in filter.values -%}
+                      <label class="jp-cl__opt{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+                        <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}"{% if value.active %} checked{% endif %}{% if value.count == 0 and value.active == false %} disabled{% endif %} data-jp-cl-auto>
+                        {{ value.label }} ({{ value.count }})
+                      </label>
+                    {%- endfor -%}
+                  {%- endif -%}
+                  {%- if filter.type == 'price_range' -%}<button type="submit" class="jp-cl__apply">{{ section.settings.apply_label }}</button>{%- endif -%}
+                </div>
+              </details>
+            {%- endfor -%}
+            {%- if collection.filters.size > 0 -%}
+              {%- assign has_active = false -%}
+              {%- for filter in collection.filters -%}
+                {%- if filter.type == 'price_range' -%}
+                  {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}{%- assign has_active = true -%}{%- endif -%}
+                {%- elsif filter.active_values.size > 0 -%}
+                  {%- assign has_active = true -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if has_active -%}<a class="jp-cl__clear" href="{{ collection.url }}?sort_by={{ sort_by }}">{{ section.settings.clear_label }}</a>{%- endif -%}
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+
+        <div class="jp-cl__right">
+          {%- if section.settings.enable_sorting -%}
+            <div class="jp-cl__sort-wrap">
+              <label for="jp-cl-sort-{{ sid }}">{{ section.settings.sort_label }}</label>
+              <select class="jp-cl__select" id="jp-cl-sort-{{ sid }}" name="sort_by" data-jp-cl-auto>
+                {%- for option in collection.sort_options -%}
+                  <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- endif -%}
+          <span class="jp-cl__count">{{ collection.products_count }} {{ section.settings.count_label }}</span>
+        </div>
+        <div class="jp-cl__dfoot">
+          <a class="jp-cl__remove" href="{{ collection.url }}?sort_by={{ sort_by }}">{{ section.settings.remove_label }}</a>
+          <button type="submit" class="jp-cl__dapply">{{ section.settings.apply_label }}</button>
+        </div>
+      </div>
+    </form>
+
+    {%- if collection.products.size == 0 -%}
+      <p class="jp-cl__empty">{{ section.settings.empty_text }}</p>
+    {%- else -%}
+      <ul class="jp-cl__grid">
+        {%- for product in collection.products -%}
+          {%- assign rating = product.metafields.reviews.rating.value.rating -%}
+          {%- assign rating_count = product.metafields.reviews.rating_count.value -%}
+          {%- assign shown_rating = rating -%}
+          {%- assign shown_count = rating_count -%}
+          {%- if shown_rating == blank -%}
+            {%- assign shown_rating = section.settings.default_stars -%}
+            {%- assign shown_count = section.settings.default_reviews -%}
+          {%- endif -%}
+          {%- assign full = shown_rating | round | at_most: 5 -%}
+          <li class="jp-cl__card">
+            <a class="jp-cl__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+              {%- if section.settings.tag_text != blank and product.tags contains section.settings.tag_text -%}
+                <span class="jp-cl__tag">{{ section.settings.tag_text }}</span>
+              {%- endif -%}
+              {%- if product.featured_image != blank -%}
+                {{ product.featured_image | image_url: width: 600 | image_tag: class: 'jp-cl__img', alt: product.title, loading: 'lazy' }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'jp-cl__img' }}
+              {%- endif -%}
+              {%- if section.settings.show_badge -%}
+                {%- if section.settings.badge != blank -%}
+                  {{ section.settings.badge | image_url: width: 200 | image_tag: class: 'jp-cl__badge', alt: '', loading: 'lazy' }}
+                {%- else -%}
+                  <img class="jp-cl__badge" src="{{ 'badge-farmed-for-good.png' | asset_url }}" width="171" height="189" alt="" loading="lazy">
+                {%- endif -%}
+              {%- endif -%}
+            </a>
+            <a class="jp-cl__name" href="{{ product.url }}">{{ product.title }}</a>
+            <div class="jp-cl__rating">
+              <span class="jp-cl__stars" role="img" aria-label="{{ shown_rating }} out of 5 stars">
+                {%- for n in (1..5) -%}<span class="jp-cl__star{% if n > full %} is-off{% endif %}">★</span>{%- endfor -%}
+              </span>
+              {%- if shown_count != blank and shown_count != 0 and shown_count != '0' -%}<span class="jp-cl__reviews">( {{ shown_count }} {{ section.settings.reviews_label }} )</span>{%- endif -%}
+            </div>
+            <div class="jp-cl__price">
+              <span class="jp-cl__now">{{ product.price | money }}</span>
+              {%- if product.compare_at_price > product.price -%}
+                <s class="jp-cl__was">{{ product.compare_at_price | money }}</s>
+              {%- endif -%}
+            </div>
+            {%- if product.has_only_default_variant and product.available -%}
+              {%- form 'product', product, class: 'jp-cl__form' -%}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="submit" class="jp-cl__btn">{{ section.settings.button_label }}</button>
+              {%- endform -%}
+            {%- elsif product.available -%}
+              <a class="jp-cl__btn" href="{{ product.url }}">{{ section.settings.button_options_label }}</a>
+            {%- else -%}
+              <span class="jp-cl__btn jp-cl__btn--off">{{ section.settings.sold_out_label }}</span>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if paginate.pages > 1 -%}
+      <nav class="jp-cl__pages" aria-label="Pagination">
+        <a class="jp-cl__page jp-cl__page--prev{% unless paginate.previous %} is-off{% endunless %}" {% if paginate.previous %}href="{{ paginate.previous.url }}"{% endif %} aria-label="Previous page">
+          <svg viewBox="0 0 30 30" fill="none" aria-hidden="true"><path d="M12.555 9.111l5.556 5.556-5.556 5.555" stroke="#fff" stroke-width="2"/></svg>
+        </a>
+        <a class="jp-cl__page{% unless paginate.next %} is-off{% endunless %}" {% if paginate.next %}href="{{ paginate.next.url }}"{% endif %} aria-label="Next page">
+          <svg viewBox="0 0 30 30" fill="none" aria-hidden="true"><path d="M12.555 9.111l5.556 5.556-5.556 5.555" stroke="#fff" stroke-width="2"/></svg>
+        </a>
+      </nav>
+    {%- endif -%}
+  </div>
+</section>
+{%- endpaginate -%}
+
+<script>
+  (function () {
+    let root = document.currentScript.previousElementSibling;
+    if (!root || !root.hasAttribute('data-jp-cl')) return;
+    let form = root.querySelector('form');
+    if (!form) return;
+    let timer;
+    let isOpen = false;
+    let savedOverflow = '';
+    let mq = window.matchMedia('(max-width: 749px)');
+    function setOpen(open) {
+      if (open === isOpen) return;
+      isOpen = open;
+      root.classList.toggle('is-open', open);
+      let ov = root.querySelector('.jp-cl__overlay');
+      if (ov) ov.hidden = !open;
+      /* only undo the page scroll lock that this panel set itself */
+      if (open) {
+        savedOverflow = document.documentElement.style.overflow;
+        document.documentElement.style.overflow = 'hidden';
+      } else {
+        document.documentElement.style.overflow = savedOverflow;
+      }
+    }
+    /* document listeners remove themselves when the section is re-rendered (theme editor) */
+    function onKey(e) {
+      if (!root.isConnected) { document.removeEventListener('keydown', onKey); return; }
+      if (e.key === 'Escape' && isOpen) setOpen(false);
+    }
+    function onDocClick(e) {
+      if (!root.isConnected) { document.removeEventListener('click', onDocClick); return; }
+      if (mq.matches) return;
+      root.querySelectorAll('details.jp-cl__drop[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });
+    }
+    function onMq() {
+      if (!root.isConnected) { mq.removeEventListener('change', onMq); return; }
+      if (!mq.matches) setOpen(false);
+    }
+    root.querySelectorAll('[data-jp-cl-open]').forEach(function (b) { b.addEventListener('click', function () { setOpen(true); }); });
+    root.querySelectorAll('[data-jp-cl-close]').forEach(function (b) { b.addEventListener('click', function () { setOpen(false); }); });
+    document.addEventListener('keydown', onKey);
+    mq.addEventListener('change', onMq);
+    form.addEventListener('change', function (e) {
+      if (mq.matches || !e.target.hasAttribute('data-jp-cl-auto')) return;
+      clearTimeout(timer);
+      timer = setTimeout(function () { form.submit(); }, 250);
+    });
+    document.addEventListener('click', onDocClick);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "JP Collection",
+  "settings": [
+    { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 4, "max": 48, "step": 4, "default": 16 },
+    { "type": "checkbox", "id": "enable_filtering", "label": "Show filters", "info": "Filters come from Shopify's Search & Discovery app.", "default": true },
+    { "type": "checkbox", "id": "enable_sorting", "label": "Show sorting", "default": true },
+    { "type": "text", "id": "filter_label", "label": "Filter label", "default": "Filter:" },
+    { "type": "text", "id": "filter_sort_label", "label": "Mobile filter button text", "default": "Filter and sort" },
+    { "type": "text", "id": "remove_label", "label": "Mobile remove all text", "default": "Remove All" },
+    { "type": "text", "id": "sort_label", "label": "Sort label", "default": "Sort By:" },
+    { "type": "text", "id": "count_label", "label": "Product count word", "default": "products" },
+    { "type": "text", "id": "apply_label", "label": "Apply button text", "default": "Apply" },
+    { "type": "text", "id": "clear_label", "label": "Clear filters text", "default": "Clear all" },
+    { "type": "text", "id": "empty_text", "label": "No products text", "default": "No products found." },
+
+    { "type": "header", "content": "Cards" },
+    { "type": "text", "id": "button_label", "label": "Add to cart text", "default": "Add to cart" },
+    { "type": "text", "id": "button_options_label", "label": "Button text (products with options)", "default": "Choose options" },
+    { "type": "text", "id": "sold_out_label", "label": "Sold out text", "default": "Sold out" },
+    { "type": "text", "id": "tag_text", "label": "Label tag", "info": "Products with this tag show a label on the image. Leave empty to hide.", "default": "Best Seller" },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "info": "Shows the description from the collection page in Shopify admin, under the title.", "default": true },
+    { "type": "checkbox", "id": "show_badge", "label": "Show badge", "default": true },
+    { "type": "image_picker", "id": "badge", "label": "Badge image", "info": "Leave empty to use the Farmed for Good badge." },
+
+    { "type": "header", "content": "Reviews" },
+    { "type": "range", "id": "default_stars", "label": "Stars when a product has no reviews", "min": 0, "max": 5, "step": 1, "default": 5 },
+    { "type": "text", "id": "default_reviews", "label": "Review count when a product has no reviews", "info": "Leave empty to hide the count.", "default": "1171" },
+    { "type": "text", "id": "reviews_label", "label": "Reviews word", "default": "Reviews" },
+
+    { "type": "header", "content": "Style" },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#ffffff" },
+    { "type": "color", "id": "tile_color", "label": "Image background", "default": "#d9d9d9" },
+    { "type": "color", "id": "tag_bg", "label": "Label background", "default": "#fae5b9" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#424242" },
+    { "type": "color", "id": "line_color", "label": "Border color", "default": "#c4d1d0" },
+    { "type": "color", "id": "button_color", "label": "Button", "default": "#ef4444" },
+    { "type": "color", "id": "star_color", "label": "Star color", "default": "#ef4444" },
+    { "type": "range", "id": "padding_top", "label": "Top padding (desktop)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 81 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding (desktop)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 100 },
+    { "type": "range", "id": "padding_top_mobile", "label": "Top padding (mobile)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 32 },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Bottom padding (mobile)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 48 }
+  ]
+}
+{% endschema %}

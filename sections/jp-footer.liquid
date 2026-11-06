@@ -1,8 +1,3 @@
-{% render 'jp-fonts' %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Comforter&display=swap" rel="stylesheet">
-
 {%- assign sid = section.id -%}
 
 {% style %}
@@ -12,25 +7,42 @@
     color: {{ section.settings.text_color }};
     font-family: 'Raleway', sans-serif;
   }
-  .jp-ft-{{ sid }} * { box-sizing: border-box; }
-  .jp-ft-{{ sid }} a { color: inherit; text-decoration: none; }
-  .jp-ft-{{ sid }} a:hover { text-decoration: underline; }
-  .jp-ft-{{ sid }} a:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+  .jp-ft-{{ sid }} * {
+    box-sizing: border-box;
+  }
+
+  .jp-ft-{{ sid }} a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .jp-ft-{{ sid }} a:hover {
+    text-decoration: underline;
+  }
+
+  .jp-ft-{{ sid }} a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
 
   .jp-ft-{{ sid }} .jp-ft__inner {
     max-width: 1440px;
     margin: 0 auto;
     padding: 49px clamp(40px, 8.334vw, 120px) 20px;
   }
+
   .jp-ft-{{ sid }} .jp-ft__top {
     display: grid;
     grid-template-columns: minmax(0, 512px) repeat(3, minmax(0, 207px));
     justify-content: start;
     align-items: start;
   }
-
   /* Brand column */
-  .jp-ft-{{ sid }} .jp-ft__brand { max-width: 378px; }
+  .jp-ft-{{ sid }} .jp-ft__brand {
+    max-width: 378px;
+  }
+
   .jp-ft-{{ sid }} .jp-ft__logo {
     display: block;
     margin: 0 0 12px;
@@ -41,14 +53,60 @@
     white-space: nowrap;
     color: inherit;
   }
-  .jp-ft-{{ sid }} .jp-ft__logo img { display: block; height: 45px; width: auto; }
-  .jp-ft-{{ sid }} .jp-ft__about { margin: 0 0 15px; font-size: 16px; line-height: 25px; font-weight: 500; }
-  .jp-ft-{{ sid }} .jp-ft__about p { margin: 0; }
-  .jp-ft-{{ sid }} .jp-ft__social { display: flex; gap: 8px; margin: 0 0 33px; padding: 0; list-style: none; }
-  .jp-ft-{{ sid }} .jp-ft__social a { display: block; width: 36px; height: 36px; }
-  .jp-ft-{{ sid }} .jp-ft__social img { display: block; width: 36px; height: 36px; }
-  .jp-ft-{{ sid }} .jp-ft__rating { display: flex; align-items: center; gap: 5px; height: 14px; font-size: 11px; line-height: normal; font-weight: 700; white-space: pre; }
-  .jp-ft-{{ sid }} .jp-ft__stars { display: flex; flex: 0 0 auto; }
+
+  .jp-ft-{{ sid }} .jp-ft__logo img {
+    display: block;
+    height: 45px;
+    width: auto;
+  }
+
+  .jp-ft-{{ sid }} .jp-ft__about {
+    margin: 0 0 15px;
+    font-size: 16px;
+    line-height: 25px;
+    font-weight: 500;
+  }
+
+  .jp-ft-{{ sid }} .jp-ft__about p {
+    margin: 0;
+  }
+
+  .jp-ft-{{ sid }} .jp-ft__social {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 33px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .jp-ft-{{ sid }} .jp-ft__social a {
+    display: block;
+    width: 36px;
+    height: 36px;
+  }
+
+  .jp-ft-{{ sid }} .jp-ft__social img {
+    display: block;
+    width: 36px;
+    height: 36px;
+  }
+
+  .jp-ft-{{ sid }} .jp-ft__rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 14px;
+    font-size: 11px;
+    line-height: normal;
+    font-weight: 700;
+    white-space: pre;
+  }
+
+  .jp-ft-{{ sid }} .jp-ft__stars {
+    display: flex;
+    flex: 0 0 auto;
+  }
+
   .jp-ft-{{ sid }} .jp-ft__star {
     width: 10.881px;
     height: 11.548px;
@@ -56,13 +114,34 @@
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") center / contain no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") center / contain no-repeat;
   }
-
   /* Link columns */
-  .jp-ft-{{ sid }} .jp-ft__title { margin: 0 0 31px; font-family: inherit; font-size: 20px; line-height: 26.37px; font-weight: 700; letter-spacing: normal; text-transform: none; color: inherit; }
-  .jp-ft-{{ sid }} .jp-ft__links { margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 19px; font-weight: 400; }
-  .jp-ft-{{ sid }} .jp-ft__links li { margin: 0 0 19px; }
-  .jp-ft-{{ sid }} .jp-ft__links li:last-child { margin-bottom: 0; }
+  .jp-ft-{{ sid }} .jp-ft__title {
+    margin: 0 0 31px;
+    font-family: inherit;
+    font-size: 20px;
+    line-height: 26.37px;
+    font-weight: 700;
+    letter-spacing: normal;
+    text-transform: none;
+    color: inherit;
+  }
 
+  .jp-ft-{{ sid }} .jp-ft__links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 16px;
+    line-height: 19px;
+    font-weight: 400;
+  }
+
+  .jp-ft-{{ sid }} .jp-ft__links li {
+    margin: 0 0 19px;
+  }
+
+  .jp-ft-{{ sid }} .jp-ft__links li:last-child {
+    margin-bottom: 0;
+  }
   /* Bottom bar */
   .jp-ft-{{ sid }} .jp-ft__bar {
     margin-top: 24px;
@@ -75,16 +154,46 @@
   }
 
   @media (max-width: 1199px) {
-    .jp-ft-{{ sid }} .jp-ft__top { grid-template-columns: minmax(0, 1.9fr) repeat(3, minmax(0, 1fr)); column-gap: 24px; }
+    .jp-ft-{{ sid }} .jp-ft__top {
+      grid-template-columns: minmax(0, 1.9fr) repeat(3, minmax(0, 1fr));
+      column-gap: 24px;
+    }
   }
+
   @media (max-width: 749px) {
-    .jp-ft-{{ sid }} .jp-ft__inner { padding: 34px 16px 12px; }
-    .jp-ft-{{ sid }} .jp-ft__top { grid-template-columns: minmax(0, 240px) minmax(0, 1fr); column-gap: 0; row-gap: 49px; }
-    .jp-ft-{{ sid }} .jp-ft__brand { grid-column: 1 / -1; max-width: none; margin-bottom: 9px; }
-    .jp-ft-{{ sid }} .jp-ft__logo { margin-bottom: 15px; }
-    .jp-ft-{{ sid }} .jp-ft__social { margin-bottom: 0; }
-    .jp-ft-{{ sid }} .jp-ft__rating { display: none; }
-    .jp-ft-{{ sid }} .jp-ft__bar { margin: 60px 7px 0; padding-top: 15px; font-size: 12px; }
+    .jp-ft-{{ sid }} .jp-ft__inner {
+      padding: 34px 16px 12px;
+    }
+
+    .jp-ft-{{ sid }} .jp-ft__top {
+      grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+      column-gap: 0;
+      row-gap: 49px;
+    }
+
+    .jp-ft-{{ sid }} .jp-ft__brand {
+      grid-column: 1 / -1;
+      max-width: none;
+      margin-bottom: 9px;
+    }
+
+    .jp-ft-{{ sid }} .jp-ft__logo {
+      margin-bottom: 15px;
+    }
+
+    .jp-ft-{{ sid }} .jp-ft__social {
+      margin-bottom: 0;
+    }
+
+    .jp-ft-{{ sid }} .jp-ft__rating {
+      display: none;
+    }
+
+    .jp-ft-{{ sid }} .jp-ft__bar {
+      margin: 60px 7px 0;
+      padding-top: 15px;
+      font-size: 12px;
+    }
   }
 {% endstyle %}
 

@@ -1,0 +1,41 @@
+{%- comment -%}
+  Line icons for the JP Callout section. They are drawn with currentColor.
+  Usage: {% render 'jp-callout-icon', index: forloop.index %}
+  Icons 1 to 4 match the design. Icons 5 and 6 are used when a merchant adds more blocks.
+{%- endcomment -%}
+{%- assign slot = index | minus: 1 | modulo: 6 | plus: 1 -%}
+<svg viewBox="0 0 96 96" width="96" height="96" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <circle cx="48" cy="48" r="44" stroke-dasharray="0.1 5.2" stroke-width="2.6"/>
+  {%- case slot -%}
+    {%- when 1 -%}
+      <path d="M48 76V52"/>
+      <path d="M48 56c-8-2-14-8-15-16 8 0 14 5 15 16z"/>
+      <path d="M48 52c6-4 12-6 18-4-2 7-8 11-18 12"/>
+      <circle cx="42" cy="34" r="5"/>
+      <circle cx="54" cy="38" r="5"/>
+      <circle cx="48" cy="26" r="4"/>
+      <path d="M22 36h14v8H22zM60 36h14v8H60z" fill="currentColor"/>
+    {%- when 2 -%}
+      <circle cx="48" cy="48" r="26"/>
+      <path d="M22 48h52M48 22c-12 12-12 40 0 52M48 22c12 12 12 40 0 52"/>
+      <path d="M26 36c8 2 14 0 20-4M52 62c6-2 12 0 18 4"/>
+      <path d="M62 58l1.6 3.4 3.7.5-2.7 2.6.7 3.7-3.3-1.8-3.3 1.8.7-3.7-2.700-2.600 3.700-.5z" fill="currentColor" stroke-width="1"/>
+    {%- when 3 -%}
+      <circle cx="44" cy="44" r="22"/>
+      <path d="M44 30v14l9 6"/>
+      <ellipse cx="62" cy="62" rx="11" ry="15" transform="rotate(-25 62 62)"/>
+      <path d="M55 70c6-4 10-12 14-18"/>
+      <path d="M66 36c2-4 6-6 10-6M70 42c2-2 5-3 8-2"/>
+    {%- when 4 -%}
+      <rect x="32" y="30" width="32" height="36" rx="8"/>
+      <path d="M38 30l2-8h16l2 8M38 66l2 8h16l2-8"/>
+      <circle cx="46" cy="48" r="9"/>
+      <path d="M46 42v6l4 3"/>
+      <path d="M58 36c1-3 5-3 6 0-1 3-3 4-6 6-3-2-5-3-6-6 1-3 5-3 6 0z" stroke-width="1.6"/>
+      <ellipse cx="55" cy="58" rx="6" ry="8" transform="rotate(-25 55 58)" fill="currentColor" stroke="none"/>
+    {%- when 5 -%}
+      <path d="M48 24l7.600 15.400 17 2.500-12.300 12 2.900 16.900L48 62.800 32.800 70.800l2.900-16.900-12.300-12 17-2.500z"/>
+    {%- when 6 -%}
+      <path d="M48 72S24 58 24 40c0-8 6-13 12-13 5 0 9 3 12 8 3-5 7-8 12-8 6 0 12 5 12 13 0 18-24 32-24 32z"/>
+  {%- endcase -%}
+</svg>
