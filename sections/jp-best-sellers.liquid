@@ -254,7 +254,7 @@
                     <span class="jp-bs__stars" role="img" aria-label="{{ shown_rating }} out of 5 stars">
                       {%- for n in (1..5) -%}<span class="jp-bs__star{% if n > full %} is-off{% endif %}">★</span>{%- endfor -%}
                     </span>
-                    {%- if shown_count != blank and shown_count != '0' -%}<span class="jp-bs__reviews">( {{ shown_count }} {{ section.settings.reviews_label }} )</span>{%- endif -%}
+                    {%- if shown_count != blank and shown_count != 0 and shown_count != '0' -%}<span class="jp-bs__reviews">( {{ shown_count }} {{ section.settings.reviews_label }} )</span>{%- endif -%}
                   </div>
                 {%- endif -%}
                 <div class="jp-bs__price">

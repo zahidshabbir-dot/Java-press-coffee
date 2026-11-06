@@ -1,7 +1,4 @@
 {% render 'jp-fonts' %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 
 {%- assign sid = section.id -%}
 {%- assign product = section.settings.product | default: collections.all.products.first -%}
@@ -216,7 +213,7 @@
               {%- for n in (1..5) -%}{% if n <= full %}★{% else %}☆{% endif %}{%- endfor -%}
             </span>
             <span>{{ rating | round: 1 }}/5.00</span>
-            {%- if rating_count != blank -%}<span>( {{ rating_count }} Reviews )</span>{%- endif -%}
+            {%- if rating_count != blank and rating_count != 0 -%}<span>( {{ rating_count }} Reviews )</span>{%- endif -%}
           </div>
         {%- endif -%}
 

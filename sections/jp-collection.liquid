@@ -1,7 +1,4 @@
 {% render 'jp-fonts' %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600&display=swap" rel="stylesheet">
 
 {%- assign sid = section.id -%}
 {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
@@ -18,6 +15,9 @@
   }
   .jp-cl-{{ sid }} * { box-sizing: border-box; }
   .jp-cl-{{ sid }} .jp-cl__inner { max-width: 1200px; margin: 0 auto; }
+  .jp-cl-{{ sid }} .jp-cl__desc { max-width: 720px; margin: -15px 0 28px; font-size: 15px; line-height: 24px; font-weight: 500; color: var(--jp-cl-text); }
+  .jp-cl-{{ sid }} .jp-cl__desc p { margin: 0 0 10px; }
+  .jp-cl-{{ sid }} .jp-cl__desc p:last-child { margin-bottom: 0; }
   .jp-cl-{{ sid }} .jp-cl__title { margin: 0 0 33px; font-family: inherit; font-size: 32px; line-height: 30px; font-weight: 700; letter-spacing: normal; text-transform: none; color: var(--jp-cl-text); }
 
   /* Toolbar */
@@ -132,6 +132,9 @@
 <section class="jp-cl-{{ sid }}" data-jp-cl>
   <div class="jp-cl__inner">
     <h1 class="jp-cl__title">{{ collection.title }}</h1>
+    {%- if section.settings.show_description and collection.description != blank -%}
+      <div class="jp-cl__desc rte">{{ collection.description }}</div>
+    {%- endif -%}
 
     <div class="jp-cl__mbar">
       <button type="button" class="jp-cl__mopen" data-jp-cl-open aria-haspopup="dialog">
@@ -184,7 +187,11 @@
             {%- if collection.filters.size > 0 -%}
               {%- assign has_active = false -%}
               {%- for filter in collection.filters -%}
-                {%- if filter.active_values.size > 0 or filter.type == 'price_range' and filter.min_value.value != blank or filter.max_value.value != blank -%}{%- assign has_active = true -%}{%- endif -%}
+                {%- if filter.type == 'price_range' -%}
+                  {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}{%- assign has_active = true -%}{%- endif -%}
+                {%- elsif filter.active_values.size > 0 -%}
+                  {%- assign has_active = true -%}
+                {%- endif -%}
               {%- endfor -%}
               {%- if has_active -%}<a class="jp-cl__clear" href="{{ collection.url }}?sort_by={{ sort_by }}">{{ section.settings.clear_label }}</a>{%- endif -%}
             {%- endif -%}
@@ -248,7 +255,7 @@
               <span class="jp-cl__stars" role="img" aria-label="{{ shown_rating }} out of 5 stars">
                 {%- for n in (1..5) -%}<span class="jp-cl__star{% if n > full %} is-off{% endif %}">★</span>{%- endfor -%}
               </span>
-              {%- if shown_count != blank and shown_count != '0' -%}<span class="jp-cl__reviews">( {{ shown_count }} {{ section.settings.reviews_label }} )</span>{%- endif -%}
+              {%- if shown_count != blank and shown_count != 0 and shown_count != '0' -%}<span class="jp-cl__reviews">( {{ shown_count }} {{ section.settings.reviews_label }} )</span>{%- endif -%}
             </div>
             <div class="jp-cl__price">
               <span class="jp-cl__now">{{ product.price | money }}</span>
@@ -336,6 +343,7 @@
     { "type": "text", "id": "button_options_label", "label": "Button text (products with options)", "default": "Choose options" },
     { "type": "text", "id": "sold_out_label", "label": "Sold out text", "default": "Sold out" },
     { "type": "text", "id": "tag_text", "label": "Label tag", "info": "Products with this tag show a label on the image. Leave empty to hide.", "default": "Best Seller" },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "info": "Shows the description from the collection page in Shopify admin, under the title.", "default": true },
     { "type": "checkbox", "id": "show_badge", "label": "Show badge", "default": true },
     { "type": "image_picker", "id": "badge", "label": "Badge image", "info": "Leave empty to use the Farmed for Good badge." },
 

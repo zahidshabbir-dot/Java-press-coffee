@@ -1,7 +1,4 @@
 {% render 'jp-fonts' %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 
 {%- assign sid = section.id -%}
 {%- assign current = product.selected_or_first_available_variant -%}
@@ -106,6 +103,8 @@
   .jp-mp-{{ sid }} .jp-mp__item[open] summary { padding-top: 14px; padding-bottom: 0; align-items: flex-start; }
   .jp-mp-{{ sid }} .jp-mp__item[open] summary svg { transform: rotate(45deg); }
   .jp-mp-{{ sid }} .jp-mp__acc-body { padding: 15px 25px 28px; font-size: 14px; line-height: 22px; font-weight: 500; text-transform: capitalize; }
+  .jp-mp-{{ sid }} .jp-mp__howto { display: block; margin: 14px 0 0; padding: 0; border: 0; background: none; color: var(--jp-mp-accent, {{ section.settings.accent }}); font: inherit; font-size: 14px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; text-transform: none; cursor: pointer; }
+  .jp-mp-{{ sid }} .jp-mp__howto:hover { text-decoration-thickness: 2px; }
   .jp-mp-{{ sid }} .jp-mp__acc-body p { margin: 0 0 10px; }
   .jp-mp-{{ sid }} .jp-mp__acc-body p:last-child { margin-bottom: 0; }
   .jp-mp-{{ sid }} .jp-mp__item summary:focus-visible { outline: 2px solid var(--jp-mp-text); outline-offset: -2px; }
@@ -137,7 +136,7 @@
       <div class="jp-mp__stage" data-jp-mp-stage>
         {%- if product.images.size > 0 -%}
           {%- for image in product.images -%}
-            <div class="jp-mp__slide{% if forloop.first %} is-active{% endif %}{% if image.aspect_ratio >= 0.9 and section.settings.fill_photos %} is-photo{% endif %}" data-jp-mp-slide>
+            <div class="jp-mp__slide{% if forloop.first %} is-active{% endif %}{% if image.aspect_ratio >= 0.9 and section.settings.fill_photos %} is-photo{% endif %}" data-jp-mp-slide data-media-id="{{ image.id }}">
               {%- assign slide_alt = image.alt | default: product.title -%}
               {{ image | image_url: width: 1000 | image_tag: alt: slide_alt, loading: 'lazy', widths: '400, 600, 800, 1000', sizes: '(min-width: 990px) 585px, 100vw' }}
             </div>
@@ -184,7 +183,7 @@
           {%- for n in (1..5) -%}<span class="jp-mp__star{% if n > full_stars %} is-off{% endif %}"></span>{%- endfor -%}
         </span>
         <span>{{ shown_rating }}/5.00</span>
-        {%- if shown_count != blank and shown_count != '0' -%}<span>( {{ shown_count }} {{ section.settings.reviews_label }} )</span>{%- endif -%}
+        {%- if shown_count != blank and shown_count != 0 and shown_count != '0' -%}<span>( {{ shown_count }} {{ section.settings.reviews_label }} )</span>{%- endif -%}
       </div>
 
       <div class="jp-mp__price">
@@ -261,6 +260,9 @@
                 {%- else -%}
                   {{ product.description }}
                 {%- endif -%}
+                {%- if block.settings.show_howto and section.settings.howto_label != blank -%}
+                  <button type="button" class="jp-mp__howto" data-jp-brew-open>{{ section.settings.howto_label }}</button>
+                {%- endif -%}
               </div>
             </details>
           {%- endfor -%}
@@ -317,8 +319,8 @@
       else { compare.hidden = true; }
       submit.disabled = !v.available;
       submit.textContent = v.available ? submit.dataset.label : submit.dataset.soldout;
-      if (v.featured_image) {
-        var m = slides.findIndex(function (s) { var im = s.querySelector('img'); return im && im.src.indexOf(v.featured_image.src.split('?')[0].split('/').pop().split('.')[0]) > -1; });
+      if (v.featured_image && v.featured_image.id) {
+        var m = slides.findIndex(function (s) { return s.dataset.mediaId === String(v.featured_image.id); });
         if (m > -1) show(m);
       }
       var url = new URL(window.location.href);
@@ -343,6 +345,7 @@
     { "type": "text", "id": "quantity_label", "label": "Quantity label", "default": "Quantity:" },
     { "type": "text", "id": "button_label", "label": "Add to cart text", "default": "Add to cart" },
     { "type": "text", "id": "sold_out_label", "label": "Sold out text", "default": "Sold out" },
+    { "type": "text", "id": "howto_label", "label": "\"How to use\" link text", "info": "Opens the brew guide pop-up (add the JP Brew guide section to this page). Leave empty to hide.", "default": "How to use" },
 
     { "type": "header", "content": "Reviews" },
     { "type": "text", "id": "default_rating", "label": "Rating when a product has no reviews", "default": "4.9" },
@@ -385,7 +388,8 @@
       "settings": [
         { "type": "text", "id": "title", "label": "Title", "default": "About Product:" },
         { "type": "richtext", "id": "content", "label": "Content", "info": "Leave empty to use the product description." },
-        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false }
+        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false },
+        { "type": "checkbox", "id": "show_howto", "label": "Show the \"How to use\" link", "default": false }
       ]
     }
   ],
@@ -398,7 +402,7 @@
         { "type": "trust", "settings": { "text": "Secure Checkout" } },
         { "type": "trust", "settings": { "text": "Secure Shipping" } },
         { "type": "trust", "settings": { "text": "Satisfaction Guarantee" } },
-        { "type": "accordion", "settings": { "title": "About Product:", "open": true } },
+        { "type": "accordion", "settings": { "title": "About Product:", "open": true, "show_howto": true } },
         { "type": "accordion", "settings": { "title": "Ingredients:" } }
       ]
     }

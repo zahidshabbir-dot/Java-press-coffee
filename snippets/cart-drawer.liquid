@@ -8,9 +8,6 @@
 {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
 <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
 
@@ -515,7 +512,25 @@
                 data-min="{{ jp_min | date: '%Y-%m-%d' }}"
                 data-required="{{ settings.jp_delivery_required }}"
               >
-              <div class="jp-cal" role="dialog" aria-label="{{ settings.jp_delivery_label | escape }}" hidden></div>
+              <div class="jp-cal" role="dialog" aria-label="{{ settings.jp_delivery_label | escape }}" hidden>
+                <div class="jp-cal__head">
+                  <button type="button" class="jp-cal__nav" data-jp-cal-prev aria-label="Previous month">
+                    <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M11 3.5L5.5 9L11 14.5" stroke="#09090b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <p class="jp-cal__title" aria-live="polite" data-jp-cal-title></p>
+                  <button type="button" class="jp-cal__nav jp-cal__nav--next" data-jp-cal-next aria-label="Next month">
+                    <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M11 3.5L5.5 9L11 14.5" stroke="#09090b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
+                <div class="jp-cal__week">
+                  <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+                </div>
+                <div class="jp-cal__days" data-jp-cal-days></div>
+                <div class="jp-cal__foot">
+                  <span class="jp-cal__value" data-jp-cal-value data-empty="dd / mm / yyyy">dd / mm / yyyy</span>
+                  <button type="button" class="jp-cal__set" data-jp-cal-set disabled>Set Date</button>
+                </div>
+              </div>
             </div>
           </div>
         {%- endif -%}

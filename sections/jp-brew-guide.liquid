@@ -1,0 +1,623 @@
+{%- comment -%}
+  JP Brew guide
+  A pop-up with an interactive "make your coffee" game. It opens when a visitor clicks any element
+  with the attribute data-jp-brew-open (for example the "How to use" link on the product page).
+  Steps, texts, colors and labels are all editable in the theme customizer.
+{%- endcomment -%}
+
+{%- assign sid = section.id -%}
+{%- assign cs = section.settings -%}
+
+<style>
+  .jp-bg-{{ sid }} {
+    --jp-bg-panel: {{ cs.panel_bg }};
+    --jp-bg-text: {{ cs.text_color }};
+    --jp-bg-accent: {{ cs.accent }};
+    --jp-bg-stage: {{ cs.stage_bg }};
+    border: 0; padding: 0; margin: auto; border-radius: 18px; overflow: auto;
+    width: min(940px, 94vw); max-height: 92vh;
+    background: var(--jp-bg-panel); color: var(--jp-bg-text);
+    font-family: 'Raleway', sans-serif; box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+  }
+  .jp-bg-{{ sid }}::backdrop { background: rgba(24, 14, 8, .62); backdrop-filter: blur(3px); }
+  .jp-bg-{{ sid }}[open] { animation: jp-bg-in .38s cubic-bezier(.2, .8, .2, 1); }
+  @keyframes jp-bg-in { from { opacity: 0; transform: translateY(24px) scale(.97); } to { opacity: 1; transform: none; } }
+
+  .jp-bg-{{ sid }} .jp-bg__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 28px 0; }
+  .jp-bg-{{ sid }} .jp-bg__title { margin: 0; font-size: clamp(20px, 3.4vw, 28px); line-height: 1.2; font-weight: 800; }
+  .jp-bg-{{ sid }} .jp-bg__sub { margin: 4px 0 0; font-size: 14px; line-height: 22px; opacity: .75; font-weight: 500; }
+  .jp-bg-{{ sid }} .jp-bg__close { flex: 0 0 40px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .06); cursor: pointer; display: grid; place-items: center; color: inherit; }
+  .jp-bg-{{ sid }} .jp-bg__close:hover { background: rgba(0, 0, 0, .12); }
+  .jp-bg-{{ sid }} .jp-bg__body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; padding: 22px 28px 28px; align-items: stretch; }
+
+  .jp-bg-{{ sid }} .jp-bg__stage { position: relative; border-radius: 16px; background: radial-gradient(120% 90% at 50% 20%, #fff 0%, var(--jp-bg-stage) 70%); perspective: 900px; min-height: 360px; display: grid; place-items: center; overflow: hidden; }
+  .jp-bg-{{ sid }} .jp-bg__cupwrap { width: min(100%, 340px); transform-style: preserve-3d; transition: transform .25s ease-out; will-change: transform; }
+  .jp-bg-{{ sid }} .jp-bg__svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 14px 14px rgba(60, 30, 10, .18)); }
+  .jp-bg-{{ sid }} .jp-bg__steam { opacity: 0; }
+  .jp-bg-{{ sid }} .jp-bg__stage.is-done .jp-bg__steam { opacity: 1; }
+  .jp-bg-{{ sid }} .jp-bg__steam path { fill: none; stroke: rgba(255, 255, 255, .9); stroke-width: 6; stroke-linecap: round; animation: jp-bg-steam 2.6s ease-in-out infinite; }
+  .jp-bg-{{ sid }} .jp-bg__steam path:nth-child(2) { animation-delay: .8s; }
+  .jp-bg-{{ sid }} .jp-bg__steam path:nth-child(3) { animation-delay: 1.5s; }
+  @keyframes jp-bg-steam { 0% { transform: translateY(18px); opacity: 0; } 35% { opacity: .85; } 100% { transform: translateY(-26px); opacity: 0; } }
+
+  .jp-bg-{{ sid }} .jp-bg__panel { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+  .jp-bg-{{ sid }} .jp-bg__dots { display: flex; gap: 6px; margin: 0 0 14px; }
+  .jp-bg-{{ sid }} .jp-bg__dot { flex: 1 1 0; height: 5px; border-radius: 3px; background: rgba(0, 0, 0, .1); overflow: hidden; position: relative; }
+  .jp-bg-{{ sid }} .jp-bg__dot::after { content: ''; position: absolute; inset: 0; background: var(--jp-bg-accent); transform: scaleX(0); transform-origin: left; transition: transform .5s ease; }
+  .jp-bg-{{ sid }} .jp-bg__dot.is-on::after { transform: scaleX(1); }
+  .jp-bg-{{ sid }} .jp-bg__step { margin: 0 0 6px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--jp-bg-accent); }
+  .jp-bg-{{ sid }} .jp-bg__h { margin: 0 0 8px; font-size: clamp(22px, 3.2vw, 30px); line-height: 1.15; font-weight: 800; }
+  .jp-bg-{{ sid }} .jp-bg__text { margin: 0 0 20px; font-size: 15px; line-height: 24px; font-weight: 500; opacity: .85; }
+  .jp-bg-{{ sid }} .jp-bg__controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .jp-bg-{{ sid }} .jp-bg__swatches { display: flex; gap: 12px; width: 100%; margin: 0 0 6px; }
+  .jp-bg-{{ sid }} .jp-bg__swatch { width: 52px; height: 52px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .18); cursor: pointer; transition: transform .2s, box-shadow .2s; }
+  .jp-bg-{{ sid }} .jp-bg__swatch:hover { transform: translateY(-2px); }
+  .jp-bg-{{ sid }} .jp-bg__swatch { position: relative; }
+  .jp-bg-{{ sid }} .jp-bg__swatch.is-on { box-shadow: 0 0 0 3px var(--jp-bg-accent); transform: scale(1.08); }
+  .jp-bg-{{ sid }} .jp-bg__swatch.is-on::after { content: ''; position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: var(--jp-bg-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.5l3 3 6-7' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat; }
+  .jp-bg-{{ sid }} .jp-bg__btn { min-height: 50px; padding: 0 26px; border: 0; border-radius: 999px; background: var(--jp-bg-accent); color: #fff; font: inherit; font-size: 14px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; transition: transform .15s, filter .15s, opacity .15s; }
+  .jp-bg-{{ sid }} .jp-bg__btn:hover:not([disabled]) { filter: brightness(1.08); transform: translateY(-1px); }
+  .jp-bg-{{ sid }} .jp-bg__btn[disabled] { opacity: .5; cursor: progress; }
+  .jp-bg-{{ sid }} .jp-bg__btn--ghost { background: transparent; color: var(--jp-bg-text); box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .18); }
+  .jp-bg-{{ sid }} .jp-bg__count { font-size: 13px; font-weight: 700; opacity: .7; }
+  .jp-bg-{{ sid }} .jp-bg__restart { align-self: flex-start; margin: 18px 0 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; font-size: 13px; font-weight: 700; text-decoration: underline; cursor: pointer; opacity: .65; }
+  .jp-bg-{{ sid }} button:focus-visible { outline: 2px solid var(--jp-bg-text); outline-offset: 3px; }
+
+  @media (max-width: 749px) {
+    .jp-bg-{{ sid }} .jp-bg__head { padding: 18px 18px 0; }
+    .jp-bg-{{ sid }} .jp-bg__body { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 16px 18px 22px; }
+    .jp-bg-{{ sid }} .jp-bg__stage { min-height: 280px; }
+    .jp-bg-{{ sid }} .jp-bg__cupwrap { width: min(100%, 260px); }
+    .jp-bg-{{ sid }} .jp-bg__btn { width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .jp-bg-{{ sid }}[open] { animation: none; }
+    .jp-bg-{{ sid }} .jp-bg__steam path { animation: none; opacity: .6; }
+  }
+</style>
+
+<dialog class="jp-bg jp-bg-{{ sid }}" data-jp-brew aria-labelledby="jp-bg-title-{{ sid }}">
+  <div class="jp-bg__head">
+    <div>
+      <h2 class="jp-bg__title" id="jp-bg-title-{{ sid }}">{{ cs.heading }}</h2>
+      {%- if cs.subheading != blank -%}<p class="jp-bg__sub">{{ cs.subheading }}</p>{%- endif -%}
+    </div>
+    <button type="button" class="jp-bg__close" data-close aria-label="{{ cs.close_label | escape }}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <div class="jp-bg__body">
+    <div class="jp-bg__stage" data-stage>
+      <div class="jp-bg__cupwrap" data-cupwrap>
+        <svg class="jp-bg__svg" viewBox="0 0 280 290" role="img" aria-label="{{ cs.heading | escape }}">
+          <defs>
+            <clipPath id="jp-bg-clip-{{ sid }}"><path d="M60 99 C58 150 70 202 102 214 Q130 222 158 214 C190 202 202 150 200 99 Z"/></clipPath>
+            <linearGradient id="jp-bg-shine-{{ sid }}" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stop-color="#fff" stop-opacity=".0"/>
+              <stop offset=".25" stop-color="#fff" stop-opacity=".38"/>
+              <stop offset=".55" stop-color="#fff" stop-opacity="0"/>
+              <stop offset="1" stop-color="#000" stop-opacity=".16"/>
+            </linearGradient>
+          </defs>
+
+          <ellipse cx="130" cy="268" rx="108" ry="13" fill="#000" opacity=".12"/>
+          <ellipse cx="130" cy="250" rx="112" ry="22" fill="#e3ddd7"/>
+          <ellipse cx="130" cy="246" rx="92" ry="15" fill="#f4f1ee"/>
+          <ellipse cx="130" cy="236" rx="60" ry="8" fill="#000" opacity=".16"/>
+
+          <path data-handle d="M203 118 C252 108 258 190 194 196" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round"/>
+          <path d="M203 118 C252 108 258 190 194 196" fill="none" stroke="#000" stroke-opacity=".12" stroke-width="13" stroke-linecap="round" stroke-dasharray="0 200 60 400"/>
+          <path data-body d="M54 98 C52 152 64 208 100 224 Q130 234 160 224 C196 208 208 152 206 98 Z" fill="#fff"/>
+          <path d="M54 98 C52 152 64 208 100 224 Q130 234 160 224 C196 208 208 152 206 98 Z" fill="url(#jp-bg-shine-{{ sid }})"/>
+          <ellipse data-rim cx="130" cy="98" rx="76" ry="16" fill="#fff"/>
+          <ellipse cx="130" cy="98" rx="70" ry="12" fill="#d8d0c8"/>
+
+          <g clip-path="url(#jp-bg-clip-{{ sid }})">
+            <g data-layers></g>
+            <ellipse data-surface cx="130" cy="150" rx="60" ry="9" fill="#fff" opacity="0"/>
+            <g data-swirl opacity="0">
+              <path d="M-34 0 C-34 -16 34 -16 34 0 C34 12 -20 12 -20 0 C-20 -6 14 -6 14 0" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="3" stroke-linecap="round"/>
+            </g>
+          </g>
+
+          <rect data-stream x="126" y="52" width="8" height="0" rx="4" opacity="0"/>
+          <g data-fx></g>
+
+          <g data-spoon opacity="0">
+            <line data-spoon-line x1="200" y1="14" x2="130" y2="150" stroke="#b9bcc2" stroke-width="6" stroke-linecap="round"/>
+            <ellipse data-spoon-bowl cx="130" cy="150" rx="9" ry="6" fill="#b9bcc2"/>
+          </g>
+
+          <g data-pourer opacity="0">
+            <g data-pr="water">
+              <path d="M-26 -2 L-36 -14 L-30 -18 L-18 -8 Z" fill="#c7cbd1"/>
+              <path d="M-20 -14 Q0 -26 24 -14 L28 18 Q0 28 -26 18 Z" fill="#dde0e4"/>
+              <path d="M24 -8 Q50 -8 46 12 Q44 20 28 16" fill="none" stroke="#9aa0a8" stroke-width="5" stroke-linecap="round"/>
+              <ellipse cx="2" cy="-18" rx="12" ry="5" fill="#9aa0a8"/>
+            </g>
+            <g data-pr="milk">
+              <path d="M-24 -6 L-34 -10 L-30 -18 L-18 -14 Z" fill="#eef0f3"/>
+              <path d="M-20 -16 L26 -16 L30 24 Q4 32 -24 24 Z" fill="#fff" stroke="#d9dde2" stroke-width="2"/>
+              <path d="M26 -8 Q50 -8 46 12 Q44 20 29 16" fill="none" stroke="#d9dde2" stroke-width="5" stroke-linecap="round"/>
+            </g>
+            <g data-pr="coffee">
+              <path d="M-26 -10 Q-26 12 0 14 Q26 12 26 -10 Z" fill="#c9a07a"/>
+              <path d="M-26 -10 L26 -10" stroke="#a98059" stroke-width="4" stroke-linecap="round"/>
+              <path d="M24 -4 L58 -20" stroke="#a98059" stroke-width="6" stroke-linecap="round"/>
+              <ellipse cx="0" cy="-9" rx="24" ry="5" fill="#4a2c1a"/>
+            </g>
+            <g data-pr="sugar">
+              <rect x="-14" y="-14" width="28" height="28" rx="5" fill="#fff" stroke="#e1e4e8" stroke-width="2"/>
+              <path d="M-14 -4 L14 -4" stroke="#e1e4e8" stroke-width="2"/>
+            </g>
+          </g>
+
+          <g class="jp-bg__steam" data-steam>
+            <path d="M104 78 C92 58 116 46 104 24"/>
+            <path d="M134 74 C122 52 148 42 134 18"/>
+            <path d="M164 78 C152 58 176 46 164 24"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="jp-bg__panel">
+      <div class="jp-bg__dots" data-dots aria-hidden="true"></div>
+      <p class="jp-bg__step" data-step-label></p>
+      <h3 class="jp-bg__h" data-step-title></h3>
+      <p class="jp-bg__text" data-step-text></p>
+      <div class="jp-bg__controls" data-controls></div>
+      <button type="button" class="jp-bg__restart" data-restart>{{ cs.restart_label }}</button>
+    </div>
+  </div>
+
+  <ol hidden>
+    {%- for block in section.blocks -%}
+      <li data-step data-action="{{ block.settings.action }}" data-title="{{ block.settings.title | escape }}" data-text="{{ block.settings.text | escape }}" {{ block.shopify_attributes }}></li>
+    {%- endfor -%}
+  </ol>
+
+  <script type="application/json" data-cfg>
+    {
+      "cups": [
+        { "name": {{ cs.cup_1_name | json }}, "color": {{ cs.cup_1 | json }} },
+        { "name": {{ cs.cup_2_name | json }}, "color": {{ cs.cup_2 | json }} },
+        { "name": {{ cs.cup_3_name | json }}, "color": {{ cs.cup_3 | json }} }
+      ],
+      "water": {{ cs.water_color | json }},
+      "milk": {{ cs.milk_color | json }},
+      "coffee": {{ cs.coffee_color | json }},
+      "preview": {{ cs.preview_in_editor | json }},
+      "defaultCup": {{ cs.default_cup | json }},
+      "t": {
+        "step": {{ cs.step_word | json }},
+        "of": {{ cs.of_word | json }},
+        "next": {{ cs.next_label | json }},
+        "water": {{ cs.water_label | json }},
+        "milk": {{ cs.milk_label | json }},
+        "coffee": {{ cs.coffee_btn | json }},
+        "sugar": {{ cs.sugar_btn | json }},
+        "skip": {{ cs.skip_label | json }},
+        "stir": {{ cs.stir_btn | json }},
+        "readyTitle": {{ cs.ready_title | json }},
+        "readyText": {{ cs.ready_text | json }}
+      }
+    }
+  </script>
+</dialog>
+
+<script>
+  (function () {
+    let dlg = document.currentScript.previousElementSibling;
+    if (!dlg || !dlg.hasAttribute('data-jp-brew')) return;
+    let $ = function (s) { return dlg.querySelector(s); };
+    let cfg = JSON.parse($('[data-cfg]').textContent);
+    let T = cfg.t;
+    let steps = Array.prototype.map.call(dlg.querySelectorAll('[data-step]'), function (li) {
+      return { action: li.getAttribute('data-action'), title: li.getAttribute('data-title'), text: li.getAttribute('data-text') };
+    });
+    let SVGNS = 'http://www.w3.org/2000/svg';
+    let BOT = 216, TOP_Y = 52;
+    let slow = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.01 : 1;
+
+    let el = {
+      stage: $('[data-stage]'), wrap: $('[data-cupwrap]'), layers: $('[data-layers]'), surface: $('[data-surface]'),
+      swirl: $('[data-swirl]'), stream: $('[data-stream]'), fx: $('[data-fx]'), spoon: $('[data-spoon]'),
+      spoonLine: $('[data-spoon-line]'), spoonBowl: $('[data-spoon-bowl]'), pourer: $('[data-pourer]'),
+      body: $('[data-body]'), handle: $('[data-handle]'), rim: $('[data-rim]'),
+      dots: $('[data-dots]'), label: $('[data-step-label]'), title: $('[data-step-title]'),
+      text: $('[data-step-text]'), controls: $('[data-controls]')
+    };
+
+    /* ---------- helpers ---------- */
+    function hex(c) {
+      c = String(c).replace('#', '');
+      if (c.length === 3) c = c.split('').map(function (x) { return x + x; }).join('');
+      return [parseInt(c.substr(0, 2), 16), parseInt(c.substr(2, 2), 16), parseInt(c.substr(4, 2), 16)];
+    }
+    function toHex(a) { return '#' + a.map(function (v) { v = Math.max(0, Math.min(255, Math.round(v))); return (v < 16 ? '0' : '') + v.toString(16); }).join(''); }
+    function lerpColor(a, b, t) { let x = hex(a), y = hex(b); return toHex([x[0] + (y[0] - x[0]) * t, x[1] + (y[1] - x[1]) * t, x[2] + (y[2] - x[2]) * t]); }
+    function shade(c, amt) { return amt >= 0 ? lerpColor(c, '#ffffff', amt) : lerpColor(c, '#000000', -amt); }
+    function hw(y) { if (y <= 150) return 70; let k = (y - 150) / 66; return 70 - k * k * 42; }
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+    function easeOut(p) { return 1 - Math.pow(1 - p, 3); }
+    function easeInOut(p) { return p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; }
+    function anim(ms, fn, ease) {
+      ms = ms * slow;
+      return new Promise(function (resolve) {
+        let t0 = performance.now();
+        (function frame(now) {
+          let p = Math.min(1, (now - t0) / ms);
+          fn(ease ? ease(p) : p);
+          if (p < 1) requestAnimationFrame(frame); else resolve();
+        })(t0);
+      });
+    }
+    function make(tag, attrs) {
+      let n = document.createElementNS(SVGNS, tag);
+      for (let k in attrs) n.setAttribute(k, attrs[k]);
+      return n;
+    }
+
+    /* ---------- state ---------- */
+    let state, busy = false;
+    function reset() {
+      state = { i: 0, cup: Math.max(0, Math.min(2, (parseInt(cfg.defaultCup, 10) || 1) - 1)), layers: [], base: null, sugar: 0, done: false };
+      el.layers.innerHTML = '';
+      el.fx.innerHTML = '';
+      el.swirl.setAttribute('opacity', '0');
+      el.spoon.setAttribute('opacity', '0');
+      el.stream.setAttribute('opacity', '0');
+      el.pourer.setAttribute('opacity', '0');
+      el.stage.classList.remove('is-done');
+      setCup(state.cup);
+      draw();
+      showStep();
+    }
+    function setCup(i) {
+      state.cup = i;
+      let c = cfg.cups[i].color;
+      el.body.setAttribute('fill', c);
+      el.handle.setAttribute('stroke', c);
+      el.rim.setAttribute('fill', shade(c, .12));
+    }
+    function surfaceY() {
+      let y = BOT;
+      state.layers.forEach(function (l) { y -= l.h; });
+      return y;
+    }
+    function draw() {
+      let y = BOT;
+      state.layers.forEach(function (l, idx) {
+        if (!l.node) { l.node = make('rect', { x: 30, width: 200 }); el.layers.appendChild(l.node); }
+        let top = y - l.h;
+        l.node.setAttribute('y', top);
+        l.node.setAttribute('height', Math.max(0, l.h + (idx === 0 ? 30 : 0.6)));
+        l.node.setAttribute('fill', l.color);
+        y = top;
+      });
+      let top = state.layers.length ? state.layers[state.layers.length - 1] : null;
+      if (top && y < BOT - 0.5) {
+        let rx = hw(y) - 2;
+        el.surface.setAttribute('cx', 130);
+        el.surface.setAttribute('cy', y);
+        el.surface.setAttribute('rx', rx);
+        el.surface.setAttribute('ry', rx * 0.16);
+        el.surface.setAttribute('fill', shade(top.color, state.done ? .06 : .14));
+        el.surface.setAttribute('opacity', '1');
+      } else {
+        el.surface.setAttribute('opacity', '0');
+      }
+      if (stream.on) {
+        el.stream.setAttribute('height', Math.max(0, y - TOP_Y));
+      }
+    }
+    let stream = { on: false };
+
+    /* ---------- pourer ---------- */
+    function showPourer(type) {
+      Array.prototype.forEach.call(el.pourer.querySelectorAll('[data-pr]'), function (g) {
+        g.style.display = g.getAttribute('data-pr') === type ? '' : 'none';
+      });
+      el.pourer.setAttribute('opacity', '1');
+    }
+    function placePourer(p, tilt) {
+      /* p: 0 = away (top right), 1 = in place above the cup */
+      let x = 262 - 100 * p, y = -20 + 64 * p;
+      el.pourer.setAttribute('transform', 'translate(' + x + ',' + y + ') rotate(' + (-20 * tilt) + ')');
+      el.pourer.setAttribute('opacity', String(clamp(p * 1.6, 0, 1)));
+    }
+    function pourLiquid(type, color, addH) {
+      let layer = { color: color, h: 0 };
+      state.layers.push(layer);
+      showPourer(type);
+      el.stream.setAttribute('fill', shade(color, .08));
+      return anim(450, function (p) { placePourer(p, p); }, easeOut)
+        .then(function () {
+          stream.on = true;
+          el.stream.setAttribute('opacity', '.92');
+          return anim(1300, function (p) { layer.h = addH * p; draw(); }, easeInOut);
+        })
+        .then(function () {
+          stream.on = false;
+          return anim(260, function (p) { el.stream.setAttribute('opacity', String(.92 * (1 - p))); });
+        })
+        .then(function () { return anim(380, function (p) { placePourer(1 - p, 1 - p); }, easeInOut); })
+        .then(function () { el.pourer.setAttribute('opacity', '0'); });
+    }
+    function addCoffee(addH) {
+      let layer = { color: cfg.coffee, h: 0 };
+      state.layers.push(layer);
+      showPourer('coffee');
+      let dots = [];
+      for (let i = 0; i < 16; i++) {
+        let c = make('circle', { r: 2.6 + (i % 3) * 0.7, fill: i % 2 ? '#3a2214' : '#5a3a26', opacity: 0, cx: 128 + ((i * 7) % 14), cy: 54 });
+        el.fx.appendChild(c); dots.push(c);
+      }
+      return anim(450, function (p) { placePourer(p, p * 1.2); }, easeOut)
+        .then(function () {
+          return anim(1500, function (p) {
+            let t = p * 1500, sy = surfaceY();
+            dots.forEach(function (d, i) {
+              let q = clamp((t - i * 55) / 420, 0, 1);
+              d.setAttribute('cy', 54 + q * Math.max(0, sy - 58));
+              d.setAttribute('opacity', q > 0 && q < 1 ? '1' : '0');
+            });
+            layer.h = addH * clamp((p - .15) / .85, 0, 1);
+            draw();
+          });
+        })
+        .then(function () { el.fx.innerHTML = ''; return anim(380, function (p) { placePourer(1 - p, 1 - p); }, easeInOut); })
+        .then(function () { el.pourer.setAttribute('opacity', '0'); });
+    }
+    function addSugar() {
+      showPourer('sugar');
+      let cube = make('rect', { x: -8, y: -8, width: 16, height: 16, rx: 3, fill: '#fff', stroke: '#e1e4e8', 'stroke-width': 1.5 });
+      el.fx.appendChild(cube);
+      let sy = surfaceY();
+      el.pourer.setAttribute('opacity', '0');
+      return anim(650, function (p) {
+        let y = 20 + p * (sy - 24 - 20);
+        cube.setAttribute('transform', 'translate(' + (130 + Math.sin(p * 6) * 6) + ',' + y + ') rotate(' + (p * 220) + ')');
+        cube.setAttribute('opacity', '1');
+      }, function (p) { return p * p; })
+        .then(function () {
+          return anim(900, function (p) {
+            cube.setAttribute('transform', 'translate(130,' + (sy - 4 + p * 6) + ') rotate(220) scale(' + (1 - p * .85) + ')');
+            cube.setAttribute('opacity', String(1 - p));
+          });
+        })
+        .then(function () { if (cube.parentNode) cube.parentNode.removeChild(cube); });
+    }
+    function finalColor() {
+      return state.base === 'milk' ? lerpColor(cfg.coffee, cfg.milk, .55) : lerpColor(cfg.coffee, cfg.water, .12);
+    }
+    function stir() {
+      let from = state.layers.map(function (l) { return l.color; });
+      let to = finalColor();
+      let sy = surfaceY();
+      let total = state.layers.reduce(function (a, l) { return a + l.h; }, 0);
+      el.spoon.setAttribute('opacity', '1');
+      el.swirl.setAttribute('opacity', '1');
+      return anim(2600, function (p) {
+        let a = p * Math.PI * 2 * 4;
+        let r = 22 * Math.sin(Math.min(1, p * 6) * Math.PI / 2) * (p > .9 ? (1 - p) * 10 : 1);
+        let tx = 130 + Math.cos(a) * r, ty = sy + 4 + Math.sin(a) * r * .22;
+        el.spoonLine.setAttribute('x2', tx); el.spoonLine.setAttribute('y2', ty);
+        el.spoonBowl.setAttribute('cx', tx); el.spoonBowl.setAttribute('cy', ty);
+        el.swirl.setAttribute('transform', 'translate(130,' + (sy + 2) + ') rotate(' + (a * 57.3) + ') scale(' + (hw(sy) / 62) + ',' + (hw(sy) / 62 * .3) + ')');
+        let m = clamp((p - .1) / .75, 0, 1);
+        state.layers.forEach(function (l, i) { l.color = lerpColor(from[i], to, m); });
+        draw();
+      }).then(function () {
+        state.layers.forEach(function (l) { if (l.node && l.node.parentNode) l.node.parentNode.removeChild(l.node); });
+        state.layers = [{ color: to, h: total }];
+        state.done = true;
+        draw();
+        return anim(450, function (p) {
+          el.spoon.setAttribute('opacity', String(1 - p));
+          el.swirl.setAttribute('opacity', String(1 - p));
+        });
+      });
+    }
+
+    /* ---------- UI ---------- */
+    function btn(label, cls, fn) {
+      let b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'jp-bg__btn' + (cls ? ' ' + cls : '');
+      b.textContent = label;
+      b.addEventListener('click', fn);
+      return b;
+    }
+    function lock(on) {
+      busy = on;
+      Array.prototype.forEach.call(el.controls.querySelectorAll('button'), function (b) { b.disabled = on; });
+    }
+    function run(promiseFn, then) {
+      if (busy) return;
+      lock(true);
+      promiseFn().then(function () { lock(false); if (then) then(); });
+    }
+    function next() {
+      state.i++;
+      if (state.i >= steps.length) return finish();
+      showStep();
+    }
+    function finish() {
+      el.dots.innerHTML = '';
+      steps.forEach(function () { let d = document.createElement('span'); d.className = 'jp-bg__dot is-on'; el.dots.appendChild(d); });
+      el.label.textContent = '';
+      el.title.textContent = T.readyTitle;
+      el.text.textContent = T.readyText;
+      el.controls.innerHTML = '';
+      el.stage.classList.add('is-done');
+      let c = el.wrap;
+      anim(700, function (p) { c.style.translate = '0 ' + (-Math.sin(p * Math.PI) * 8) + 'px'; });
+    }
+    function showStep() {
+      let s = steps[state.i];
+      el.dots.innerHTML = '';
+      steps.forEach(function (_, n) { let d = document.createElement('span'); d.className = 'jp-bg__dot' + (n <= state.i ? ' is-on' : ''); el.dots.appendChild(d); });
+      el.label.textContent = T.step + ' ' + (state.i + 1) + ' ' + T.of + ' ' + steps.length;
+      el.title.textContent = s.title;
+      el.text.textContent = s.text;
+      el.controls.innerHTML = '';
+
+      if (s.action === 'cup') {
+        let sw = document.createElement('div'); sw.className = 'jp-bg__swatches';
+        cfg.cups.forEach(function (c, n) {
+          let b = document.createElement('button'); b.type = 'button';
+          b.className = 'jp-bg__swatch' + (n === state.cup ? ' is-on' : '');
+          b.style.background = c.color; b.setAttribute('aria-label', c.name); b.title = c.name;
+          b.addEventListener('click', function () {
+            setCup(n);
+            Array.prototype.forEach.call(sw.children, function (x, k) { x.classList.toggle('is-on', k === n); });
+            anim(420, function (p) { el.wrap.style.translate = '0 ' + (-Math.sin(p * Math.PI) * 10) + 'px'; });
+          });
+          sw.appendChild(b);
+        });
+        el.controls.appendChild(sw);
+        el.controls.appendChild(btn(T.next, '', function () { next(); }));
+      } else if (s.action === 'base') {
+        el.controls.appendChild(btn(T.water, '', function () {
+          run(function () { state.base = 'water'; return pourLiquid('water', cfg.water, 58); }, next);
+        }));
+        el.controls.appendChild(btn(T.milk, 'jp-bg__btn--ghost', function () {
+          run(function () { state.base = 'milk'; return pourLiquid('milk', cfg.milk, 58); }, next);
+        }));
+      } else if (s.action === 'coffee') {
+        el.controls.appendChild(btn(T.coffee, '', function () {
+          run(function () { if (!state.base) state.base = 'water'; return addCoffee(34); }, next);
+        }));
+      } else if (s.action === 'sugar') {
+        let count = document.createElement('span'); count.className = 'jp-bg__count'; count.textContent = '0 / 3';
+        let skip = btn(T.skip, 'jp-bg__btn--ghost', function () { next(); });
+        let add = btn(T.sugar, '', function () {
+          if (state.sugar >= 3) return;
+          run(function () { state.sugar++; return addSugar(); }, function () {
+            count.textContent = state.sugar + ' / 3';
+            skip.textContent = T.next;
+            if (state.sugar >= 3) add.disabled = true;
+          });
+        });
+        el.controls.appendChild(add); el.controls.appendChild(skip); el.controls.appendChild(count);
+      } else if (s.action === 'stir') {
+        if (!state.layers.length) { state.base = 'water'; state.layers.push({ color: cfg.water, h: 58 }); draw(); }
+        el.controls.appendChild(btn(T.stir, '', function () { run(stir, next); }));
+      }
+    }
+
+    /* ---------- open / close ---------- */
+    function open() {
+      reset();
+      if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else { dlg.setAttribute('open', ''); }
+    }
+    function close() { if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
+    document.addEventListener('click', function (e) {
+      let t = e.target.closest && e.target.closest('[data-jp-brew-open]');
+      if (t) { e.preventDefault(); open(); }
+    });
+    $('[data-close]').addEventListener('click', close);
+    $('[data-restart]').addEventListener('click', function () { if (!busy) reset(); });
+    dlg.addEventListener('click', function (e) { if (e.target === dlg) close(); });
+
+    /* 3D tilt */
+    el.stage.addEventListener('pointermove', function (e) {
+      let r = el.stage.getBoundingClientRect();
+      let x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      el.wrap.style.transform = 'rotateY(' + (x * 22) + 'deg) rotateX(' + (-y * 12) + 'deg)';
+    });
+    el.stage.addEventListener('pointerleave', function () { el.wrap.style.transform = ''; });
+
+    if (cfg.preview && window.Shopify && window.Shopify.designMode) open();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "JP Brew guide",
+  "tag": "div",
+  "class": "jp-brew-guide",
+  "settings": [
+    { "type": "paragraph", "content": "This section adds a pop-up. It opens when a visitor clicks \"How to use\" on the product page (or any link or button with the attribute data-jp-brew-open)." },
+    { "type": "checkbox", "id": "preview_in_editor", "label": "Open the pop-up while editing in the theme editor", "default": false },
+
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "How to make your coffee" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Follow the steps and make your own cup." },
+    { "type": "text", "id": "ready_title", "label": "Finished title", "default": "Your coffee is ready!" },
+    { "type": "textarea", "id": "ready_text", "label": "Finished text", "default": "Take a sip and enjoy. Smooth, rich and made the Java Press way." },
+
+    { "type": "header", "content": "Button and label text" },
+    { "type": "text", "id": "step_word", "label": "Step word", "default": "Step" },
+    { "type": "text", "id": "of_word", "label": "\"of\" word", "default": "of" },
+    { "type": "text", "id": "next_label", "label": "Continue button", "default": "Continue" },
+    { "type": "text", "id": "water_label", "label": "Hot water button", "default": "Hot water" },
+    { "type": "text", "id": "milk_label", "label": "Milk button", "default": "Warm milk" },
+    { "type": "text", "id": "coffee_btn", "label": "Add coffee button", "default": "Add coffee" },
+    { "type": "text", "id": "sugar_btn", "label": "Add sugar button", "default": "Add sugar" },
+    { "type": "text", "id": "skip_label", "label": "Skip sugar button", "default": "Skip sugar" },
+    { "type": "text", "id": "stir_btn", "label": "Stir button", "default": "Stir" },
+    { "type": "text", "id": "restart_label", "label": "Start again link", "default": "Start again" },
+    { "type": "text", "id": "close_label", "label": "Close button (screen readers)", "default": "Close" },
+
+    { "type": "header", "content": "Cups" },
+    { "type": "text", "id": "cup_1_name", "label": "Cup 1 name", "default": "White" },
+    { "type": "color", "id": "cup_1", "label": "Cup 1 color", "default": "#ffffff" },
+    { "type": "text", "id": "cup_2_name", "label": "Cup 2 name", "default": "Red" },
+    { "type": "color", "id": "cup_2", "label": "Cup 2 color", "default": "#ef4444" },
+    { "type": "text", "id": "cup_3_name", "label": "Cup 3 name", "default": "Green" },
+    { "type": "color", "id": "cup_3", "label": "Cup 3 color", "default": "#075d57" },
+    { "type": "select", "id": "default_cup", "label": "Cup selected by default", "options": [ { "value": "1", "label": "Cup 1" }, { "value": "2", "label": "Cup 2" }, { "value": "3", "label": "Cup 3" } ], "default": "2" },
+
+    { "type": "header", "content": "Drink colors" },
+    { "type": "color", "id": "water_color", "label": "Water", "default": "#cfe7ef" },
+    { "type": "color", "id": "milk_color", "label": "Milk", "default": "#f7f1e8" },
+    { "type": "color", "id": "coffee_color", "label": "Coffee", "default": "#4a2c1a" },
+
+    { "type": "header", "content": "Style" },
+    { "type": "color", "id": "panel_bg", "label": "Pop-up background", "default": "#ffffff" },
+    { "type": "color", "id": "stage_bg", "label": "Cup area background", "default": "#f1e6da" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#2d2d2d" },
+    { "type": "color", "id": "accent", "label": "Buttons and progress", "default": "#ef4444" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "select",
+          "id": "action",
+          "label": "What the visitor does",
+          "options": [
+            { "value": "cup", "label": "Pick a cup" },
+            { "value": "base", "label": "Choose water or milk" },
+            { "value": "coffee", "label": "Add coffee" },
+            { "value": "sugar", "label": "Add sugar" },
+            { "value": "stir", "label": "Stir" }
+          ],
+          "default": "cup"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Pick your cup" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Choose the cup you like best." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "JP Brew guide",
+      "blocks": [
+        { "type": "step", "settings": { "action": "cup", "title": "Pick your cup", "text": "Choose the cup you like best." } },
+        { "type": "step", "settings": { "action": "base", "title": "Choose your base", "text": "Hot water for a classic cup, or warm milk for a creamy one." } },
+        { "type": "step", "settings": { "action": "coffee", "title": "Add the coffee", "text": "One scoop of Java Press coffee per cup." } },
+        { "type": "step", "settings": { "action": "sugar", "title": "Sweeten it", "text": "Add sugar to taste, or skip this step." } },
+        { "type": "step", "settings": { "action": "stir", "title": "Mix it up", "text": "Stir for about 10 seconds until everything is blended." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

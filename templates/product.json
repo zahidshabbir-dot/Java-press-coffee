@@ -50,7 +50,8 @@
           "type": "accordion",
           "settings": {
             "title": "About Product:",
-            "open": true
+            "open": true,
+            "show_howto": true
           }
         },
         "acc_2": {
@@ -130,10 +131,64 @@
     "jp_newsletter": {
       "type": "jp-newsletter",
       "settings": {}
+    },
+    "jp_brew_guide": {
+      "type": "jp-brew-guide",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "action": "cup",
+            "title": "Pick your cup",
+            "text": "Choose the cup you like best."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "action": "base",
+            "title": "Choose your base",
+            "text": "Hot water for a classic cup, or warm milk for a creamy one."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "action": "coffee",
+            "title": "Add the coffee",
+            "text": "One scoop of Java Press coffee per cup."
+          }
+        },
+        "step_4": {
+          "type": "step",
+          "settings": {
+            "action": "sugar",
+            "title": "Sweeten it",
+            "text": "Add sugar to taste, or skip this step."
+          }
+        },
+        "step_5": {
+          "type": "step",
+          "settings": {
+            "action": "stir",
+            "title": "Mix it up",
+            "text": "Stir for about 10 seconds until everything is blended."
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3",
+        "step_4",
+        "step_5"
+      ],
+      "settings": {}
     }
   },
   "order": [
     "main",
+    "jp_brew_guide",
     "disclosures",
     "jp_callout",
     "jp_recommended",
