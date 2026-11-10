@@ -13,44 +13,6 @@
   "sections": {
     "jp-header": {
       "type": "jp-header",
-      "blocks": {
-        "l1": {
-          "type": "link",
-          "settings": {
-            "label": "Learning Centre",
-            "url": "",
-            "dropdown_menu": "learning-centre"
-          }
-        },
-        "l2": {
-          "type": "link",
-          "settings": {
-            "label": "Our Coffee Solutions",
-            "url": "",
-            "dropdown_menu": "our-coffee-solutions"
-          }
-        },
-        "l3": {
-          "type": "link",
-          "settings": {
-            "label": "About Us",
-            "url": ""
-          }
-        },
-        "l4": {
-          "type": "link",
-          "settings": {
-            "label": "Blogs",
-            "url": ""
-          }
-        }
-      },
-      "block_order": [
-        "l1",
-        "l2",
-        "l3",
-        "l4"
-      ],
       "settings": {
         "logo_width": 158,
         "accent": "#ef4444",
