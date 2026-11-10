@@ -6,7 +6,6 @@
   Texts and colors come from the <script type="application/json" data-cfg> block in the dialog.
 */
 (function () {
-  const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
   const CUP_BOTTOM_Y = 216;
   const STREAM_TOP_Y = 52;
   const CANCELLED = new Error('cancelled');
@@ -92,14 +91,11 @@
     return progress * progress;
   }
 
-  function createSvgElement(tagName, attributes) {
-    const svgElement = document.createElementNS(SVG_NAMESPACE, tagName);
+  /* Copies a shape from the templates in snippets/jp-brew-shapes.liquid. */
+  function cloneShape(dialogElement, shapeName) {
+    const shapeTemplate = dialogElement.querySelector('[data-shape-template="' + shapeName + '"]');
 
-    for (const attributeName in attributes) {
-      svgElement.setAttribute(attributeName, attributes[attributeName]);
-    }
-
-    return svgElement;
+    return shapeTemplate.content.firstElementChild.firstElementChild.cloneNode(true);
   }
 
   /* ---------- one brew guide ---------- */
@@ -238,7 +234,7 @@
 
       state.layers.forEach(function (layer, layerIndex) {
         if (!layer.node) {
-          layer.node = createSvgElement('rect', { x: 30, width: 200 });
+          layer.node = cloneShape(brewDialog, 'layer');
           elements.layerGroup.appendChild(layer.node);
         }
 
@@ -334,13 +330,10 @@
       const coffeeGrounds = [];
 
       for (let groundIndex = 0; groundIndex < 16; groundIndex++) {
-        const coffeeGround = createSvgElement('circle', {
-          r: 2.6 + (groundIndex % 3) * 0.7,
-          fill: groundIndex % 2 ? '#3a2214' : '#5a3a26',
-          opacity: 0,
-          cx: 128 + ((groundIndex * 7) % 14),
-          cy: 54
-        });
+        const coffeeGround = cloneShape(brewDialog, 'coffee-ground');
+        coffeeGround.setAttribute('r', 2.6 + (groundIndex % 3) * 0.7);
+        coffeeGround.setAttribute('fill', groundIndex % 2 ? '#3a2214' : '#5a3a26');
+        coffeeGround.setAttribute('cx', 128 + ((groundIndex * 7) % 14));
         elements.effectsGroup.appendChild(coffeeGround);
         coffeeGrounds.push(coffeeGround);
       }
@@ -373,16 +366,7 @@
     function addSugar() {
       showPourer('sugar');
 
-      const sugarCube = createSvgElement('rect', {
-        x: -8,
-        y: -8,
-        width: 16,
-        height: 16,
-        rx: 3,
-        fill: '#fff',
-        stroke: '#e1e4e8',
-        'stroke-width': 1.5
-      });
+      const sugarCube = cloneShape(brewDialog, 'sugar-cube');
       elements.effectsGroup.appendChild(sugarCube);
 
       const surfaceY = getSurfaceY();
