@@ -332,6 +332,7 @@
       assign jp_font_700 = settings.jp_font | font_modify: 'weight', '700'
       assign jp_font_800 = settings.jp_font | font_modify: 'weight', '800'
     -%}
+    {{ 'jp-reduced-motion.css' | asset_url | stylesheet_tag }}
     {% style %}
       {{ jp_font_400 | font_face: font_display: 'swap' }}
       {{ jp_font_500 | font_face: font_display: 'swap' }}
@@ -341,15 +342,6 @@
 
       :root {
         --jp-font-family: {{ settings.jp_font.family }}, {{ settings.jp_font.fallback_families }};
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        [class*='jp-'], [class*='jp-']::before, [class*='jp-']::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-          scroll-behavior: auto !important;
-        }
       }
     {% endstyle %}
     {%- liquid
