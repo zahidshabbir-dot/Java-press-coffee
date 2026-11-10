@@ -1,6 +1,6 @@
 .jp-hd {
   background: #fff;
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
   position: relative;
   z-index: 20;
 }

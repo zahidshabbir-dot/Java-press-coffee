@@ -320,42 +320,21 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
-    {%- unless settings.jp_font.system? -%}
-      {% comment %}theme-check-disable AssetPreload{% endcomment %}
-      <link rel="preload" as="font" href="{{ settings.jp_font | font_url }}" type="font/woff2" crossorigin>
-      {% comment %}theme-check-enable AssetPreload{% endcomment %}
-    {%- endunless -%}
-    {%- liquid
-      assign jp_font_400 = settings.jp_font | font_modify: 'weight', '400'
-      assign jp_font_500 = settings.jp_font | font_modify: 'weight', '500'
-      assign jp_font_600 = settings.jp_font | font_modify: 'weight', '600'
-      assign jp_font_700 = settings.jp_font | font_modify: 'weight', '700'
-      assign jp_font_800 = settings.jp_font | font_modify: 'weight', '800'
-    -%}
     {{ 'jp-reduced-motion.css' | asset_url | stylesheet_tag }}
-    {% style %}
-      {{ jp_font_400 | font_face: font_display: 'swap' }}
-      {{ jp_font_500 | font_face: font_display: 'swap' }}
-      {{ jp_font_600 | font_face: font_display: 'swap' }}
-      {{ jp_font_700 | font_face: font_display: 'swap' }}
-      {{ jp_font_800 | font_face: font_display: 'swap' }}
-
-      :root {
-        --jp-font-family: {{ settings.jp_font.family }}, {{ settings.jp_font.fallback_families }};
-      }
-    {% endstyle %}
+    {%- comment -%}
+      The Java Press sections use the Body font from Theme settings. The theme only loads
+      the regular and bold faces, so the medium, semibold and extra bold faces are added here.
+    {%- endcomment -%}
     {%- liquid
-      assign jp_fonts_url = 'https://fonts.googleapis.com/css2?family=Comforter&family=Inter:wght@500;600'
-      if template.name == 'collection'
-        assign jp_fonts_url = jp_fonts_url | append: '&family=Manrope:wght@600'
-      endif
-      assign jp_fonts_url = jp_fonts_url | append: '&display=swap'
+      assign body_font_500 = settings.type_body_font | font_modify: 'weight', '500'
+      assign body_font_600 = settings.type_body_font | font_modify: 'weight', '600'
+      assign body_font_800 = settings.type_body_font | font_modify: 'weight', '800'
     -%}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    {%- comment -%} Loaded without blocking the page: the fonts swap in when ready. {%- endcomment %}
-    <link rel="stylesheet" href="{{ jp_fonts_url }}" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="{{ jp_fonts_url }}"></noscript>
+    {% style %}
+      {{ body_font_500 | font_face: font_display: 'swap' }}
+      {{ body_font_600 | font_face: font_display: 'swap' }}
+      {{ body_font_800 | font_face: font_display: 'swap' }}
+    {% endstyle %}
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">

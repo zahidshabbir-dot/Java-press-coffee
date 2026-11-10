@@ -14,7 +14,7 @@
   max-height: 92vh;
   background: var(--jp-bg-panel);
   color: var(--jp-bg-text);
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
   box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
 }
 

@@ -5,7 +5,7 @@
   background-position: center;
   background-repeat: no-repeat;
   color: var(--jp-nl-text);
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
   text-align: center;
   padding: var(--jp-nl-padding-top) 20px var(--jp-nl-padding-bottom);
 }
@@ -106,7 +106,7 @@
   border: 0;
   background: transparent;
   color: var(--jp-nl-text);
-  font: 400 16px/16px var(--jp-font-family);
+  font: 400 16px/16px var(--font-body-family);
 }
 
 .jp-nl .jp-nl__input::placeholder {
@@ -129,7 +129,7 @@
   border-radius: 4px;
   background: var(--jp-nl-red);
   color: #fff;
-  font: 700 16px/18px var(--jp-font-family);
+  font: 700 16px/18px var(--font-body-family);
   text-transform: uppercase;
   cursor: pointer;
   white-space: nowrap;

@@ -3,7 +3,7 @@
   --jp-bs-per: 4;
   background: var(--jp-bs-bg);
   color: var(--jp-bs-text);
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
   padding: var(--jp-bs-padding-top) 0 var(--jp-bs-padding-bottom);
 }
 
@@ -57,7 +57,7 @@
   margin-bottom: 0;
   background: none;
   color: #2d2d2d;
-  font: 400 20px/22px var(--jp-font-family);
+  font: 400 20px/22px var(--font-body-family);
   letter-spacing: 1px;
   text-transform: capitalize;
   cursor: pointer;

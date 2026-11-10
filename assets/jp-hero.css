@@ -7,7 +7,7 @@
   background-position: center right;
   background-repeat: no-repeat;
   color: #fff;
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
 }
 
 .jp-hero * {
@@ -44,7 +44,7 @@
 
 .jp-hero .jp-hero__script {
   display: inline-block;
-  font-family: 'Comforter', 'Brush Script MT', cursive;
+  font-family: var(--font-heading-family);
   font-size: 96px;
   line-height: 0.8;
   font-weight: 400;

@@ -10,7 +10,7 @@
 .jp-mp {
   background: var(--jp-mp-bg);
   color: var(--jp-mp-text);
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
   padding: var(--jp-mp-padding-top) 20px var(--jp-mp-padding-bottom);
 }
 
@@ -215,7 +215,7 @@
   margin: 0 0 16px;
   padding-bottom: 15px;
   border-bottom: 1px solid #ebeae6;
-  font-family: 'Inter', var(--jp-font-family);
+  font-family: var(--font-body-family);
   font-size: 16px;
   line-height: 30px;
   font-weight: 500;
@@ -251,7 +251,7 @@
   border-radius: 5px;
   background: #fff var(--jp-mp-select-icon) right 16px center / 24px 24px no-repeat;
   color: var(--jp-mp-text);
-  font: 500 16px/normal var(--jp-font-family);
+  font: 500 16px/normal var(--font-body-family);
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
@@ -302,7 +302,7 @@
   border: 0;
   background: transparent;
   color: var(--jp-mp-text);
-  font: 500 20px/normal var(--jp-font-family);
+  font: 500 20px/normal var(--font-body-family);
   text-align: center;
   -moz-appearance: textfield;
 }
@@ -329,7 +329,7 @@
   border-radius: 5px;
   background: var(--jp-mp-red);
   color: #fff;
-  font: 800 18px/50px var(--jp-font-family);
+  font: 800 18px/50px var(--font-body-family);
   text-transform: uppercase;
   cursor: pointer;
 }

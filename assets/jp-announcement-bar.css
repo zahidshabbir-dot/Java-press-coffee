@@ -1,7 +1,7 @@
 .jp-ann {
   background: var(--jp-ann-bg);
   color: var(--jp-ann-text);
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
 }
 
 .jp-ann .jp-ann__inner {

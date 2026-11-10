@@ -1,7 +1,7 @@
 .jp-rc {
   background: var(--jp-rc-bg);
   color: var(--jp-rc-text);
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
   padding: var(--jp-rc-padding-top) 20px var(--jp-rc-padding-bottom);
 }
 
@@ -120,7 +120,7 @@
   border-radius: 5px;
   background: var(--jp-rc-red);
   color: #fff;
-  font: 800 18px/50px var(--jp-font-family);
+  font: 800 18px/50px var(--font-body-family);
   text-align: center;
   text-transform: uppercase;
   text-decoration: none;

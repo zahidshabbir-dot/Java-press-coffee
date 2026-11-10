@@ -8,7 +8,7 @@ cart-drawer .drawer__inner {
   border-radius: 0;
   background: #fff !important;
   color: #424242;
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
   box-shadow: -5px 4px 10px rgba(0, 0, 0, 0.25);
 }
 
@@ -37,7 +37,7 @@ cart-drawer .jp-cd__head {
 
 cart-drawer .drawer__heading {
   margin: 0;
-  font: 700 16px/25px var(--jp-font-family);
+  font: 700 16px/25px var(--font-body-family);
   letter-spacing: normal;
   text-transform: none;
   color: #424242;
@@ -45,7 +45,7 @@ cart-drawer .drawer__heading {
 
 cart-drawer .jp-cd__count {
   margin: 0;
-  font: 400 12px/16px var(--jp-font-family);
+  font: 400 12px/16px var(--font-body-family);
   color: #424242;
 }
 
@@ -141,7 +141,7 @@ cart-drawer .cart-item__details {
 }
 
 cart-drawer .cart-item__name {
-  font: 600 14px/15px var(--jp-font-family);
+  font: 600 14px/15px var(--font-body-family);
   text-transform: capitalize;
   text-decoration: none;
   letter-spacing: normal;
@@ -156,7 +156,7 @@ cart-drawer .cart-item__title {
 cart-drawer .cart-item__details .product-option,
 cart-drawer .cart-item__details dd {
   margin: 0;
-  font: 400 13px/25px var(--jp-font-family);
+  font: 400 13px/25px var(--font-body-family);
   color: #424242;
 }
 
@@ -177,7 +177,7 @@ cart-drawer .cart-item__totals {
 
 cart-drawer .cart-item__totals .price,
 cart-drawer .cart-item__totals .cart-item__old-price {
-  font: 600 14px/25px var(--jp-font-family);
+  font: 600 14px/25px var(--font-body-family);
   color: #424242;
 }
 
@@ -255,7 +255,7 @@ cart-drawer .quantity__input {
   padding: 0;
   border: 0;
   background: transparent;
-  font: 500 20px/1 var(--jp-font-family);
+  font: 500 20px/1 var(--font-body-family);
   text-align: center;
   color: #424242;
   opacity: 1;
@@ -323,7 +323,7 @@ cart-drawer .jp-cd__date {
 cart-drawer .jp-cd__date-label {
   display: block;
   margin: 0 0 2px;
-  font: 500 12px/20px var(--jp-font-family);
+  font: 500 12px/20px var(--font-body-family);
   color: #424242;
 }
 
@@ -339,7 +339,7 @@ cart-drawer .jp-cd__date-field input {
   border: 1px solid #e2e2e2;
   border-radius: 5px;
   background: #efefef;
-  font: 500 15px/normal var(--jp-font-family);
+  font: 500 15px/normal var(--font-body-family);
   color: #424242;
   -webkit-appearance: none;
   appearance: none;
@@ -380,7 +380,7 @@ cart-drawer .totals {
 cart-drawer .totals__total,
 cart-drawer .totals__total-value {
   margin: 0;
-  font: 700 18px/20px var(--jp-font-family);
+  font: 700 18px/20px var(--font-body-family);
   letter-spacing: normal;
   color: #424242;
 }
@@ -403,7 +403,7 @@ cart-drawer .cart__checkout-button {
   border-radius: 5px;
   background: #ef4444;
   color: #fff;
-  font: 800 16px/50px var(--jp-font-family);
+  font: 800 16px/50px var(--font-body-family);
   letter-spacing: normal;
   text-transform: uppercase;
   box-shadow: none;
@@ -427,7 +427,7 @@ cart-drawer .tax-note {
   margin: 3px 0 0;
   padding: 0;
   text-align: center;
-  font: 500 12px/20px var(--jp-font-family);
+  font: 500 12px/20px var(--font-body-family);
   color: #424242;
 }
 
@@ -522,7 +522,7 @@ cart-drawer .cart-drawer quantity-input.quantity .quantity__input {
   flex: 1 1 auto !important;
   width: auto !important;
   height: 50px !important;
-  font: 500 20px/1 var(--jp-font-family) !important;
+  font: 500 20px/1 var(--font-body-family) !important;
   color: #424242 !important;
   text-align: center;
   background: transparent !important;
@@ -547,7 +547,7 @@ cart-drawer .jp-cd__date-btn {
   color: #424242;
   text-align: left;
   cursor: pointer;
-  font: 500 15px/normal var(--jp-font-family);
+  font: 500 15px/normal var(--font-body-family);
 }
 
 cart-drawer .jp-cd__date-field.has-error .jp-cd__date-btn {
@@ -564,7 +564,7 @@ cart-drawer .jp-cal {
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
-  font-family: 'Inter', var(--jp-font-family);
+  font-family: var(--font-body-family);
   color: #3f3f46;
 }
 
@@ -610,7 +610,7 @@ cart-drawer .jp-cal__nav[disabled] {
 
 cart-drawer .jp-cal__title {
   margin: 0;
-  font: 600 16px/24px 'Inter', sans-serif;
+  font: 600 16px/24px var(--font-body-family);
   color: #09090b;
 }
 
@@ -619,7 +619,7 @@ cart-drawer .jp-cal__week {
   grid-template-columns: repeat(7, 1fr);
   padding: 8px 16px;
   text-align: center;
-  font: 600 13px/18px 'Inter', sans-serif;
+  font: 600 13px/18px var(--font-body-family);
   color: #71717a;
 }
 
@@ -643,7 +643,7 @@ cart-drawer .jp-cal__day {
   border-radius: 50%;
   background: none;
   color: #3f3f46;
-  font: 500 14px/24px 'Inter', sans-serif;
+  font: 500 14px/24px var(--font-body-family);
   cursor: pointer;
 }
 
@@ -679,7 +679,7 @@ cart-drawer .jp-cal__value {
   border-radius: 6px 6px 0 0;
   background: #fff;
   box-shadow: 0 1px 2px rgba(42, 59, 81, 0.12), 0 0 0 1px rgba(18, 55, 105, 0.08);
-  font: 500 14px/20px 'Inter', sans-serif;
+  font: 500 14px/20px var(--font-body-family);
   color: #3f3f46;
   white-space: nowrap;
 }
@@ -692,7 +692,7 @@ cart-drawer .jp-cal__set {
   cursor: pointer;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0)), #ef4444;
   color: #fff;
-  font: 500 14px/20px 'Inter', sans-serif;
+  font: 500 14px/20px var(--font-body-family);
 }
 
 cart-drawer .jp-cal__set[disabled] {

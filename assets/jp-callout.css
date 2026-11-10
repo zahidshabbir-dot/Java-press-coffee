@@ -1,7 +1,7 @@
 .jp-co {
   background: var(--jp-co-bg);
   color: var(--jp-co-heading);
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
   padding: var(--jp-co-padding-top) 20px var(--jp-co-padding-bottom);
 }
 

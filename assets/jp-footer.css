@@ -1,7 +1,7 @@
 .jp-ft {
   background: var(--jp-ft-bg);
   color: var(--jp-ft-text);
-  font-family: var(--jp-font-family);
+  font-family: var(--font-body-family);
 }
 
 .jp-ft * {
@@ -42,7 +42,7 @@
 .jp-ft .jp-ft__logo {
   display: block;
   margin: 0 0 12px;
-  font-family: 'Comforter', 'Brush Script MT', cursive;
+  font-family: var(--font-heading-family);
   font-size: 32px;
   line-height: normal;
   font-weight: 400;
