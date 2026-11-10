@@ -1,4 +1,7 @@
 .jp-nl {
+  --jp-nl-highlight: #000;
+  --jp-nl-muted: #888a8c;
+  --jp-nl-error: #c0262d;
   background-color: var(--jp-nl-bg);
   background-image: var(--jp-nl-bg-image, none);
   background-size: cover;
@@ -64,7 +67,7 @@
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.2px;
-  color: #000;
+  color: var(--jp-nl-highlight);
 }
 
 .jp-nl .jp-nl__form {
@@ -96,6 +99,7 @@
   width: 17px;
   height: 15.4px;
   margin-top: -7.7px;
+  color: var(--jp-nl-muted);
   pointer-events: none;
 }
 
@@ -110,7 +114,7 @@
 }
 
 .jp-nl .jp-nl__input::placeholder {
-  color: #888a8c;
+  color: var(--jp-nl-muted);
   opacity: 1;
 }
 
@@ -161,7 +165,7 @@
 }
 
 .jp-nl .jp-nl__msg--err {
-  color: #c0262d;
+  color: var(--jp-nl-error);
 }
 
 @media (max-width: 749px) {
@@ -196,6 +200,7 @@
   }
 
   .jp-nl .jp-nl__input {
+    padding-right: 6px;
     padding-left: 44px;
     font-size: 12px;
   }
@@ -206,9 +211,5 @@
     min-width: 130px;
     padding: 0 14px;
     font-size: 13px;
-  }
-
-  .jp-nl .jp-nl__input {
-    padding-right: 6px;
   }
 }

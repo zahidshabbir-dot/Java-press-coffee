@@ -2,14 +2,24 @@
   Solid caret (triangle pointing down).
   Accepts:
   - class: optional class for the inline svg.
-  - format: 'css' outputs a CSS url() value (data URI, fill #424242) for use
-    in a custom property, e.g. style="--icon: {{ icon | escape }}".
-    Anything else outputs the inline svg, filled with currentColor.
+  - format: 'css' outputs a CSS url() value (data URI) for a custom property, used as a select
+    background: style="--icon: {{ icon | strip | escape }}". A CSS background image cannot use
+    currentColor, so that version has a fixed fill (#424242).
+    Anything else outputs the inline svg, filled with currentColor (set the color in CSS).
 {%- endcomment -%}
 {%- if format == 'css' -%}
   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5H7z' fill='%23424242'/%3E%3C/svg%3E")
 {%- else -%}
-  <svg{% if class != blank %} class="{{ class }}"{% endif %} viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M7 10l5 5 5-5H7z" fill="currentColor"/>
+  <svg
+    {% if class != blank %}
+      class="{{ class | escape }}"
+    {% endif %}
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
+    <path
+      d="M7 10l5 5 5-5H7z"
+      fill="currentColor"
+    />
   </svg>
 {%- endif -%}

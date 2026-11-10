@@ -1,13 +1,28 @@
 {%- comment -%}
-  Cart icon (iconoir simple-cart), formerly assets/icon-cart-jp.svg.
-  Standalone SVG (with xmlns) so it can also be base64-encoded into a
-  data URI, as the JP Header does for its cart background.
+  Cart icon (iconoir simple-cart).
+  A standalone SVG (with xmlns) so the JP Header can base64-encode it into a
+  data URI for its cart background.
   Accepts:
   - color: stroke color. Default '#EF4444'.
+  - class: optional class for the <svg>.
 {%- endcomment -%}
 {%- assign stroke_color = color | default: '#EF4444' -%}
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g id="iconoir:simple-cart">
-    <path id="Vector" d="M3 6H22L19 16H6L3 6ZM3 6L2.25 3.5M11 19.5C11 19.8978 10.842 20.2794 10.5607 20.5607C10.2794 20.842 9.89782 21 9.5 21C9.10218 21 8.72064 20.842 8.43934 20.5607C8.15804 20.2794 8 19.8978 8 19.5M17 19.5C17 19.8978 16.842 20.2794 16.5607 20.5607C16.2794 20.842 15.8978 21 15.5 21C15.1022 21 14.7206 20.842 14.4393 20.5607C14.158 20.2794 14 19.8978 14 19.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="{{ stroke_color }}"/>
-  </g>
+<svg
+  {% if class != blank %}class="{{ class | escape }}"{% endif %}
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M3 6H22L19 16H6L3 6ZM3 6L2.25 3.5M11 19.5C11 19.8978 10.842 20.2794 10.5607 20.5607 C10.2794
+      20.842 9.89782 21 9.5 21C9.10218 21 8.72064 20.842 8.43934 20.5607 C8.15804 20.2794 8
+      19.8978 8 19.5M17 19.5C17 19.8978 16.842 20.2794 16.5607 20.5607 C16.2794 20.842 15.8978 21
+      15.5 21C15.1022 21 14.7206 20.842 14.4393 20.5607 C14.158 20.2794 14 19.8978 14 19.5"
+    stroke="{{ stroke_color }}"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 </svg>

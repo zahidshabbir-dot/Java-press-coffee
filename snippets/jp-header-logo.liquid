@@ -1,0 +1,21 @@
+{%- comment -%}
+  JP Header logo: the uploaded logo image, or the store name as text.
+  Linked to the home page.
+  Accepts:
+  - class: class for the <a>.
+  - logo: image from the section's logo setting (optional).
+  - width: rendered width in px, used for the image's width attribute.
+  - loading: 'eager' or 'lazy'. Default 'lazy'.
+{%- endcomment -%}
+{%- assign image_loading = loading | default: 'lazy' -%}
+<a class="{{ class | escape }}" href="{{ routes.root_url }}">
+  {%- if logo != blank -%}
+    {{
+      logo
+      | image_url: width: 440
+      | image_tag: width: width, alt: shop.name, loading: image_loading
+    }}
+  {%- else -%}
+    {{ shop.name }}
+  {%- endif -%}
+</a>

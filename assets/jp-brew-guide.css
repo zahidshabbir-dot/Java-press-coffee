@@ -15,22 +15,22 @@
   background: var(--jp-bg-panel);
   color: var(--jp-bg-text);
   font-family: var(--font-body-family);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
 }
 
 .jp-bg::backdrop {
-  background: rgba(24, 14, 8, .62);
+  background: rgba(24, 14, 8, 0.62);
   backdrop-filter: blur(3px);
 }
 
 .jp-bg[open] {
-  animation: jp-bg-in .38s cubic-bezier(.2, .8, .2, 1);
+  animation: jp-bg-in 0.38s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @keyframes jp-bg-in {
   from {
     opacity: 0;
-    transform: translateY(24px) scale(.97);
+    transform: translateY(24px) scale(0.97);
   }
 
   to {
@@ -58,7 +58,7 @@
   margin: 4px 0 0;
   font-size: 14px;
   line-height: 22px;
-  opacity: .75;
+  opacity: 0.75;
   font-weight: 500;
 }
 
@@ -68,7 +68,7 @@
   height: 40px;
   border: 0;
   border-radius: 50%;
-  background: rgba(0, 0, 0, .06);
+  background: rgba(0, 0, 0, 0.06);
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -86,7 +86,7 @@
 }
 
 .jp-bg .jp-bg__close:hover {
-  background: rgba(0, 0, 0, .12);
+  background: rgba(0, 0, 0, 0.12);
 }
 
 .jp-bg .jp-bg__body {
@@ -111,8 +111,7 @@
 .jp-bg .jp-bg__cupwrap {
   width: min(100%, 340px);
   transform-style: preserve-3d;
-  transition: transform .25s ease-out;
-  will-change: transform;
+  transition: transform 0.25s ease-out;
 }
 
 .jp-bg .jp-bg__svg {
@@ -120,7 +119,7 @@
   width: 100%;
   height: auto;
   overflow: visible;
-  filter: drop-shadow(0 14px 14px rgba(60, 30, 10, .18));
+  filter: drop-shadow(0 14px 14px rgba(60, 30, 10, 0.18));
 }
 
 .jp-bg .jp-bg__steam {
@@ -133,14 +132,14 @@
 
 .jp-bg .jp-bg__steam path {
   fill: none;
-  stroke: rgba(255, 255, 255, .9);
+  stroke: rgba(255, 255, 255, 0.9);
   stroke-width: 6;
   stroke-linecap: round;
   animation: jp-bg-steam 2.6s ease-in-out infinite;
 }
 
 .jp-bg .jp-bg__steam path:nth-child(2) {
-  animation-delay: .8s;
+  animation-delay: 0.8s;
 }
 
 .jp-bg .jp-bg__steam path:nth-child(3) {
@@ -154,7 +153,7 @@
   }
 
   35% {
-    opacity: .85;
+    opacity: 0.85;
   }
 
   100% {
@@ -180,7 +179,7 @@
   flex: 1 1 0;
   height: 5px;
   border-radius: 3px;
-  background: rgba(0, 0, 0, .1);
+  background: rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
 }
@@ -192,7 +191,7 @@
   background: var(--jp-bg-accent);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform .5s ease;
+  transition: transform 0.5s ease;
 }
 
 .jp-bg .jp-bg__dot.is-on::after {
@@ -202,13 +201,13 @@
 .jp-bg .jp-bg__step {
   margin: 0 0 6px;
   font-size: 12px;
-  letter-spacing: .12em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 700;
   color: var(--jp-bg-accent);
 }
 
-.jp-bg .jp-bg__h {
+.jp-bg .jp-bg__heading {
   margin: 0 0 8px;
   font-size: clamp(22px, 3.2vw, 30px);
   line-height: 1.15;
@@ -220,7 +219,7 @@
   font-size: 15px;
   line-height: 24px;
   font-weight: 500;
-  opacity: .85;
+  opacity: 0.85;
 }
 
 .jp-bg .jp-bg__controls {
@@ -242,17 +241,14 @@
   height: 52px;
   border-radius: 50%;
   border: 3px solid #fff;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, .18);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
   cursor: pointer;
-  transition: transform .2s, box-shadow .2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
 }
 
 .jp-bg .jp-bg__swatch:hover {
   transform: translateY(-2px);
-}
-
-.jp-bg .jp-bg__swatch {
-  position: relative;
 }
 
 .jp-bg .jp-bg__swatch.is-on {
@@ -281,10 +277,10 @@
   font: inherit;
   font-size: 14px;
   font-weight: 800;
-  letter-spacing: .06em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: transform .15s, filter .15s, opacity .15s;
+  transition: transform 0.15s, filter 0.15s, opacity 0.15s;
 }
 
 .jp-bg .jp-bg__btn:hover:not([disabled]) {
@@ -293,20 +289,20 @@
 }
 
 .jp-bg .jp-bg__btn[disabled] {
-  opacity: .5;
+  opacity: 0.5;
   cursor: progress;
 }
 
 .jp-bg .jp-bg__btn--ghost {
   background: transparent;
   color: var(--jp-bg-text);
-  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .18);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.18);
 }
 
 .jp-bg .jp-bg__count {
   font-size: 13px;
   font-weight: 700;
-  opacity: .7;
+  opacity: 0.7;
 }
 
 .jp-bg .jp-bg__restart {
@@ -321,7 +317,7 @@
   font-weight: 700;
   text-decoration: underline;
   cursor: pointer;
-  opacity: .65;
+  opacity: 0.65;
 }
 
 .jp-bg button:focus-visible {
@@ -353,13 +349,13 @@
   }
 }
 
+/*
+  The pop-up's own open animation is already shortened by assets/jp-reduced-motion.css. The
+  steam paths have no jp- class, so that file does not reach them: stop them here.
+*/
 @media (prefers-reduced-motion: reduce) {
-  .jp-bg[open] {
-    animation: none;
-  }
-
   .jp-bg .jp-bg__steam path {
     animation: none;
-    opacity: .6;
+    opacity: 0.6;
   }
 }

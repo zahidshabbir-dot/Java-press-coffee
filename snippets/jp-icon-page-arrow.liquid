@@ -1,7 +1,19 @@
 {%- comment -%}
-  White pagination arrow pointing right (30 x 30), drawn on a dark circle.
-  Rotate it with CSS for the "previous" link.
+  Pagination arrow pointing right (30 x 30), drawn with currentColor
+  (white on the dark pagination circle). Rotate it with CSS for the "previous" link.
+  Accepts:
+  - class: optional class for the <svg>.
 {%- endcomment -%}
-<svg viewBox="0 0 30 30" fill="none" aria-hidden="true">
-  <path d="M12.555 9.111l5.556 5.556-5.556 5.555" stroke="#fff" stroke-width="2"/>
+<svg
+  {% if class != blank %}class="{{ class | escape }}"{% endif %}
+  viewBox="0 0 30 30"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path
+    d="M12.555 9.111l5.556 5.556-5.556 5.555"
+    stroke="currentColor"
+    stroke-width="2"
+  />
 </svg>

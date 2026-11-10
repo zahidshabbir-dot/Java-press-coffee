@@ -22,10 +22,18 @@
         <li class="jp-co__item" {{ block.shopify_attributes }}>
           {%- if block.settings.icon != blank -%}
             {%- assign icon_url = block.settings.icon | image_url: width: 300 -%}
-            <span class="jp-co__icon" style="--jp-co-icon: url('{{ icon_url }}')" role="presentation"></span>
+            <span
+              class="jp-co__icon"
+              style="--jp-co-icon: url('{{ icon_url }}')"
+              aria-hidden="true"
+            ></span>
           {%- else -%}
-            <span class="jp-co__icon jp-co__icon--svg" role="presentation">
-              {%- render 'jp-callout-icon', index: forloop.index -%}
+            {%- assign icon_position = block.settings.icon_style -%}
+            {%- if icon_position == blank or icon_position == 'auto' -%}
+              {%- assign icon_position = forloop.index -%}
+            {%- endif -%}
+            <span class="jp-co__icon jp-co__icon--svg" aria-hidden="true">
+              {% render 'jp-icon-callout', position: icon_position %}
             </span>
           {%- endif -%}
           {%- if block.settings.title != blank -%}
@@ -48,7 +56,7 @@
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "Why 100,000 Coffee drinkers have switched to organicCoffee"
+      "default": "Why 100,000 Coffee drinkers have switched to OrganicCoffee"
     },
     {
       "type": "header",
@@ -77,7 +85,7 @@
       "id": "icon_color",
       "label": "Icon color",
       "default": "#ffffff",
-      "info": "Icons are drawn in this color, using the shape of the uploaded image."
+      "info": "Color of the built-in icons. Uploaded icons are drawn in this color too, using the image as a shape."
     },
     {
       "type": "range",
@@ -124,13 +132,48 @@
     {
       "type": "callout",
       "name": "Callout",
-      "limit": 6,
       "settings": [
+        {
+          "type": "select",
+          "id": "icon_style",
+          "label": "Built-in icon",
+          "default": "auto",
+          "options": [
+            {
+              "value": "auto",
+              "label": "Automatic (by position)"
+            },
+            {
+              "value": "1",
+              "label": "Coffee plant"
+            },
+            {
+              "value": "2",
+              "label": "Globe"
+            },
+            {
+              "value": "3",
+              "label": "Clock and bean"
+            },
+            {
+              "value": "4",
+              "label": "Watch and bean"
+            },
+            {
+              "value": "5",
+              "label": "Star"
+            },
+            {
+              "value": "6",
+              "label": "Heart"
+            }
+          ]
+        },
         {
           "type": "image_picker",
           "id": "icon",
           "label": "Icon",
-          "info": "Leave empty to use the default icon for this position."
+          "info": "Optional. Replaces the built-in icon below; it is drawn in the section's icon color."
         },
         {
           "type": "text",

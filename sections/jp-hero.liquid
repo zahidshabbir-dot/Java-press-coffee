@@ -1,37 +1,72 @@
+{%- assign background_image = section.settings.bg_image -%}
+{%- assign background_image_mobile = section.settings.bg_image_mobile -%}
+{%- assign hero_image = section.settings.image -%}
+
 {{ 'jp-hero.css' | asset_url | stylesheet_tag }}
 
 <section
   class="jp-hero"
-  data-jp-hero
-  style="--jp-hero-bg: {{ section.settings.bg }}; --jp-hero-accent: {{ section.settings.accent_color }}; --jp-hero-red: {{ section.settings.button_color }}; --jp-hero-dark: {{ section.settings.button_secondary_color }}; --jp-hero-height: {{ section.settings.height }}px; --jp-hero-image-align: {{ section.settings.image_align }}; --jp-hero-image-width: {{ section.settings.image_width }}px;
-    {%- if section.settings.bg_image != blank %} --jp-hero-bg-image: url('{{ section.settings.bg_image | image_url: width: 2880 }}');{% endif -%}
-    {%- if section.settings.bg_image_mobile != blank %} --jp-hero-bg-image-mobile: url('{{ section.settings.bg_image_mobile | image_url: width: 1000 }}');{% endif -%}
+  style="
+    --jp-hero-bg: {{ section.settings.bg }};
+    --jp-hero-accent: {{ section.settings.accent_color }};
+    --jp-hero-red: {{ section.settings.button_color }};
+    --jp-hero-dark: {{ section.settings.button_secondary_color }};
+    --jp-hero-height: {{ section.settings.height }}px;
+    --jp-hero-image-align: {{ section.settings.image_align }};
+    --jp-hero-image-width: {{ section.settings.image_width }}px;
+    {%- if background_image != blank %}
+      --jp-hero-bg-image: url('{{ background_image | image_url: width: 2880 }}');
+    {%- endif %}
+    {%- if background_image_mobile != blank %}
+      --jp-hero-bg-image-mobile: url('{{ background_image_mobile | image_url: width: 1000 }}');
+    {%- endif %}
   "
 >
   <div class="jp-hero__inner">
     <div class="jp-hero__content">
       <h1 class="jp-hero__title">
         {{- section.settings.title_before }}
-        {%- if section.settings.title_script != blank %} <span class="jp-hero__script">{{ section.settings.title_script }}</span>{% endif -%}
-        {%- if section.settings.title_after != blank %}<br>{{ section.settings.title_after }}{% endif -%}
+        {%- if section.settings.title_script != blank %}
+          <span class="jp-hero__script">{{ section.settings.title_script }}</span>
+        {%- endif -%}
+        {%- if section.settings.title_after != blank -%}
+          <br>{{ section.settings.title_after }}
+        {%- endif -%}
       </h1>
 
       {%- if section.settings.text != blank -%}
         <div class="jp-hero__text">{{ section.settings.text }}</div>
       {%- endif -%}
 
-      {%- if section.settings.button_label != blank -%}
-        <a class="jp-hero__btn jp-hero__btn--primary" href="{{ section.settings.button_url | default: routes.all_products_collection_url }}">{{ section.settings.button_label }}</a>
+      {%- if section.settings.button_label != blank and section.settings.button_url != blank -%}
+        <a class="jp-hero__btn jp-hero__btn--primary" href="{{ section.settings.button_url }}">
+          {{- section.settings.button_label -}}
+        </a>
       {%- endif -%}
-      {%- if section.settings.button_2_label != blank -%}
-        <a class="jp-hero__btn jp-hero__btn--secondary" href="{{ section.settings.button_2_url | default: '#' }}">{{ section.settings.button_2_label }}</a>
+      {%- if section.settings.button_2_label != blank and section.settings.button_2_url != blank -%}
+        <a class="jp-hero__btn jp-hero__btn--secondary" href="{{ section.settings.button_2_url }}">
+          {{- section.settings.button_2_label -}}
+        </a>
       {%- endif -%}
     </div>
 
     <div class="jp-hero__visual">
-      {%- if section.settings.image != blank -%}
-        {%- assign hero_alt = section.settings.image.alt | default: section.settings.title_before -%}
-        {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'jp-hero__product', alt: hero_alt, loading: 'eager', fetchpriority: 'high' }}
+      {%- if hero_image != blank -%}
+        {%- assign hero_image_alt = hero_image.alt | default: section.settings.title_before -%}
+        {%- capture hero_image_sizes -%}
+          (min-width: 750px) {{ section.settings.image_width }}px, min(calc(100vw - 32px), 340px)
+        {%- endcapture -%}
+        {{
+          hero_image
+          | image_url: width: 1280
+          | image_tag:
+            class: 'jp-hero__product',
+            alt: hero_image_alt,
+            widths: '340, 450, 680, 900, 1280',
+            sizes: hero_image_sizes,
+            loading: 'eager',
+            fetchpriority: 'high'
+        }}
       {%- endif -%}
     </div>
   </div>
@@ -77,23 +112,26 @@
       "type": "text",
       "id": "button_label",
       "label": "Primary button text",
-      "default": "Browse all products  →"
+      "default": "Browse all products →"
     },
     {
       "type": "url",
       "id": "button_url",
-      "label": "Primary button link"
+      "label": "Primary button link",
+      "default": "/collections/all",
+      "info": "The button is hidden when this is empty."
     },
     {
       "type": "text",
       "id": "button_2_label",
       "label": "Secondary button text",
-      "default": "Take your free survey now  →"
+      "default": "Take your free survey now →"
     },
     {
       "type": "url",
       "id": "button_2_url",
-      "label": "Secondary button link"
+      "label": "Secondary button link",
+      "info": "The button is hidden when this is empty."
     },
     {
       "type": "header",
@@ -103,7 +141,7 @@
       "type": "image_picker",
       "id": "image",
       "label": "Product image",
-      "info": "Upload the product image."
+      "info": "Shown next to the text. A transparent PNG about 900 px wide works best."
     },
     {
       "type": "select",
@@ -139,7 +177,7 @@
       "type": "image_picker",
       "id": "bg_image",
       "label": "Background image",
-      "info": "Upload the banner image."
+      "info": "Covers the whole banner. Recommended size 2880 × 1240 px."
     },
     {
       "type": "image_picker",

@@ -34,6 +34,7 @@
   justify-content: start;
   align-items: start;
 }
+
 /* Brand column */
 .jp-ft .jp-ft__brand {
   max-width: 378px;
@@ -75,7 +76,8 @@
   list-style: none;
 }
 
-.jp-ft .jp-ft__social a {
+/* a link, or a plain <span> when the block has no URL */
+.jp-ft .jp-ft__social-link {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,7 +92,13 @@
   height: 36px;
 }
 
-/* uploaded icons sit inside the dark box */
+/* built-in and uploaded icons sit inside the dark box */
+.jp-ft .jp-ft__social svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
 .jp-ft .jp-ft__social img.jp-ft__social-custom {
   width: 20px;
   height: 20px;
@@ -125,6 +133,7 @@
 .jp-ft .jp-ft__links li:last-child {
   margin-bottom: 0;
 }
+
 /* Bottom bar */
 .jp-ft .jp-ft__bar {
   margin-top: 24px;

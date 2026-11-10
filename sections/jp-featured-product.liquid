@@ -1,15 +1,18 @@
 {%- comment -%}
   JP Featured product
   Shows one product with its photo, price, variant picker and add to cart form.
-  Styles are in assets/jp-featured-product.css and the script in assets/jp-featured-product.js.
+  The buy box is snippets/jp-product-info.liquid (shared with JP Product).
+  Styles: assets/jp-buy-box.css and assets/jp-featured-product.css.
+  Scripts: assets/jp-product-form.js and assets/jp-featured-product.js.
 {%- endcomment -%}
-{%- assign product = section.settings.product | default: collections.all.products.first -%}
+{%- assign featured_product = section.settings.product | default: collections.all.products.first -%}
 
+{{ 'jp-buy-box.css' | asset_url | stylesheet_tag }}
 {{ 'jp-featured-product.css' | asset_url | stylesheet_tag }}
 
 {%- capture select_icon -%}{% render 'jp-icon-caret', format: 'css' %}{%- endcapture -%}
 
-{%- capture jp_fp_style -%}
+{%- capture section_style -%}
   --jp-fp-red: {{ section.settings.accent }};
   --jp-fp-text: {{ section.settings.text_color }};
   --jp-fp-green: {{ section.settings.trust_color }};
@@ -20,8 +23,8 @@
   --jp-fp-select-icon: {{ select_icon | strip | escape }};
 {%- endcapture -%}
 
-{%- if product == blank -%}
-  <div class="jp-fp" style="{{ jp_fp_style | strip_newlines }}">
+{%- if featured_product == blank -%}
+  <div class="jp-fp" style="{{ section_style | strip_newlines }}">
     <div class="jp-fp__inner">
       {%- if request.design_mode -%}
         <p>Select a product in the section settings.</p>
@@ -29,22 +32,21 @@
     </div>
   </div>
 {%- else -%}
-  {%- assign current = product.selected_or_first_available_variant -%}
   <section
     class="jp-fp"
-    style="{{ jp_fp_style | strip_newlines }}"
+    style="{{ section_style | strip_newlines }}"
     data-jp-fp
-    data-product-url="{{ product.url }}"
+    data-product-url="{{ featured_product.url }}"
   >
     <div class="jp-fp__inner">
       <div class="jp-fp__media">
-        {%- if product.featured_image != blank -%}
+        {%- if featured_product.featured_image != blank -%}
           {{
-            product.featured_image
+            featured_product.featured_image
             | image_url: width: 1000
             | image_tag:
               class: 'jp-fp__img',
-              alt: product.title,
+              alt: featured_product.title,
               loading: 'lazy',
               widths: '500, 750, 1000',
               sizes: '(min-width: 990px) 50vw, 100vw'
@@ -52,156 +54,38 @@
         {%- else -%}
           {{ 'product-1' | placeholder_svg_tag: 'jp-fp__img' }}
         {%- endif -%}
-        {%- if section.settings.show_badge -%}
-          {%- if section.settings.badge != blank -%}
-            {{
-              section.settings.badge
-              | image_url: width: 300
-              | image_tag: class: 'jp-fp__badge', alt: '', loading: 'lazy'
-            }}
-          {%- endif -%}
+        {%- if section.settings.show_badge and section.settings.badge != blank -%}
+          {{
+            section.settings.badge
+            | image_url: width: 300
+            | image_tag: class: 'jp-fp__badge', alt: '', loading: 'lazy'
+          }}
         {%- endif -%}
       </div>
 
       <div class="jp-fp__info">
-        {%- assign pills = section.blocks | where: 'type', 'pill' -%}
-        {%- if pills.size > 0 -%}
-          <div class="jp-fp__pills">
-            {%- for block in pills -%}
-              <span
-                class="jp-fp__pill"
-                style="--jp-fp-pill-bg: {{ block.settings.bg }}; --jp-fp-pill-color: {{ block.settings.color }};"
-                {{ block.shopify_attributes }}
-              >
-                {{- block.settings.text -}}
-              </span>
-            {%- endfor -%}
-          </div>
-        {%- endif -%}
-
-        <h2 class="jp-fp__title">{{ product.title }}</h2>
-
         {%- assign app_blocks = section.blocks | where: 'type', '@app' -%}
-        {%- if app_blocks.size > 0 -%}
+        {%- capture app_blocks_html -%}
           {%- for block in app_blocks -%}
             <div class="jp-fp__app">{% render block %}</div>
           {%- endfor -%}
-        {%- elsif product.metafields.judgeme.badge != blank -%}
-          <div class="jp-fp__rating jp-fp__rating--jm">
-            {{- product.metafields.judgeme.badge -}}
-          </div>
-        {%- endif -%}
-
-        <div class="jp-fp__price">
-          <span class="jp-fp__now" data-jp-fp-price>{{ current.price | money }}</span>
-          <s
-            class="jp-fp__was"
-            data-jp-fp-compare
-            {% unless current.compare_at_price > current.price %}
-              hidden
-            {% endunless %}
-          >
-            {{- current.compare_at_price | money -}}
-          </s>
-        </div>
-
-        <div class="jp-fp__desc">
-          {%- if section.settings.description != blank -%}
-            {{ section.settings.description }}
-          {%- else -%}
-            <p>{{ product.description | strip_html | truncatewords: section.settings.description_words }}</p>
-          {%- endif -%}
-        </div>
-
-        {%- form 'product', product, class: 'jp-fp__form', novalidate: 'novalidate' -%}
-          <input type="hidden" name="id" value="{{ current.id }}" data-jp-fp-id>
-
-          {%- unless product.has_only_default_variant -%}
-            <div class="jp-fp__options">
-              {%- for option in product.options_with_values -%}
-                <div>
-                  <label class="jp-fp__label" for="jp-fp-{{ section.id }}-opt-{{ forloop.index }}">
-                    {{- option.name -}}:
-                  </label>
-                  <select
-                    class="jp-fp__select"
-                    id="jp-fp-{{ section.id }}-opt-{{ forloop.index }}"
-                    data-jp-fp-option
-                  >
-                    {%- for value in option.values -%}
-                      <option
-                        value="{{ value | escape }}"
-                        {% if option.selected_value == value %}
-                          selected
-                        {% endif %}
-                      >
-                        {{- value -}}
-                      </option>
-                    {%- endfor -%}
-                  </select>
-                </div>
-              {%- endfor -%}
-            </div>
-          {%- endunless -%}
-
-          <div class="jp-fp__buy">
-            <div class="jp-fp__qty-wrap">
-              <label class="jp-fp__label" for="jp-fp-{{ section.id }}-qty">
-                {{- section.settings.quantity_label -}}
-              </label>
-              <div class="jp-fp__qty">
-                <button type="button" data-jp-fp-minus aria-label="Decrease quantity">−</button>
-                <input
-                  type="number"
-                  id="jp-fp-{{ section.id }}-qty"
-                  name="quantity"
-                  value="1"
-                  min="1"
-                  inputmode="numeric"
-                  data-jp-fp-qty
-                >
-                <button type="button" data-jp-fp-plus aria-label="Increase quantity">+</button>
-              </div>
-            </div>
-            <div class="jp-fp__cart">
-              <button
-                type="submit"
-                class="jp-fp__btn"
-                data-jp-fp-submit
-                data-label="{{ section.settings.button_label | escape }}"
-                data-soldout="{{ section.settings.sold_out_label | escape }}"
-                {% unless current.available %}
-                  disabled
-                {% endunless %}
-              >
-                {%- if current.available -%}
-                  {{ section.settings.button_label }}
-                {%- else -%}
-                  {{ section.settings.sold_out_label }}
-                {%- endif -%}
-              </button>
-              {%- assign trusts = section.blocks | where: 'type', 'trust' -%}
-              {%- if trusts.size > 0 -%}
-                <ul class="jp-fp__trust">
-                  {%- for block in trusts -%}
-                    <li {{ block.shopify_attributes }}>
-                      {% render 'jp-icon-check-circle' %}
-                      {{ block.settings.text }}
-                    </li>
-                  {%- endfor -%}
-                </ul>
-              {%- endif -%}
-            </div>
-          </div>
-        {%- endform -%}
+        {%- endcapture -%}
+        {% render 'jp-product-info',
+          product: featured_product,
+          section: section,
+          prefix: 'jp-fp',
+          heading_tag: 'h2',
+          app_blocks_html: app_blocks_html
+        %}
       </div>
     </div>
 
     <script type="application/json" data-jp-fp-variants>
-      {%- render 'jp-variants-json', product: product -%}
+      {% render 'jp-variants-json', product: featured_product %}
     </script>
   </section>
 
+  <script src="{{ 'jp-product-form.js' | asset_url }}" defer></script>
   <script src="{{ 'jp-featured-product.js' | asset_url }}" defer></script>
 {%- endif -%}
 
@@ -239,6 +123,13 @@
       "id": "quantity_label",
       "label": "Quantity label",
       "default": "Quantity:"
+    },
+    {
+      "type": "text",
+      "id": "option_label",
+      "label": "Option label",
+      "info": "[option] is replaced by the option name, for example Size.",
+      "default": "[option]:"
     },
     {
       "type": "text",
@@ -329,7 +220,7 @@
     },
     {
       "type": "pill",
-      "name": "Round label",
+      "name": "Badge",
       "limit": 4,
       "settings": [
         {
@@ -354,7 +245,7 @@
     },
     {
       "type": "trust",
-      "name": "Trust badge",
+      "name": "Trust point",
       "limit": 4,
       "settings": [
         {

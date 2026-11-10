@@ -16,7 +16,6 @@
   padding: 0 120px;
   display: flex;
   align-items: center;
-  gap: 0;
 }
 
 .jp-hd .jp-hd__logo {
@@ -46,6 +45,15 @@
   line-height: 35px;
   text-decoration: none;
   white-space: nowrap;
+}
+
+/* blocks without a link URL render the label as a <button> or <span> */
+.jp-hd button.jp-hd__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .jp-hd .jp-hd__link:hover,
@@ -130,13 +138,25 @@
     border-top: 0;
   }
 
-  .jp-hd .jp-hd__sub-list:not(:hover) li:first-child a,
+  /* the first item is highlighted until the pointer or keyboard focus moves into the list */
+  .jp-hd .jp-hd__sub-list:not(:hover):not(:focus-within) li:first-child a,
   .jp-hd .jp-hd__sub-list a:hover,
   .jp-hd .jp-hd__sub-list a:focus-visible {
     background: var(--jp-hd-sub-dark);
     color: #fff;
     font-weight: 500;
-    outline: 0;
+  }
+
+  .jp-hd .jp-hd__sub-list a:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -4px;
+  }
+
+  .jp-hd .jp-hd__nav-cta,
+  .jp-hd .jp-hd__drawer-top,
+  .jp-hd .jp-hd__drawer-foot,
+  .jp-hd .jp-hd__grand {
+    display: none;
   }
 }
 
@@ -191,6 +211,10 @@
   filter: brightness(0.93);
 }
 
+.jp-hd .jp-hd__cta-mobile {
+  display: none;
+}
+
 .jp-hd .jp-hd__burger {
   display: none;
   width: 40px;
@@ -230,14 +254,9 @@
   }
 }
 
-.jp-hd .jp-hd__cta-m {
-  display: none;
-}
-
 @media (max-width: 989px) {
   .jp-hd .jp-hd__inner {
     padding: 0 16px 0 14px;
-    gap: 0;
     height: 52px;
   }
 
@@ -246,7 +265,6 @@
     order: 1;
     width: 36px;
     height: 36px;
-    margin-right: 0;
     flex: 0 0 36px;
   }
 
@@ -278,11 +296,11 @@
     line-height: 38px;
   }
 
-  .jp-hd .jp-hd__cta-d {
+  .jp-hd .jp-hd__cta-desktop {
     display: none;
   }
 
-  .jp-hd .jp-hd__cta-m {
+  .jp-hd .jp-hd__cta-mobile {
     display: inline;
   }
 
@@ -360,7 +378,10 @@
     line-height: 52px;
     font-size: 16px;
     font-weight: 400;
-    border: 0;
+  }
+
+  .jp-hd button.jp-hd__link {
+    width: 100%;
   }
 
   .jp-hd .jp-hd__item.has-sub > .jp-hd__link::after,
@@ -383,7 +404,6 @@
     line-height: 52px;
     font-size: 16px;
     font-weight: 400;
-    border: 0;
   }
 
   .jp-hd .jp-hd__grand {
@@ -442,7 +462,7 @@
     font-size: 12px;
   }
 
-  .jp-hd .jp-hd__acct {
+  .jp-hd .jp-hd__account {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -451,16 +471,16 @@
     line-height: 20px;
   }
 
-  .jp-hd .jp-hd__acct svg {
+  .jp-hd .jp-hd__account svg {
     width: 18px;
     height: 18px;
   }
 
-  .jp-hd .jp-hd__loc {
+  .jp-hd .jp-hd__location {
     margin: 12px 0 16px;
   }
 
-  .jp-hd .jp-hd__loc::after {
+  .jp-hd .jp-hd__location::after {
     content: '\25BE';
     margin-left: 8px;
     font-size: 10px;
@@ -485,14 +505,5 @@
     display: block;
     width: 18px;
     height: 18px;
-  }
-}
-
-@media (min-width: 990px) {
-  .jp-hd .jp-hd__nav-cta,
-  .jp-hd .jp-hd__drawer-top,
-  .jp-hd .jp-hd__drawer-foot,
-  .jp-hd .jp-hd__grand {
-    display: none;
   }
 }

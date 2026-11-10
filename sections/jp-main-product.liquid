@@ -1,40 +1,52 @@
 {%- comment -%}
   JP Product
   Product page: gallery, title, price, variant pickers, quantity, add to cart and accordions.
-  Styles: assets/jp-main-product.css. Script: assets/jp-main-product.js.
+  The buy box is snippets/jp-product-info.liquid (shared with JP Featured product).
+  Styles: assets/jp-buy-box.css and assets/jp-main-product.css.
+  Scripts: assets/jp-product-form.js and assets/jp-main-product.js.
 {%- endcomment -%}
 
-{%- assign sid = section.id -%}
-{%- assign current = product.selected_or_first_available_variant -%}
+{%- comment -%} Photos at least this wide (width / height) fill the image area. {%- endcomment -%}
+{%- assign photo_min_aspect_ratio = 0.9 -%}
 {%- capture select_icon -%}{% render 'jp-icon-caret', format: 'css' %}{%- endcapture -%}
 
+{%- capture section_style -%}
+  --jp-mp-red: {{ section.settings.accent }};
+  --jp-mp-text: {{ section.settings.text_color }};
+  --jp-mp-green: {{ section.settings.trust_color }};
+  --jp-mp-bg: {{ section.settings.bg }};
+  --jp-mp-tile: {{ section.settings.tile_color }};
+  --jp-mp-acc-bg: {{ section.settings.acc_bg }};
+  --jp-mp-padding-top: {{ section.settings.padding_top }}px;
+  --jp-mp-padding-bottom: {{ section.settings.padding_bottom }}px;
+  --jp-mp-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+  --jp-mp-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  --jp-mp-select-icon: {{ select_icon | strip | escape }};
+{%- endcapture -%}
+
+{{ 'jp-buy-box.css' | asset_url | stylesheet_tag }}
 {{ 'jp-main-product.css' | asset_url | stylesheet_tag }}
 
 <section
   class="jp-mp"
+  style="{{ section_style | strip_newlines }}"
   data-jp-mp
   data-product-url="{{ product.url }}"
-  style="
-    --jp-mp-red: {{ section.settings.accent }};
-    --jp-mp-text: {{ section.settings.text_color }};
-    --jp-mp-green: {{ section.settings.trust_color }};
-    --jp-mp-bg: {{ section.settings.bg }};
-    --jp-mp-tile: {{ section.settings.tile_color }};
-    --jp-mp-acc-bg: {{ section.settings.acc_bg }};
-    --jp-mp-padding-top: {{ section.settings.padding_top }}px;
-    --jp-mp-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --jp-mp-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
-    --jp-mp-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
-    --jp-mp-select-icon: {{ select_icon | strip | escape }};
-  "
 >
   <div class="jp-mp__inner">
     <div class="jp-mp__gallery">
       <div class="jp-mp__stage" data-jp-mp-stage>
         {%- if product.images.size > 0 -%}
           {%- for image in product.images -%}
+            {%- assign slide_class = 'jp-mp__slide' -%}
+            {%- if forloop.first -%}
+              {%- assign slide_class = slide_class | append: ' is-active' -%}
+            {%- endif -%}
+            {%- if section.settings.fill_photos and image.aspect_ratio >= photo_min_aspect_ratio -%}
+              {%- assign slide_class = slide_class | append: ' is-photo' -%}
+            {%- endif -%}
             <div
-              class="jp-mp__slide{% if forloop.first %} is-active{% endif %}{% if image.aspect_ratio >= 0.9 and section.settings.fill_photos %} is-photo{% endif %}"
+              class="{{ slide_class }}"
               data-jp-mp-slide
               data-media-id="{{ image.id }}"
             >
@@ -63,11 +75,21 @@
         {%- endif -%}
 
         {%- if product.images.size > 1 -%}
-          <button type="button" class="jp-mp__arrow jp-mp__arrow--prev" aria-label="Previous image" data-jp-mp-prev>
-            {% render 'jp-icon-slide-arrow', direction: 'prev' %}
+          <button
+            type="button"
+            class="jp-mp__arrow jp-mp__arrow--prev"
+            aria-label="{{ 'general.slider.previous_slide' | t | escape }}"
+            data-jp-mp-prev
+          >
+            {% render 'jp-icon-chevron', direction: 'prev', size: 'large', stroke_width: 2.4 %}
           </button>
-          <button type="button" class="jp-mp__arrow jp-mp__arrow--next" aria-label="Next image" data-jp-mp-next>
-            {% render 'jp-icon-slide-arrow', direction: 'next' %}
+          <button
+            type="button"
+            class="jp-mp__arrow jp-mp__arrow--next"
+            aria-label="{{ 'general.slider.next_slide' | t | escape }}"
+            data-jp-mp-next
+          >
+            {% render 'jp-icon-chevron', direction: 'next', size: 'large', stroke_width: 2.4 %}
           </button>
         {%- endif -%}
       </div>
@@ -75,13 +97,16 @@
       {%- if product.images.size > 0 -%}
         <ul class="jp-mp__thumbs">
           {%- for image in product.images -%}
+            {%- assign thumb_label = 'products.product.media.load_image' | t: index: forloop.index -%}
             <li>
               <button
                 type="button"
                 class="jp-mp__thumb"
                 data-jp-mp-thumb="{{ forloop.index0 }}"
-                aria-label="Show image {{ forloop.index }}"
-                {% if forloop.first %}aria-current="true"{% endif %}
+                aria-label="{{ thumb_label | escape }}"
+                {% if forloop.first %}
+                  aria-current="true"
+                {% endif %}
               >
                 {{ image | image_url: width: 200 | image_tag: alt: '', loading: 'lazy' }}
               </button>
@@ -92,135 +117,34 @@
     </div>
 
     <div class="jp-mp__info">
-      {%- assign pills = section.blocks | where: 'type', 'pill' -%}
-      {%- if pills.size > 0 -%}
-        <div class="jp-mp__pills">
-          {%- for block in pills -%}
-            <span
-              class="jp-mp__pill"
-              style="--jp-mp-pill-bg: {{ block.settings.bg }}; --jp-mp-pill-color: {{ block.settings.color }};"
-              {{ block.shopify_attributes }}
-            >
-              {{- block.settings.text -}}
-            </span>
-          {%- endfor -%}
-        </div>
-      {%- endif -%}
-
-      <h1 class="jp-mp__title">{{ product.title }}</h1>
-
       {%- assign app_blocks = section.blocks | where: 'type', '@app' -%}
-      {%- if app_blocks.size > 0 -%}
+      {%- capture app_blocks_html -%}
         {%- for block in app_blocks -%}
           <div class="jp-mp__app">{% render block %}</div>
         {%- endfor -%}
-      {%- elsif product.metafields.judgeme.badge != blank -%}
-        <div class="jp-mp__rating jp-mp__rating--jm">{{ product.metafields.judgeme.badge }}</div>
-      {%- endif -%}
+      {%- endcapture -%}
+      {% render 'jp-product-info',
+        product: product,
+        section: section,
+        prefix: 'jp-mp',
+        heading_tag: 'h1',
+        app_blocks_html: app_blocks_html
+      %}
 
-      <div class="jp-mp__price">
-        <span class="jp-mp__now" data-jp-mp-price>{{ current.price | money }}</span>
-        <s
-          class="jp-mp__was"
-          data-jp-mp-compare
-          {% unless current.compare_at_price > current.price %}hidden{% endunless %}
-        >
-          {{- current.compare_at_price | money -}}
-        </s>
-      </div>
-
-      <div class="jp-mp__desc">
-        {%- if section.settings.description != blank -%}
-          {{ section.settings.description }}
-        {%- else -%}
-          <p>{{ product.description | strip_html | truncatewords: section.settings.description_words }}</p>
-        {%- endif -%}
-      </div>
-
-      {%- form 'product', product, class: 'jp-mp__form', novalidate: 'novalidate' -%}
-        <input type="hidden" name="id" value="{{ current.id }}" data-jp-mp-id>
-
-        {%- unless product.has_only_default_variant -%}
-          <div class="jp-mp__options">
-            {%- for option in product.options_with_values -%}
-              <div>
-                <label class="jp-mp__label" for="jp-mp-{{ sid }}-opt-{{ forloop.index }}">{{ option.name }}:</label>
-                <select class="jp-mp__select" id="jp-mp-{{ sid }}-opt-{{ forloop.index }}" data-jp-mp-option>
-                  {%- for value in option.values -%}
-                    <option
-                      value="{{ value | escape }}"
-                      {% if option.selected_value == value %}selected{% endif %}
-                    >
-                      {{- value -}}
-                    </option>
-                  {%- endfor -%}
-                </select>
-              </div>
-            {%- endfor -%}
-          </div>
-        {%- endunless -%}
-
-        <div class="jp-mp__buy">
-          <div class="jp-mp__qty-wrap">
-            <label class="jp-mp__label" for="jp-mp-{{ sid }}-qty">{{ section.settings.quantity_label }}</label>
-            <div class="jp-mp__qty">
-              <button type="button" data-jp-mp-minus aria-label="Decrease quantity">
-                {%- render 'jp-icon-minus' -%}
-              </button>
-              <input
-                type="number"
-                id="jp-mp-{{ sid }}-qty"
-                name="quantity"
-                value="1"
-                min="1"
-                inputmode="numeric"
-                data-jp-mp-qty
-              >
-              <button type="button" data-jp-mp-plus aria-label="Increase quantity">
-                {%- render 'jp-icon-plus' -%}
-              </button>
-            </div>
-          </div>
-
-          <div class="jp-mp__cart">
-            <button
-              type="submit"
-              class="jp-mp__btn"
-              data-jp-mp-submit
-              data-label="{{ section.settings.button_label | escape }}"
-              data-soldout="{{ section.settings.sold_out_label | escape }}"
-              {% unless current.available %}disabled{% endunless %}
-            >
-              {%- if current.available -%}
-                {{- section.settings.button_label -}}
-              {%- else -%}
-                {{- section.settings.sold_out_label -}}
-              {%- endif -%}
-            </button>
-
-            {%- assign trusts = section.blocks | where: 'type', 'trust' -%}
-            {%- if trusts.size > 0 -%}
-              <ul class="jp-mp__trust">
-                {%- for block in trusts -%}
-                  <li {{ block.shopify_attributes }}>
-                    {% render 'jp-icon-check-circle' %}
-                    {{ block.settings.text }}
-                  </li>
-                {%- endfor -%}
-              </ul>
-            {%- endif -%}
-          </div>
-        </div>
-      {%- endform -%}
-
-      {%- assign accs = section.blocks | where: 'type', 'accordion' -%}
-      {%- if accs.size > 0 -%}
+      {%- assign accordion_blocks = section.blocks | where: 'type', 'accordion' -%}
+      {%- if accordion_blocks.size > 0 -%}
         <div class="jp-mp__acc">
-          {%- for block in accs -%}
-            <details class="jp-mp__item" {{ block.shopify_attributes }} {% if block.settings.open %}open{% endif %}>
+          {%- for block in accordion_blocks -%}
+            <details
+              class="jp-mp__item"
+              {{ block.shopify_attributes }}
+              {% if block.settings.open %}
+                open
+              {% endif %}
+            >
               <summary>
                 <span>{{ block.settings.title }}</span>
-                {% render 'jp-icon-plus', color: '#424242', stroke_width: 1.6 %}
+                {% render 'jp-icon-plus', class: 'jp-mp__acc-icon', stroke_width: 1.6 %}
               </summary>
               <div class="jp-mp__acc-body">
                 {%- if block.settings.content != blank -%}
@@ -229,7 +153,9 @@
                   {{ product.description }}
                 {%- endif -%}
                 {%- if block.settings.show_howto and section.settings.howto_label != blank -%}
-                  <button type="button" class="jp-mp__howto" data-jp-brew-open>{{ section.settings.howto_label }}</button>
+                  <button type="button" class="jp-mp__howto" data-jp-brew-open>
+                    {{- section.settings.howto_label -}}
+                  </button>
                 {%- endif -%}
               </div>
             </details>
@@ -240,10 +166,11 @@
   </div>
 
   <script type="application/json" data-jp-mp-variants>
-    {%- render 'jp-variants-json', product: product -%}
+    {% render 'jp-variants-json', product: product %}
   </script>
 </section>
 
+<script src="{{ 'jp-product-form.js' | asset_url }}" defer></script>
 <script src="{{ 'jp-main-product.js' | asset_url }}" defer></script>
 
 <script type="application/ld+json">{{ product | structured_data }}</script>
@@ -251,6 +178,9 @@
 {% schema %}
 {
   "name": "JP Product",
+  "enabled_on": {
+    "templates": ["product"]
+  },
   "settings": [
     {
       "type": "richtext",
@@ -271,7 +201,7 @@
       "type": "checkbox",
       "id": "fill_photos",
       "label": "Fill the image area with photos",
-      "info": "Square or wide photos fill the grey area. Tall product shots (like the coffee bag) stay centered.",
+      "info": "Square or wide photos fill the image area. Tall product shots, such as packshots, stay centered.",
       "default": true
     },
     {
@@ -279,6 +209,13 @@
       "id": "quantity_label",
       "label": "Quantity label",
       "default": "Quantity:"
+    },
+    {
+      "type": "text",
+      "id": "option_label",
+      "label": "Option label",
+      "info": "[option] is replaced by the option name, for example Size.",
+      "default": "[option]:"
     },
     {
       "type": "text",

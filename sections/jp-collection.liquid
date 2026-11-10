@@ -1,8 +1,25 @@
-{%- assign sid = section.id -%}
-{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
-{%- capture caret_icon -%}{%- render 'jp-icon-caret', format: 'css' -%}{%- endcapture -%}
-{%- capture arrow_icon -%}{%- render 'jp-icon-arrow-right', format: 'css' -%}{%- endcapture -%}
+{%- liquid
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign clear_filters_url = collection.url
+  if sort_by != blank
+    assign clear_filters_url = clear_filters_url | append: '?sort_by=' | append: sort_by
+  endif
+-%}
+{%- capture caret_icon -%}{% render 'jp-icon-caret', format: 'css' %}{%- endcapture -%}
+{%- capture arrow_icon -%}{% render 'jp-icon-arrow-right', format: 'css' %}{%- endcapture -%}
 
+{%- assign badge_markup = '' -%}
+{%- if section.settings.show_badge and section.settings.badge != blank -%}
+  {%- capture badge_markup -%}
+    {{
+      section.settings.badge
+      | image_url: width: 200
+      | image_tag: class: 'jp-cl__badge', alt: '', loading: 'lazy'
+    }}
+  {%- endcapture -%}
+{%- endif -%}
+
+{{ 'jp-product-card.css' | asset_url | stylesheet_tag }}
 {{ 'jp-collection.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'jp-collection.js' | asset_url }}" defer></script>
 
@@ -31,8 +48,13 @@
         <div class="jp-cl__desc rte">{{ collection.description }}</div>
       {%- endif -%}
 
-      <div class="jp-cl__mbar">
-        <button type="button" class="jp-cl__mopen" data-jp-cl-open aria-haspopup="dialog">
+      <div class="jp-cl__mobile-bar">
+        <button
+          type="button"
+          class="jp-cl__mobile-open"
+          data-jp-cl-open
+          aria-haspopup="dialog"
+        >
           {% render 'jp-icon-filter' %}
           <span>{{ section.settings.filter_sort_label }}</span>
         </button>
@@ -40,19 +62,36 @@
       </div>
       <div class="jp-cl__overlay" data-jp-cl-close hidden></div>
 
-      <form class="jp-cl__form-bar" id="jp-cl-form-{{ sid }}" method="get" action="{{ collection.url }}">
-        <div class="jp-cl__bar" role="group" aria-label="{{ section.settings.filter_sort_label | escape }}">
-          <div class="jp-cl__dhead">
+      <form
+        class="jp-cl__form-bar"
+        id="jp-cl-form-{{ section.id }}"
+        method="get"
+        action="{{ collection.url }}"
+      >
+        <div
+          class="jp-cl__bar"
+          role="group"
+          aria-label="{{ section.settings.filter_sort_label | escape }}"
+        >
+          <div class="jp-cl__drawer-head">
             <div>
-              <p class="jp-cl__dtitle">{{ section.settings.filter_sort_label }}</p>
-              <p class="jp-cl__dcount">{{ collection.products_count }} {{ section.settings.count_label }}</p>
+              <p class="jp-cl__drawer-title">{{ section.settings.filter_sort_label }}</p>
+              <p class="jp-cl__drawer-count">
+                {{- collection.products_count }} {{ section.settings.count_label -}}
+              </p>
             </div>
-            <button type="button" class="jp-cl__dclose" data-jp-cl-close aria-label="Close">
+            <button
+              type="button"
+              class="jp-cl__drawer-close"
+              data-jp-cl-close
+              aria-label="{{ 'accessibility.close' | t }}"
+            >
               {% render 'jp-icon-close' %}
             </button>
           </div>
           <div class="jp-cl__filters">
             {%- if section.settings.enable_filtering and collection.filters.size > 0 -%}
+              {%- assign has_active_filter = false -%}
               <span class="jp-cl__filter-label">{{ section.settings.filter_label }}</span>
               {%- for filter in collection.filters -%}
                 <details class="jp-cl__drop">
@@ -62,26 +101,45 @@
                   </summary>
                   <div class="jp-cl__panel">
                     {%- if filter.type == 'price_range' -%}
+                      {%- liquid
+                        if filter.min_value.value != blank or filter.max_value.value != blank
+                          assign has_active_filter = true
+                        endif
+                        assign min_price_value = ''
+                        if filter.min_value.value != blank
+                          assign min_price_value = filter.min_value.value | divided_by: 100.0
+                        endif
+                        assign max_price_value = ''
+                        if filter.max_value.value != blank
+                          assign max_price_value = filter.max_value.value | divided_by: 100.0
+                        endif
+                      -%}
                       <div class="jp-cl__range">
                         <input
                           type="number"
                           name="{{ filter.min_value.param_name }}"
-                          value="{%- if filter.min_value.value != blank -%}{{ filter.min_value.value | divided_by: 100.0 }}{%- endif -%}"
+                          value="{{ min_price_value }}"
                           min="0"
                           placeholder="{{ filter.range_min | divided_by: 100.0 }}"
-                          aria-label="Minimum price"
+                          aria-label="{{ section.settings.min_price_label | escape }}"
                         >
                         <span>–</span>
                         <input
                           type="number"
                           name="{{ filter.max_value.param_name }}"
-                          value="{%- if filter.max_value.value != blank -%}{{ filter.max_value.value | divided_by: 100.0 }}{%- endif -%}"
+                          value="{{ max_price_value }}"
                           min="0"
                           placeholder="{{ filter.range_max | divided_by: 100.0 }}"
-                          aria-label="Maximum price"
+                          aria-label="{{ section.settings.max_price_label | escape }}"
                         >
                       </div>
+                      <button type="submit" class="jp-cl__apply">
+                        {{- section.settings.apply_label -}}
+                      </button>
                     {%- else -%}
+                      {%- if filter.active_values.size > 0 -%}
+                        {%- assign has_active_filter = true -%}
+                      {%- endif -%}
                       {%- for value in filter.values -%}
                         {%- liquid
                           assign value_disabled = false
@@ -89,7 +147,7 @@
                             assign value_disabled = true
                           endif
                         -%}
-                        <label class="jp-cl__opt{% if value_disabled %} is-disabled{% endif %}">
+                        <label class="jp-cl__option{% if value_disabled %} is-disabled{% endif %}">
                           <input
                             type="checkbox"
                             name="{{ value.param_name }}"
@@ -102,26 +160,13 @@
                         </label>
                       {%- endfor -%}
                     {%- endif -%}
-                    {%- if filter.type == 'price_range' -%}
-                      <button type="submit" class="jp-cl__apply">{{ section.settings.apply_label }}</button>
-                    {%- endif -%}
                   </div>
                 </details>
               {%- endfor -%}
-              {%- if collection.filters.size > 0 -%}
-                {%- assign has_active = false -%}
-                {%- for filter in collection.filters -%}
-                  {%- if filter.type == 'price_range' -%}
-                    {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}
-                      {%- assign has_active = true -%}
-                    {%- endif -%}
-                  {%- elsif filter.active_values.size > 0 -%}
-                    {%- assign has_active = true -%}
-                  {%- endif -%}
-                {%- endfor -%}
-                {%- if has_active -%}
-                  <a class="jp-cl__clear" href="{{ collection.url }}?sort_by={{ sort_by }}">{{ section.settings.clear_label }}</a>
-                {%- endif -%}
+              {%- if has_active_filter -%}
+                <a class="jp-cl__clear" href="{{ clear_filters_url }}">
+                  {{- section.settings.clear_label -}}
+                </a>
               {%- endif -%}
             {%- endif -%}
           </div>
@@ -129,19 +174,35 @@
           <div class="jp-cl__right">
             {%- if section.settings.enable_sorting -%}
               <div class="jp-cl__sort-wrap">
-                <label for="jp-cl-sort-{{ sid }}">{{ section.settings.sort_label }}</label>
-                <select class="jp-cl__select" id="jp-cl-sort-{{ sid }}" name="sort_by" data-jp-cl-auto>
+                <label for="jp-cl-sort-{{ section.id }}">{{ section.settings.sort_label }}</label>
+                <select
+                  class="jp-cl__select"
+                  id="jp-cl-sort-{{ section.id }}"
+                  name="sort_by"
+                  data-jp-cl-auto
+                >
                   {%- for option in collection.sort_options -%}
-                    <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+                    <option
+                      value="{{ option.value }}"
+                      {% if option.value == sort_by %}selected{% endif %}
+                    >
+                      {{- option.name -}}
+                    </option>
                   {%- endfor -%}
                 </select>
               </div>
             {%- endif -%}
-            <span class="jp-cl__count">{{ collection.products_count }} {{ section.settings.count_label }}</span>
+            <span class="jp-cl__count">
+              {{- collection.products_count }} {{ section.settings.count_label -}}
+            </span>
           </div>
-          <div class="jp-cl__dfoot">
-            <a class="jp-cl__remove" href="{{ collection.url }}?sort_by={{ sort_by }}">{{ section.settings.remove_label }}</a>
-            <button type="submit" class="jp-cl__dapply">{{ section.settings.apply_label }}</button>
+          <div class="jp-cl__drawer-foot">
+            <a class="jp-cl__remove" href="{{ clear_filters_url }}">
+              {{- section.settings.remove_label -}}
+            </a>
+            <button type="submit" class="jp-cl__drawer-apply">
+              {{- section.settings.apply_label -}}
+            </button>
           </div>
         </div>
       </form>
@@ -151,74 +212,48 @@
       {%- else -%}
         <ul class="jp-cl__grid">
           {%- for product in collection.products -%}
-            <li class="jp-cl__card">
-              <a class="jp-cl__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
-                {%- if section.settings.tag_text != blank and product.tags contains section.settings.tag_text -%}
-                  <span class="jp-cl__tag">{{ section.settings.tag_text }}</span>
-                {%- endif -%}
-                {%- if product.featured_image != blank -%}
-                  {%- if forloop.index <= 4 -%}
-                    {%- assign card_loading = 'eager' -%}
-                  {%- else -%}
-                    {%- assign card_loading = 'lazy' -%}
-                  {%- endif -%}
-                  {{
-                    product.featured_image
-                    | image_url: width: 600
-                    | image_tag:
-                      class: 'jp-cl__img',
-                      alt: product.title,
-                      loading: card_loading,
-                      widths: '300, 450, 600',
-                      sizes: '(min-width: 990px) 25vw, 50vw'
-                  }}
-                {%- else -%}
-                  {{ 'product-1' | placeholder_svg_tag: 'jp-cl__img' }}
-                {%- endif -%}
-                {%- if section.settings.show_badge -%}
-                  {%- if section.settings.badge != blank -%}
-                    {{ section.settings.badge | image_url: width: 200 | image_tag: class: 'jp-cl__badge', alt: '', loading: 'lazy' }}
-                  {%- endif -%}
-                {%- endif -%}
-              </a>
-              <a class="jp-cl__name" href="{{ product.url }}">{{ product.title }}</a>
-              {%- if product.metafields.judgeme.badge != blank -%}
-                <div class="jp-cl__rating jp-cl__rating--jm">{{ product.metafields.judgeme.badge }}</div>
-              {%- endif -%}
-              <div class="jp-cl__price">
-                <span class="jp-cl__now">{{ product.price | money }}</span>
-                {%- if product.compare_at_price > product.price -%}
-                  <s class="jp-cl__was">{{ product.compare_at_price | money }}</s>
-                {%- endif -%}
-              </div>
-              {%- if product.has_only_default_variant and product.available -%}
-                {%- form 'product', product, class: 'jp-cl__form' -%}
-                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                  <button type="submit" class="jp-cl__btn">{{ section.settings.button_label }}</button>
-                {%- endform -%}
-              {%- elsif product.available -%}
-                <a class="jp-cl__btn" href="{{ product.url }}">{{ section.settings.button_options_label }}</a>
-              {%- else -%}
-                <span class="jp-cl__btn jp-cl__btn--off">{{ section.settings.sold_out_label }}</span>
-              {%- endif -%}
-            </li>
+            {%- if forloop.index <= 4 -%}
+              {%- assign card_loading = 'eager' -%}
+            {%- else -%}
+              {%- assign card_loading = 'lazy' -%}
+            {%- endif -%}
+            {% render 'jp-product-card',
+              product: product,
+              prefix: 'jp-cl',
+              image_loading: card_loading,
+              tag_label: section.settings.tag_text,
+              badge_markup: badge_markup,
+              button_label: section.settings.button_label,
+              options_label: section.settings.button_options_label,
+              sold_out_label: section.settings.sold_out_label
+            %}
           {%- endfor -%}
         </ul>
       {%- endif -%}
 
       {%- if paginate.pages > 1 -%}
-        <nav class="jp-cl__pages" aria-label="Pagination">
+        {%- liquid
+          assign previous_page_classes = 'jp-cl__page jp-cl__page--prev'
+          unless paginate.previous
+            assign previous_page_classes = previous_page_classes | append: ' is-off'
+          endunless
+          assign next_page_classes = 'jp-cl__page'
+          unless paginate.next
+            assign next_page_classes = next_page_classes | append: ' is-off'
+          endunless
+        -%}
+        <nav class="jp-cl__pages" aria-label="{{ 'general.pagination.label' | t }}">
           <a
-            class="jp-cl__page jp-cl__page--prev{% unless paginate.previous %} is-off{% endunless %}"
+            class="{{ previous_page_classes }}"
             {% if paginate.previous %}href="{{ paginate.previous.url }}"{% endif %}
-            aria-label="Previous page"
+            aria-label="{{ 'general.pagination.previous' | t }}"
           >
             {% render 'jp-icon-page-arrow' %}
           </a>
           <a
-            class="jp-cl__page{% unless paginate.next %} is-off{% endunless %}"
+            class="{{ next_page_classes }}"
             {% if paginate.next %}href="{{ paginate.next.url }}"{% endif %}
-            aria-label="Next page"
+            aria-label="{{ 'general.pagination.next' | t }}"
           >
             {% render 'jp-icon-page-arrow' %}
           </a>
@@ -298,6 +333,20 @@
     },
     {
       "type": "text",
+      "id": "min_price_label",
+      "label": "Minimum price field label",
+      "info": "Read by screen readers.",
+      "default": "Minimum price"
+    },
+    {
+      "type": "text",
+      "id": "max_price_label",
+      "label": "Maximum price field label",
+      "info": "Read by screen readers.",
+      "default": "Maximum price"
+    },
+    {
+      "type": "text",
       "id": "empty_text",
       "label": "No products text",
       "default": "No products found."
@@ -342,13 +391,14 @@
       "type": "checkbox",
       "id": "show_badge",
       "label": "Show badge",
+      "info": "The badge only shows once a badge image is uploaded below.",
       "default": true
     },
     {
       "type": "image_picker",
       "id": "badge",
       "label": "Badge image",
-      "info": "Upload the badge image. Nothing shows until you upload one."
+      "info": "Shown in the top right corner of every product image."
     },
     {
       "type": "header",
@@ -387,7 +437,7 @@
     {
       "type": "color",
       "id": "button_color",
-      "label": "Button",
+      "label": "Button color",
       "default": "#ef4444"
     },
     {
@@ -430,6 +480,9 @@
       "unit": "px",
       "default": 48
     }
-  ]
+  ],
+  "enabled_on": {
+    "templates": ["collection"]
+  }
 }
 {% endschema %}

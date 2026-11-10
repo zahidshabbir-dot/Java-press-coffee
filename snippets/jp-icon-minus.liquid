@@ -1,9 +1,22 @@
 {%- comment -%}
-  Minus icon (quantity selector).
+  Minus icon (quantity selector). Drawn with currentColor; set the color in CSS.
   Accepts:
+  - class: optional class for the svg.
   - stroke_width: line thickness. Default 2.2.
 {%- endcomment -%}
 {%- assign minus_stroke_width = stroke_width | default: 2.2 -%}
-<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-  <path d="M5 12h14" stroke="currentColor" stroke-width="{{ minus_stroke_width }}" stroke-linecap="round"/>
+<svg
+  {% if class != blank %}
+    class="{{ class | escape }}"
+  {% endif %}
+  viewBox="0 0 24 24"
+  fill="none"
+  aria-hidden="true"
+>
+  <path
+    d="M5 12h14"
+    stroke="currentColor"
+    stroke-width="{{ minus_stroke_width }}"
+    stroke-linecap="round"
+  />
 </svg>

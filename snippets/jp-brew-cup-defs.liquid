@@ -1,5 +1,7 @@
 {%- comment -%}
-  Brew guide: clip path (inside of the cup) and shine gradient.
+  Brew guide: clip path (inside of the cup), shine gradient and the outlines of the cup
+  handle and body. jp-brew-cup draws the handle and the body twice each (once in the cup
+  color, once as shading) with <use>, so each outline is written only once, here.
   Accepts:
   - id_suffix: unique suffix for the ids (the section id).
 {%- endcomment -%}
@@ -7,10 +9,24 @@
   <clipPath id="jp-bg-clip-{{ id_suffix }}">
     <path d="M60 99 C58 150 70 202 102 214 Q130 222 158 214 C190 202 202 150 200 99 Z"/>
   </clipPath>
-  <linearGradient id="jp-bg-shine-{{ id_suffix }}" x1="0" x2="1" y1="0" y2="0">
-    <stop offset="0" stop-color="#fff" stop-opacity=".0"/>
-    <stop offset=".25" stop-color="#fff" stop-opacity=".38"/>
-    <stop offset=".55" stop-color="#fff" stop-opacity="0"/>
-    <stop offset="1" stop-color="#000" stop-opacity=".16"/>
+  <linearGradient
+    id="jp-bg-shine-{{ id_suffix }}"
+    x1="0"
+    x2="1"
+    y1="0"
+    y2="0"
+  >
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+    <stop offset="0.25" stop-color="#fff" stop-opacity="0.38"/>
+    <stop offset="0.55" stop-color="#fff" stop-opacity="0"/>
+    <stop offset="1" stop-color="#000" stop-opacity="0.16"/>
   </linearGradient>
+  <path
+    id="jp-bg-cup-handle-{{ id_suffix }}"
+    d="M203 118 C252 108 258 190 194 196"
+  />
+  <path
+    id="jp-bg-cup-body-{{ id_suffix }}"
+    d="M54 98 C52 152 64 208 100 224 Q130 234 160 224 C196 208 208 152 206 98 Z"
+  />
 </defs>

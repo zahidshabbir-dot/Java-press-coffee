@@ -1,12 +1,25 @@
 {%- liquid
-  assign source = section.settings.collection | default: collections.all
-  assign limit = section.settings.products_count
-  assign current_handle = ''
+  assign source_collection = section.settings.collection | default: collections.all
+  assign max_products_shown = section.settings.products_count
+  assign current_product_handle = ''
   if template.name == 'product'
-    assign current_handle = product.handle
+    assign current_product_handle = product.handle
   endif
+  assign shown_products_count = 0
 -%}
 
+{%- assign badge_markup = '' -%}
+{%- if section.settings.show_badge and section.settings.badge != blank -%}
+  {%- capture badge_markup -%}
+    {{
+      section.settings.badge
+      | image_url: width: 200
+      | image_tag: class: 'jp-rc__badge', alt: '', loading: 'lazy'
+    }}
+  {%- endcapture -%}
+{%- endif -%}
+
+{{ 'jp-product-card.css' | asset_url | stylesheet_tag }}
 {{ 'jp-recommended.css' | asset_url | stylesheet_tag }}
 
 <section
@@ -27,56 +40,20 @@
       <h2 class="jp-rc__title">{{ section.settings.heading }}</h2>
     {%- endif -%}
     <ul class="jp-rc__grid">
-      {%- assign shown = 0 -%}
-      {%- for product in source.products -%}
-        {%- if shown >= limit -%}
+      {%- for source_product in source_collection.products -%}
+        {%- if shown_products_count >= max_products_shown -%}
           {%- break -%}
         {%- endif -%}
-        {%- if product.handle != current_handle -%}
-          {%- assign shown = shown | plus: 1 -%}
-          <li class="jp-rc__card">
-            <a class="jp-rc__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
-              {%- if product.featured_image != blank -%}
-                {{
-                  product.featured_image
-                  | image_url: width: 600
-                  | image_tag:
-                    class: 'jp-rc__img',
-                    alt: product.title,
-                    loading: 'lazy',
-                    widths: '300, 450, 600',
-                    sizes: '(min-width: 990px) 25vw, 50vw'
-                }}
-              {%- else -%}
-                {{ 'product-1' | placeholder_svg_tag: 'jp-rc__img' }}
-              {%- endif -%}
-              {%- if section.settings.show_badge -%}
-                {%- if section.settings.badge != blank -%}
-                  {{ section.settings.badge | image_url: width: 200 | image_tag: class: 'jp-rc__badge', alt: '', loading: 'lazy' }}
-                {%- endif -%}
-              {%- endif -%}
-            </a>
-            <a class="jp-rc__name" href="{{ product.url }}">{{ product.title }}</a>
-            {%- if product.metafields.judgeme.badge != blank -%}
-              <div class="jp-rc__rating jp-rc__rating--jm">{{ product.metafields.judgeme.badge }}</div>
-            {%- endif -%}
-            <div class="jp-rc__price">
-              <span class="jp-rc__now">{{ product.price | money }}</span>
-              {%- if product.compare_at_price > product.price -%}
-                <s class="jp-rc__was">{{ product.compare_at_price | money }}</s>
-              {%- endif -%}
-            </div>
-            {%- if product.has_only_default_variant and product.available -%}
-              {%- form 'product', product, class: 'jp-rc__form' -%}
-                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                <button type="submit" class="jp-rc__btn">{{ section.settings.button_label }}</button>
-              {%- endform -%}
-            {%- elsif product.available -%}
-              <a class="jp-rc__btn" href="{{ product.url }}">{{ section.settings.button_options_label }}</a>
-            {%- else -%}
-              <span class="jp-rc__btn jp-rc__btn--off">{{ section.settings.sold_out_label }}</span>
-            {%- endif -%}
-          </li>
+        {%- if source_product.handle != current_product_handle -%}
+          {%- assign shown_products_count = shown_products_count | plus: 1 -%}
+          {% render 'jp-product-card',
+            product: source_product,
+            prefix: 'jp-rc',
+            badge_markup: badge_markup,
+            button_label: section.settings.button_label,
+            options_label: section.settings.button_options_label,
+            sold_out_label: section.settings.sold_out_label
+          %}
         {%- endif -%}
       {%- endfor -%}
     </ul>
@@ -130,13 +107,14 @@
       "type": "checkbox",
       "id": "show_badge",
       "label": "Show badge",
+      "info": "The badge only shows once a badge image is uploaded below.",
       "default": true
     },
     {
       "type": "image_picker",
       "id": "badge",
       "label": "Badge image",
-      "info": "Upload the badge image. Nothing shows until you upload one."
+      "info": "Shown in the top right corner of every product image."
     },
     {
       "type": "header",
@@ -163,7 +141,7 @@
     {
       "type": "color",
       "id": "button_color",
-      "label": "Button",
+      "label": "Button color",
       "default": "#ef4444"
     },
     {

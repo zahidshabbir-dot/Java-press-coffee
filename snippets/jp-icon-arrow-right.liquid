@@ -1,14 +1,9 @@
 {%- comment -%}
-  Thin arrow pointing right.
+  Thin arrow pointing right, as a CSS url() value (data URI) for a custom property, used as a
+  link background: style="--icon: {{ icon | strip | escape }}".
+  A CSS background image cannot use currentColor, so the stroke color (#424242) is fixed here.
+  Usage: {% render 'jp-icon-arrow-right', format: 'css' %}
   Accepts:
-  - format: 'css' outputs a CSS url() value (data URI, stroke #424242) for use
-    in a custom property, e.g. style="--icon: {{ icon | escape }}".
-    Anything else outputs the inline svg, stroked with currentColor.
+  - format: 'css'. The snippet only has the CSS output; the parameter documents the intent.
 {%- endcomment -%}
-{%- if format == 'css' -%}
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M4 12h15M13 6l6 6-6 6' stroke='%23424242' stroke-width='1.5'/%3E%3C/svg%3E")
-{%- else -%}
-  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M4 12h15M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.5"/>
-  </svg>
-{%- endif -%}
+url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M4 12h15M13 6l6 6-6 6' stroke='%23424242' stroke-width='1.5'/%3E%3C/svg%3E")

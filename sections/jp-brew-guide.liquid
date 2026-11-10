@@ -4,11 +4,11 @@
   with the attribute data-jp-brew-open (for example the "How to use" link on the product page).
   Steps, texts, colors and labels are all editable in the theme customizer.
   Styles: assets/jp-brew-guide.css. Script: assets/jp-brew-guide.js.
-  Illustration: snippets/jp-brew-cup.liquid.
+  Illustration: snippets/jp-brew-cup.liquid. Animation shapes: snippets/jp-brew-shapes.liquid.
+  The script reads the steps, texts and colors from the JSON block [data-jp-brew-settings].
 {%- endcomment -%}
 
-{%- assign sid = section.id -%}
-{%- assign cs = section.settings -%}
+{%- assign brew_settings = section.settings -%}
 {%- capture check_icon -%}{% render 'jp-icon-check', format: 'css' %}{%- endcapture -%}
 
 {{ 'jp-brew-guide.css' | asset_url | stylesheet_tag }}
@@ -16,81 +16,101 @@
 <dialog
   class="jp-bg"
   data-jp-brew
-  aria-labelledby="jp-bg-title-{{ sid }}"
+  aria-labelledby="jp-bg-title-{{ section.id }}"
   style="
-    --jp-bg-panel: {{ cs.panel_bg }};
-    --jp-bg-text: {{ cs.text_color }};
-    --jp-bg-accent: {{ cs.accent }};
-    --jp-bg-stage: {{ cs.stage_bg }};
+    --jp-bg-panel: {{ brew_settings.panel_bg }};
+    --jp-bg-text: {{ brew_settings.text_color }};
+    --jp-bg-accent: {{ brew_settings.accent }};
+    --jp-bg-stage: {{ brew_settings.stage_bg }};
     --jp-bg-check-icon: {{ check_icon | strip | escape }};
   "
 >
   <div class="jp-bg__head">
     <div>
-      <h2 class="jp-bg__title" id="jp-bg-title-{{ sid }}">{{ cs.heading }}</h2>
-      {%- if cs.subheading != blank -%}
-        <p class="jp-bg__sub">{{ cs.subheading }}</p>
+      <h2 class="jp-bg__title" id="jp-bg-title-{{ section.id }}">{{ brew_settings.heading }}</h2>
+      {%- if brew_settings.subheading != blank -%}
+        <p class="jp-bg__sub">{{ brew_settings.subheading }}</p>
       {%- endif -%}
     </div>
-    <button type="button" class="jp-bg__close" data-close aria-label="{{ cs.close_label | escape }}">
+    <button
+      type="button"
+      class="jp-bg__close"
+      data-jp-brew-close
+      aria-label="{{ brew_settings.close_label | escape }}"
+    >
       {% render 'jp-icon-close', class: 'jp-bg__close-icon' %}
     </button>
   </div>
 
   <div class="jp-bg__body">
-    <div class="jp-bg__stage" data-stage>
-      <div class="jp-bg__cupwrap" data-cupwrap>
-        {% render 'jp-brew-cup', id_suffix: sid, label: cs.heading %}
+    <div class="jp-bg__stage" data-jp-brew-stage>
+      <div class="jp-bg__cupwrap" data-jp-brew-cup-wrap>
+        {% render 'jp-brew-cup', id_suffix: section.id, label: brew_settings.heading %}
         {% render 'jp-brew-shapes' %}
       </div>
     </div>
 
     <div class="jp-bg__panel">
-      <div class="jp-bg__dots" data-dots aria-hidden="true"></div>
-      <p class="jp-bg__step" data-step-label></p>
-      <h3 class="jp-bg__h" data-step-title></h3>
-      <p class="jp-bg__text" data-step-text></p>
-      <div class="jp-bg__controls" data-controls></div>
-      <button type="button" class="jp-bg__restart" data-restart>{{ cs.restart_label }}</button>
+      <div class="jp-bg__dots" data-jp-brew-progress-dots aria-hidden="true"></div>
+      <p class="jp-bg__step" data-jp-brew-step-label></p>
+      <h3 class="jp-bg__heading" data-jp-brew-step-title></h3>
+      <p class="jp-bg__text" data-jp-brew-step-text></p>
+      <div class="jp-bg__controls" data-jp-brew-controls></div>
+      <button type="button" class="jp-bg__restart" data-jp-brew-restart>
+        {{- brew_settings.restart_label -}}
+      </button>
     </div>
   </div>
 
-  <ol hidden>
-    {%- for block in section.blocks -%}
-      <li
-        data-step
-        data-action="{{ block.settings.action }}"
-        data-title="{{ block.settings.title | escape }}"
-        data-text="{{ block.settings.text | escape }}"
-        {{ block.shopify_attributes }}
-      ></li>
-    {%- endfor -%}
-  </ol>
-
-  <script type="application/json" data-cfg>
+  {%- comment -%}
+    Blank colors fall back to the schema defaults: the script mixes these colors and needs a
+    hex value.
+  {%- endcomment -%}
+  <script type="application/json" data-jp-brew-settings>
     {
-      "cups": [
-        { "name": {{ cs.cup_1_name | json }}, "color": {{ cs.cup_1 | json }} },
-        { "name": {{ cs.cup_2_name | json }}, "color": {{ cs.cup_2 | json }} },
-        { "name": {{ cs.cup_3_name | json }}, "color": {{ cs.cup_3 | json }} }
+      "steps": [
+        {%- for block in section.blocks -%}
+          {
+            "action": {{ block.settings.action | json }},
+            "title": {{ block.settings.title | json }},
+            "text": {{ block.settings.text | json }}
+          }
+          {%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
       ],
-      "water": {{ cs.water_color | json }},
-      "milk": {{ cs.milk_color | json }},
-      "coffee": {{ cs.coffee_color | json }},
-      "preview": {{ cs.preview_in_editor | json }},
-      "defaultCup": {{ cs.default_cup | json }},
+      "cups": [
+        {
+          "name": {{ brew_settings.cup_1_name | json }},
+          "color": {{ brew_settings.cup_1 | default: '#ffffff' | json }}
+        },
+        {
+          "name": {{ brew_settings.cup_2_name | json }},
+          "color": {{ brew_settings.cup_2 | default: '#ef4444' | json }}
+        },
+        {
+          "name": {{ brew_settings.cup_3_name | json }},
+          "color": {{ brew_settings.cup_3 | default: '#075d57' | json }}
+        }
+      ],
+      "water": {{ brew_settings.water_color | default: '#cfe7ef' | json }},
+      "milk": {{ brew_settings.milk_color | default: '#f7f1e8' | json }},
+      "coffee": {{ brew_settings.coffee_color | default: '#4a2c1a' | json }},
+      "coffeeGroundDark": {{ brew_settings.coffee_ground_dark | default: '#3a2214' | json }},
+      "coffeeGroundLight": {{ brew_settings.coffee_ground_light | default: '#5a3a26' | json }},
+      "preview": {{ brew_settings.preview_in_editor | json }},
+      "defaultCup": {{ brew_settings.default_cup | json }},
       "labels": {
-        "step": {{ cs.step_word | json }},
-        "of": {{ cs.of_word | json }},
-        "next": {{ cs.next_label | json }},
-        "water": {{ cs.water_label | json }},
-        "milk": {{ cs.milk_label | json }},
-        "coffee": {{ cs.coffee_btn | json }},
-        "sugar": {{ cs.sugar_btn | json }},
-        "skip": {{ cs.skip_label | json }},
-        "stir": {{ cs.stir_btn | json }},
-        "readyTitle": {{ cs.ready_title | json }},
-        "readyText": {{ cs.ready_text | json }}
+        "stepCounter": {{ brew_settings.step_counter_label | json }},
+        "sugarCounter": {{ brew_settings.sugar_counter_label | json }},
+        "next": {{ brew_settings.next_label | json }},
+        "water": {{ brew_settings.water_label | json }},
+        "milk": {{ brew_settings.milk_label | json }},
+        "coffee": {{ brew_settings.coffee_btn | json }},
+        "sugar": {{ brew_settings.sugar_btn | json }},
+        "skip": {{ brew_settings.skip_label | json }},
+        "stir": {{ brew_settings.stir_btn | json }},
+        "readyTitle": {{ brew_settings.ready_title | json }},
+        "readyText": {{ brew_settings.ready_text | json }}
       }
     }
   </script>
@@ -148,15 +168,10 @@
     },
     {
       "type": "text",
-      "id": "step_word",
-      "label": "Step word",
-      "default": "Step"
-    },
-    {
-      "type": "text",
-      "id": "of_word",
-      "label": "\"of\" word",
-      "default": "of"
+      "id": "step_counter_label",
+      "label": "Step counter",
+      "info": "{current} is replaced by the step number and {total} by the number of steps.",
+      "default": "Step {current} of {total}"
     },
     {
       "type": "text",
@@ -187,6 +202,13 @@
       "id": "sugar_btn",
       "label": "Add sugar button",
       "default": "Add sugar"
+    },
+    {
+      "type": "text",
+      "id": "sugar_counter_label",
+      "label": "Sugar counter",
+      "info": "{current} is replaced by the sugar cubes added and {total} by the maximum (3).",
+      "default": "{current} / {total}"
     },
     {
       "type": "text",
@@ -293,6 +315,18 @@
       "id": "coffee_color",
       "label": "Coffee",
       "default": "#4a2c1a"
+    },
+    {
+      "type": "color",
+      "id": "coffee_ground_dark",
+      "label": "Coffee grounds (dark)",
+      "default": "#3a2214"
+    },
+    {
+      "type": "color",
+      "id": "coffee_ground_light",
+      "label": "Coffee grounds (light)",
+      "default": "#5a3a26"
     },
     {
       "type": "header",

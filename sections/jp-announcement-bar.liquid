@@ -1,6 +1,6 @@
-{{ 'jp-announcement-bar.css' | asset_url | stylesheet_tag }}
-
 {%- if section.blocks.size > 0 -%}
+  {{ 'jp-announcement-bar.css' | asset_url | stylesheet_tag }}
+
   <div
     class="jp-ann"
     style="
@@ -14,14 +14,14 @@
     data-single="{% if section.blocks.size == 1 %}true{% else %}false{% endif %}"
     role="region"
     aria-roledescription="carousel"
-    aria-label="Announcements"
+    aria-label="{{ section.settings.region_label | escape }}"
   >
     <div class="jp-ann__inner">
       <button
         type="button"
         class="jp-ann__arrow jp-ann__arrow--prev"
         data-jp-ann-prev
-        aria-label="Previous announcement"
+        aria-label="{{ section.settings.previous_label | escape }}"
       >
         {% render 'jp-icon-chevron', direction: 'prev' %}
       </button>
@@ -38,12 +38,16 @@
           >
             {{- block.settings.text -}}
             {%- if block.settings.link_label != blank -%}
-              <a
-                class="jp-ann__link"
-                href="{{ block.settings.link_url | default: '#' }}"
-              >
-                {{- block.settings.link_label -}}
-              </a>
+              {%- comment -%}
+                No space before the link: the CSS margin on .jp-ann__link adds the gap.
+              {%- endcomment -%}
+              {%- if block.settings.link_url != blank -%}
+                <a class="jp-ann__link" href="{{ block.settings.link_url }}">
+                  {{- block.settings.link_label -}}
+                </a>
+              {%- else -%}
+                <span class="jp-ann__link">{{ block.settings.link_label }}</span>
+              {%- endif -%}
             {%- endif -%}
           </p>
         {%- endfor -%}
@@ -53,7 +57,7 @@
         type="button"
         class="jp-ann__arrow jp-ann__arrow--next"
         data-jp-ann-next
-        aria-label="Next announcement"
+        aria-label="{{ section.settings.next_label | escape }}"
       >
         {% render 'jp-icon-chevron', direction: 'next' %}
       </button>
@@ -94,11 +98,34 @@
     {
       "type": "range",
       "id": "delay",
-      "label": "Seconds between announcements",
+      "label": "Time between announcements",
       "min": 3,
       "max": 10,
       "step": 1,
-      "default": 5
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "region_label",
+      "label": "Bar name for screen readers",
+      "default": "Announcements"
+    },
+    {
+      "type": "text",
+      "id": "previous_label",
+      "label": "Previous button name for screen readers",
+      "default": "Previous announcement"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next button name for screen readers",
+      "default": "Next announcement"
     }
   ],
   "blocks": [
@@ -121,7 +148,8 @@
         {
           "type": "url",
           "id": "link_url",
-          "label": "Link"
+          "label": "Link",
+          "info": "If empty, the link text shows without a link."
         }
       ]
     }

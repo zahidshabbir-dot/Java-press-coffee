@@ -1,14 +1,28 @@
 {%- comment -%}
   Filled circle with a check mark (trust badges).
-  The circle uses currentColor; the check mark is white.
+  The circle uses currentColor. The check mark color comes from CSS through the
+  .jp-icon-check-circle__mark class (white in assets/jp-buy-box.css).
+  Accepts:
+  - class: optional class for the svg.
   Usage: {% render 'jp-icon-check-circle' %}
 {%- endcomment -%}
-<svg viewBox="0 0 12 12" aria-hidden="true">
-  <circle cx="6" cy="6" r="6" fill="currentColor"/>
+<svg
+  {% if class != blank %}
+    class="{{ class | escape }}"
+  {% endif %}
+  viewBox="0 0 12 12"
+  aria-hidden="true"
+>
+  <circle
+    cx="6"
+    cy="6"
+    r="6"
+    fill="currentColor"
+  />
   <path
+    class="jp-icon-check-circle__mark"
     d="M3.3 6.2l1.8 1.8 3.6-3.8"
     fill="none"
-    stroke="#fff"
     stroke-width="1.4"
     stroke-linecap="round"
     stroke-linejoin="round"

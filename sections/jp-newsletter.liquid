@@ -19,7 +19,6 @@
       --jp-nl-bg-image-mobile: url('{{ section.settings.bg_image_mobile | image_url: width: 1000 }}');
     {%- endif %}
   "
-  data-jp-nl
 >
   <div class="jp-nl__inner">
     {%- if section.settings.icon != blank -%}
@@ -35,6 +34,10 @@
         {%- assign lines = section.settings.heading | newline_to_br | split: '<br />' -%}
         {%- for line in lines -%}
           <span class="jp-nl__line">{{ line | strip_newlines | strip }}</span>
+          {%- comment -%}
+            The tags strip the newlines around them but keep the single space inside
+            the unless, so the lines still read as separate words when inline on mobile.
+          {%- endcomment -%}
           {%- unless forloop.last %} {% endunless -%}
         {%- endfor -%}
       </h2>
@@ -44,17 +47,22 @@
       <div class="jp-nl__text">{{ section.settings.text }}</div>
     {%- endif -%}
 
-    {%- form 'customer', id: 'jp-newsletter', class: 'jp-nl__form' -%}
+    {%- assign newsletter_form_id = 'jp-newsletter-' | append: section.id -%}
+    {%- assign email_input_id = newsletter_form_id | append: '-email' -%}
+    {%- form 'customer', id: newsletter_form_id, class: 'jp-nl__form' -%}
       <input type="hidden" name="contact[tags]" value="newsletter">
       <div class="jp-nl__field">
+        <label class="visually-hidden" for="{{ email_input_id }}">
+          {{- section.settings.placeholder -}}
+        </label>
         {% render 'jp-icon-message' %}
         <input
+          id="{{ email_input_id }}"
           class="jp-nl__input"
           type="email"
           name="contact[email]"
           autocomplete="email"
           placeholder="{{ section.settings.placeholder | escape }}"
-          aria-label="{{ section.settings.placeholder | escape }}"
           value="{{ form.email }}"
           required
         >
@@ -106,7 +114,8 @@
       "type": "text",
       "id": "placeholder",
       "label": "Email placeholder",
-      "default": "Your Email Address"
+      "default": "Your Email Address",
+      "info": "Also read out by screen readers as the field name."
     },
     {
       "type": "text",
@@ -161,7 +170,7 @@
     {
       "type": "color",
       "id": "button_color",
-      "label": "Button",
+      "label": "Button color",
       "default": "#ef4444"
     },
     {
@@ -204,8 +213,8 @@
       "type": "range",
       "id": "padding_bottom_mobile",
       "label": "Bottom padding (mobile)",
-      "min": 1,
-      "max": 101,
+      "min": 0,
+      "max": 100,
       "step": 1,
       "unit": "px",
       "default": 85

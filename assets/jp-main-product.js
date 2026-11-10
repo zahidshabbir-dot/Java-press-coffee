@@ -1,8 +1,9 @@
 /*
   JP Product (sections/jp-main-product.liquid)
-  Image gallery, variant pickers and quantity buttons. Every [data-jp-mp] section on the page
-  is set up once, on page load and again when the theme editor re-renders the section.
-  Variant data comes from the <script type="application/json" data-jp-mp-variants> block.
+  Image gallery, plus the buy box through the shared helpers in assets/jp-product-form.js.
+  Every [data-jp-mp] section on the page is set up once, on page load and again when the
+  theme editor re-renders the section. Picking a variant shows its image and puts its id in
+  the page URL.
 */
 (function () {
   function initMainProduct(productRoot) {
@@ -14,8 +15,8 @@
 
     /* ---------- gallery ---------- */
 
-    const slides = Array.prototype.slice.call(productRoot.querySelectorAll('[data-jp-mp-slide]'));
-    const thumbButtons = Array.prototype.slice.call(productRoot.querySelectorAll('[data-jp-mp-thumb]'));
+    const slides = Array.from(productRoot.querySelectorAll('[data-jp-mp-slide]'));
+    const thumbButtons = Array.from(productRoot.querySelectorAll('[data-jp-mp-thumb]'));
     let activeSlideIndex = 0;
 
     function showSlide(targetIndex) {
@@ -55,109 +56,56 @@
 
     thumbButtons.forEach(function (thumbButton) {
       thumbButton.addEventListener('click', function () {
-        showSlide(parseInt(thumbButton.dataset.jpMpThumb, 10));
-      });
-    });
+        const thumbSlideIndex = parseInt(thumbButton.dataset.jpMpThumb, 10);
 
-    /* ---------- variants ---------- */
-
-    const variantsScript = productRoot.querySelector('[data-jp-mp-variants]');
-    const variants = variantsScript ? JSON.parse(variantsScript.textContent) : [];
-    const optionSelects = Array.prototype.slice.call(productRoot.querySelectorAll('[data-jp-mp-option]'));
-    const variantIdInput = productRoot.querySelector('[data-jp-mp-id]');
-    const priceElement = productRoot.querySelector('[data-jp-mp-price]');
-    const comparePriceElement = productRoot.querySelector('[data-jp-mp-compare]');
-    const submitButton = productRoot.querySelector('[data-jp-mp-submit]');
-    const quantityInput = productRoot.querySelector('[data-jp-mp-qty]');
-
-    function findSelectedVariant() {
-      const selectedValues = optionSelects.map(function (optionSelect) {
-        return optionSelect.value;
-      });
-
-      return variants.find(function (variant) {
-        return selectedValues.every(function (selectedValue, optionIndex) {
-          return variant.options[optionIndex] === selectedValue;
-        });
-      });
-    }
-
-    function onOptionChange() {
-      if (!optionSelects.length) {
-        return;
-      }
-
-      const selectedVariant = findSelectedVariant();
-
-      if (!selectedVariant) {
-        submitButton.disabled = true;
-        submitButton.textContent = submitButton.dataset.soldout;
-        return;
-      }
-
-      variantIdInput.value = selectedVariant.id;
-      priceElement.textContent = selectedVariant.price_formatted;
-
-      if (selectedVariant.compare_at_price && selectedVariant.compare_at_price > selectedVariant.price) {
-        comparePriceElement.textContent = selectedVariant.compare_formatted;
-        comparePriceElement.hidden = false;
-      } else {
-        comparePriceElement.hidden = true;
-      }
-
-      submitButton.disabled = !selectedVariant.available;
-      submitButton.textContent = selectedVariant.available ? submitButton.dataset.label : submitButton.dataset.soldout;
-
-      if (selectedVariant.featured_image && selectedVariant.featured_image.id) {
-        const variantSlideIndex = slides.findIndex(function (slide) {
-          return slide.dataset.mediaId === String(selectedVariant.featured_image.id);
-        });
-
-        if (variantSlideIndex > -1) {
-          showSlide(variantSlideIndex);
+        if (Number.isNaN(thumbSlideIndex)) {
+          return;
         }
-      }
 
-      const pageUrl = new URL(window.location.href);
-      pageUrl.searchParams.set('variant', selectedVariant.id);
-      window.history.replaceState({}, '', pageUrl.toString());
-    }
-
-    optionSelects.forEach(function (optionSelect) {
-      optionSelect.addEventListener('change', onOptionChange);
+        showSlide(thumbSlideIndex);
+      });
     });
 
-    /* ---------- quantity ---------- */
+    /* ---------- variant change ---------- */
 
-    const decreaseButton = productRoot.querySelector('[data-jp-mp-minus]');
-    const increaseButton = productRoot.querySelector('[data-jp-mp-plus]');
-
-    function getQuantity() {
-      return parseInt(quantityInput.value, 10) || 1;
-    }
-
-    if (quantityInput) {
-      if (decreaseButton) {
-        decreaseButton.addEventListener('click', function () {
-          quantityInput.value = Math.max(1, getQuantity() - 1);
-        });
+    function showVariantImage(selectedVariant) {
+      if (!selectedVariant.featured_image || !selectedVariant.featured_image.id) {
+        return;
       }
 
-      if (increaseButton) {
-        increaseButton.addEventListener('click', function () {
-          quantityInput.value = getQuantity() + 1;
-        });
-      }
-
-      quantityInput.addEventListener('change', function () {
-        quantityInput.value = Math.max(1, getQuantity());
+      const variantImageId = String(selectedVariant.featured_image.id);
+      const variantSlideIndex = slides.findIndex(function (slide) {
+        return slide.dataset.mediaId === variantImageId;
       });
+
+      if (variantSlideIndex > -1) {
+        showSlide(variantSlideIndex);
+      }
     }
+
+    function updatePageUrl(selectedVariant) {
+      const pageUrl = new URL(window.location.href);
+
+      pageUrl.searchParams.set('variant', selectedVariant.id);
+      window.history.replaceState(window.history.state, '', pageUrl.toString());
+    }
+
+    window.JpProductForm.init(productRoot, {
+      prefix: 'jp-mp',
+      onVariantChange: function (selectedVariant) {
+        showVariantImage(selectedVariant);
+        updatePageUrl(selectedVariant);
+      }
+    });
   }
 
   /* ---------- start ---------- */
 
   function initAllMainProducts(scope) {
+    if (!window.JpProductForm) {
+      return;
+    }
+
     scope.querySelectorAll('[data-jp-mp]').forEach(initMainProduct);
   }
 

@@ -119,9 +119,3 @@
     right: 8px;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .jp-ann .jp-ann__slide {
-    transition: none;
-  }
-}

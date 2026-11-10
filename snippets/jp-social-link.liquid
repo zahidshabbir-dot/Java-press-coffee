@@ -1,0 +1,74 @@
+{%- comment -%}
+  One social network link with its icon.
+  Accepts:
+  - network: 'facebook', 'instagram', 'linkedin', 'pinterest', 'tiktok', 'twitter' (shown as X),
+    'x' or 'youtube'.
+  - url: link target. When blank, the icon is rendered in a plain <span> instead of a link.
+  - class: optional class for the <a> / <span>.
+  - icon_image: optional uploaded image that replaces the built-in icon.
+  - icon_image_class: optional class for the uploaded image.
+{%- endcomment -%}
+{%- case network -%}
+  {%- when 'facebook' -%}
+    {%- assign network_label = 'Facebook' -%}
+  {%- when 'instagram' -%}
+    {%- assign network_label = 'Instagram' -%}
+  {%- when 'linkedin' -%}
+    {%- assign network_label = 'LinkedIn' -%}
+  {%- when 'pinterest' -%}
+    {%- assign network_label = 'Pinterest' -%}
+  {%- when 'tiktok' -%}
+    {%- assign network_label = 'TikTok' -%}
+  {%- when 'twitter', 'x' -%}
+    {%- assign network_label = 'X' -%}
+  {%- when 'youtube' -%}
+    {%- assign network_label = 'YouTube' -%}
+  {%- else -%}
+    {%- assign network_label = network | capitalize -%}
+{%- endcase -%}
+
+{%- capture icon_markup -%}
+  {%- if icon_image != blank -%}
+    {{
+      icon_image
+      | image_url: width: 72
+      | image_tag: class: icon_image_class, width: 20, height: 20, alt: '', loading: 'lazy'
+    }}
+  {%- else -%}
+    {%- case network -%}
+      {%- when 'facebook' -%}
+        {% render 'jp-icon-facebook' %}
+      {%- when 'instagram' -%}
+        {% render 'jp-icon-instagram' %}
+      {%- when 'linkedin' -%}
+        {% render 'jp-icon-linkedin' %}
+      {%- when 'pinterest' -%}
+        {% render 'jp-icon-pinterest' %}
+      {%- when 'tiktok' -%}
+        {% render 'jp-icon-tiktok' %}
+      {%- when 'twitter', 'x' -%}
+        {% render 'jp-icon-x' %}
+      {%- when 'youtube' -%}
+        {% render 'jp-icon-youtube' %}
+    {%- endcase -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if url != blank -%}
+  <a
+    {% if class != blank %}class="{{ class | escape }}"{% endif %}
+    href="{{ url }}"
+    target="_blank"
+    rel="noopener"
+    aria-label="{{ network_label | escape }}"
+  >
+    {{- icon_markup -}}
+  </a>
+{%- else -%}
+  <span
+    {% if class != blank %}class="{{ class | escape }}"{% endif %}
+    aria-hidden="true"
+  >
+    {{- icon_markup -}}
+  </span>
+{%- endif -%}

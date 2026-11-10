@@ -1,3 +1,12 @@
+/*
+  JP Featured product (sections/jp-featured-product.liquid).
+  Rules shared with JP Product are in assets/jp-buy-box.css.
+  Section settings arrive as custom properties set on the .jp-fp root:
+  --jp-fp-red, --jp-fp-text, --jp-fp-green, --jp-fp-bg, --jp-fp-tile,
+  --jp-fp-padding-top, --jp-fp-padding-bottom, --jp-fp-select-icon.
+  Each badge sets --jp-fp-pill-bg and --jp-fp-pill-color on itself.
+*/
+
 .jp-fp {
   background: var(--jp-fp-bg);
   color: var(--jp-fp-text);
@@ -46,122 +55,60 @@
 }
 
 .jp-fp .jp-fp__pills {
-  display: flex;
-  gap: 8px;
   margin: 0 0 16px;
 }
 
 .jp-fp .jp-fp__pill {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex: 0 0 62px;
   width: 62px;
   height: 62px;
   padding: 0 11px;
-  border-radius: 50%;
   font-size: 14px;
   line-height: 15px;
-  font-weight: 500;
-  text-align: center;
   background: var(--jp-fp-pill-bg);
   color: var(--jp-fp-pill-color);
 }
 
 .jp-fp .jp-fp__title {
   margin: 0 0 10px;
-  font-size: 24px;
-  line-height: 30px;
-  font-weight: 700;
-  text-transform: capitalize;
   color: var(--jp-fp-text);
 }
 
-.jp-fp .jp-fp__rating,
-.jp-fp .jp-fp__app {
-  margin: 0 0 16px;
-  font-size: 12px;
-  line-height: normal;
-}
-
 .jp-fp .jp-fp__rating {
-  display: flex;
-  align-items: center;
   min-height: 14px;
 }
 
 .jp-fp .jp-fp__price {
-  display: flex;
-  align-items: baseline;
   gap: 6px;
   margin: 0 0 16px;
   line-height: 22px;
 }
 
 .jp-fp .jp-fp__now {
-  font-size: 24px;
-  line-height: 22px;
-  font-weight: 700;
   color: var(--jp-fp-red);
 }
 
-.jp-fp .jp-fp__was {
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 500;
-  color: #929292;
-  text-decoration: line-through;
-}
-
 .jp-fp .jp-fp__desc {
-  margin: 0 0 16px;
-  padding: 0 0 15px;
-  border-bottom: 1px solid #ebeae6;
-  font-family: var(--font-body-family);
-  font-size: 16px;
   line-height: 30px;
-  font-weight: 500;
-  opacity: 0.8;
   color: var(--jp-fp-text);
-}
-
-.jp-fp .jp-fp__desc p {
-  margin: 0;
 }
 
 .jp-fp .jp-fp__options {
-  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
-  margin: 0 0 16px;
 }
 
 .jp-fp .jp-fp__label {
-  display: block;
   height: 24px;
-  margin: 0 0 16px;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 700;
-  text-transform: capitalize;
 }
 
 .jp-fp .jp-fp__select {
-  width: 100%;
-  height: 52px;
-  padding: 0 48px 0 23px;
   border: 1px solid var(--jp-fp-text);
-  border-radius: 5px;
   background: #fff var(--jp-fp-select-icon) no-repeat right 12px center;
   color: var(--jp-fp-text);
-  font: 500 16px var(--font-body-family);
-  appearance: none;
-  -webkit-appearance: none;
-  cursor: pointer;
 }
 
 .jp-fp .jp-fp__buy {
-  display: flex;
   align-items: flex-start;
   gap: 32px;
 }
@@ -171,25 +118,14 @@
 }
 
 .jp-fp .jp-fp__qty {
-  display: flex;
-  align-items: stretch;
-  height: 52px;
   padding: 1px;
   border: 1px solid var(--jp-fp-text);
-  border-radius: 5px;
-  overflow: hidden;
-  background: #fff;
 }
 
 .jp-fp .jp-fp__qty button {
   flex: 0 0 48px;
-  border: 0;
   border-radius: 4px 0 0 4px;
-  background: #f2f2f2;
   color: var(--jp-fp-text);
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
 }
 
 .jp-fp .jp-fp__qty button:last-child {
@@ -197,81 +133,30 @@
 }
 
 .jp-fp .jp-fp__qty input {
-  flex: 1 1 auto;
-  min-width: 0;
-  width: 100%;
-  border: 0;
   background: #fff;
-  text-align: center;
-  font: 500 20px var(--font-body-family);
   color: var(--jp-fp-text);
-  -moz-appearance: textfield;
-}
-
-.jp-fp .jp-fp__qty input::-webkit-outer-spin-button,
-.jp-fp .jp-fp__qty input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
 }
 
 .jp-fp .jp-fp__cart {
-  flex: 1 1 auto;
-  min-width: 0;
   padding-top: 40px;
-  container-type: inline-size;
 }
 
 .jp-fp .jp-fp__btn {
-  display: block;
-  width: 100%;
-  height: 50px;
   margin-top: 1px;
-  border: 0;
-  border-radius: 5px;
   background: var(--jp-fp-red);
-  color: #fff;
-  font: 800 18px/50px var(--font-body-family);
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.jp-fp .jp-fp__btn:hover {
-  filter: brightness(0.93);
-}
-
-.jp-fp .jp-fp__btn:disabled {
-  background: #b5b5b5;
-  cursor: not-allowed;
-  filter: none;
 }
 
 .jp-fp .jp-fp__trust {
-  display: flex;
   justify-content: space-between;
   gap: 4px;
   max-width: 100%;
   margin: 8px 0 0;
   padding: 0;
-  list-style: none;
   flex-wrap: nowrap;
 }
 
 .jp-fp .jp-fp__trust li {
-  display: flex;
-  align-items: center;
-  gap: clamp(3px, 1.6cqw, 6px);
   color: var(--jp-fp-green);
-  font-size: clamp(8px, 2.9cqw, 11px);
-  line-height: normal;
-  font-weight: 600;
-  text-transform: capitalize;
-  white-space: nowrap;
-}
-
-.jp-fp .jp-fp__trust svg {
-  width: clamp(10px, 3.4cqw, 13px);
-  height: clamp(10px, 3.4cqw, 13px);
-  flex: 0 0 auto;
 }
 
 .jp-fp button:focus-visible,
@@ -326,7 +211,6 @@
 
   .jp-fp .jp-fp__desc {
     line-height: 25px;
-    padding-bottom: 15px;
   }
 
   .jp-fp .jp-fp__options {

@@ -1,3 +1,75 @@
+{%- liquid
+  assign track_id = 'jp-bs-track-' | append: section.id
+  assign has_active_tab = false
+  assign active_tab_button_id = ''
+  assign tab_buttons_markup = ''
+  assign product_cards_markup = ''
+  assign badge_markup = ''
+-%}
+
+{%- if section.settings.show_badge and section.settings.badge != blank -%}
+  {%- capture badge_markup -%}
+    {{
+      section.settings.badge
+      | image_url: width: 200
+      | image_tag: class: 'jp-bs__badge', alt: '', loading: 'lazy'
+    }}
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- for tab_number in (1..4) -%}
+  {%- assign collection_setting_key = 'collection_' | append: tab_number -%}
+  {%- assign tab_label_setting_key = 'tab_' | append: tab_number -%}
+  {%- assign tab_collection = section.settings[collection_setting_key] -%}
+  {%- if tab_collection != blank -%}
+    {%- liquid
+      assign tab_button_id = 'jp-bs-tab-' | append: section.id
+      assign tab_button_id = tab_button_id | append: '-' | append: tab_number
+    -%}
+    {%- assign is_selected_tab = false -%}
+    {%- unless has_active_tab -%}
+      {%- assign is_selected_tab = true -%}
+      {%- assign has_active_tab = true -%}
+      {%- assign active_tab_button_id = tab_button_id -%}
+    {%- endunless -%}
+
+    {%- capture tab_button_markup -%}
+      <button
+        type="button"
+        class="jp-bs__tab"
+        id="{{ tab_button_id }}"
+        role="tab"
+        data-jp-bs-tab="{{ tab_number }}"
+        aria-selected="{{ is_selected_tab }}"
+        aria-controls="{{ track_id }}"
+      >
+        {{- section.settings[tab_label_setting_key] | default: tab_collection.title -}}
+      </button>
+    {%- endcapture -%}
+    {%- assign tab_buttons_markup = tab_buttons_markup | append: tab_button_markup -%}
+
+    {%- capture card_attributes -%}
+      data-jp-bs-card data-tab="{{ tab_number }}"
+    {%- endcapture -%}
+    {%- capture tab_cards_markup -%}
+      {%- for tab_product in tab_collection.products limit: section.settings.products_per_tab -%}
+        {% render 'jp-product-card',
+          product: tab_product,
+          prefix: 'jp-bs',
+          wrapper_tag: 'article',
+          card_attributes: card_attributes,
+          badge_markup: badge_markup,
+          button_label: section.settings.button_label,
+          options_label: section.settings.button_options_label,
+          sold_out_label: section.settings.sold_out_label
+        %}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- assign product_cards_markup = product_cards_markup | append: tab_cards_markup -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{{ 'jp-product-card.css' | asset_url | stylesheet_tag }}
 {{ 'jp-best-sellers.css' | asset_url | stylesheet_tag }}
 
 <section
@@ -18,134 +90,54 @@
       <h2 class="jp-bs__title">{{ section.settings.heading }}</h2>
     {%- endif -%}
 
-    {%- assign tab_shown = false -%}
-    <div class="jp-bs__tabs" role="tablist">
-      {%- for i in (1..4) -%}
-        {%- assign ckey = 'collection_' | append: i -%}
-        {%- assign lkey = 'tab_' | append: i -%}
-        {%- assign c = section.settings[ckey] -%}
-        {%- if c != blank -%}
-          {%- assign selected = 'false' -%}
-          {%- unless tab_shown -%}
-            {%- assign selected = 'true' -%}
-            {%- assign tab_shown = true -%}
-          {%- endunless -%}
-          <button
-            type="button"
-            class="jp-bs__tab"
-            role="tab"
-            data-jp-bs-tab="{{ i }}"
-            aria-selected="{{ selected }}"
-          >
-            {{- section.settings[lkey] | default: c.title -}}
-          </button>
-        {%- endif -%}
-      {%- endfor -%}
-    </div>
+    {%- if has_active_tab -%}
+      <div class="jp-bs__tabs" role="tablist">
+        {{- tab_buttons_markup -}}
+      </div>
+    {%- endif -%}
 
     <div class="jp-bs__carousel">
       <button
         type="button"
         class="jp-bs__arrow jp-bs__arrow--prev"
         data-jp-bs-prev
-        aria-label="Previous products"
+        aria-label="{{ section.settings.previous_label | escape }}"
       >
         {% render 'jp-icon-chevron', direction: 'prev' %}
       </button>
 
-      <div class="jp-bs__track" data-jp-bs-track>
-        {%- for i in (1..4) -%}
-          {%- assign ckey = 'collection_' | append: i -%}
-          {%- assign c = section.settings[ckey] -%}
-          {%- if c != blank -%}
-            {%- for product in c.products limit: section.settings.products_per_tab -%}
-              <article class="jp-bs__card" data-jp-bs-card data-tab="{{ i }}">
-                <a
-                  class="jp-bs__media"
-                  href="{{ product.url }}"
-                  tabindex="-1"
-                  aria-hidden="true"
-                >
-                  {%- if product.featured_image != blank -%}
-                    {{
-                      product.featured_image
-                      | image_url: width: 600
-                      | image_tag:
-                        class: 'jp-bs__img',
-                        alt: product.title,
-                        loading: 'lazy',
-                        widths: '300, 450, 600',
-                        sizes: '(min-width: 990px) 25vw, 50vw'
-                    }}
-                  {%- else -%}
-                    {{ 'product-1' | placeholder_svg_tag: 'jp-bs__img' }}
-                  {%- endif -%}
-                  {%- if section.settings.show_badge -%}
-                    {%- if section.settings.badge != blank -%}
-                      {{
-                        section.settings.badge
-                        | image_url: width: 200
-                        | image_tag: class: 'jp-bs__badge', alt: '', loading: 'lazy'
-                      }}
-                    {%- endif -%}
-                  {%- endif -%}
-                </a>
-                <a class="jp-bs__name" href="{{ product.url }}">{{ product.title }}</a>
-                {%- if product.metafields.judgeme.badge != blank -%}
-                  <div class="jp-bs__rating jp-bs__rating--jm">
-                    {{- product.metafields.judgeme.badge -}}
-                  </div>
-                {%- endif -%}
-                <div class="jp-bs__price">
-                  <span class="jp-bs__now">{{ product.price | money }}</span>
-                  {%- if product.compare_at_price > product.price -%}
-                    <s class="jp-bs__was">{{ product.compare_at_price | money }}</s>
-                  {%- endif -%}
-                </div>
-                {%- if product.has_only_default_variant and product.available -%}
-                  {%- form 'product', product, class: 'jp-bs__form' -%}
-                    <input
-                      type="hidden"
-                      name="id"
-                      value="{{ product.selected_or_first_available_variant.id }}"
-                    >
-                    <button type="submit" class="jp-bs__btn">
-                      {{- section.settings.button_label -}}
-                    </button>
-                  {%- endform -%}
-                {%- elsif product.available -%}
-                  <a class="jp-bs__btn" href="{{ product.url }}">
-                    {{- section.settings.button_options_label -}}
-                  </a>
-                {%- else -%}
-                  <span class="jp-bs__btn jp-bs__btn--off">
-                    {{- section.settings.sold_out_label -}}
-                  </span>
-                {%- endif -%}
-              </article>
-            {%- endfor -%}
-          {%- endif -%}
-        {%- endfor -%}
+      <div
+        class="jp-bs__track"
+        id="{{ track_id }}"
+        {% if has_active_tab %}
+          role="tabpanel"
+          aria-labelledby="{{ active_tab_button_id }}"
+        {% endif %}
+        data-jp-bs-track
+      >
+        {{- product_cards_markup -}}
       </div>
 
       <button
         type="button"
         class="jp-bs__arrow jp-bs__arrow--next"
         data-jp-bs-next
-        aria-label="Next products"
+        aria-label="{{ section.settings.next_label | escape }}"
       >
         {% render 'jp-icon-chevron', direction: 'next' %}
       </button>
     </div>
 
-    {%- unless tab_shown -%}
-      {%- if request.design_mode -%}
-        <p class="jp-bs__empty">
-          Choose a collection for Tab 1 in the section settings to show products.
-        </p>
-      {%- endif -%}
-    {%- endunless -%}
-    <div class="jp-bs__dots" data-jp-bs-dots></div>
+    {%- if request.design_mode and has_active_tab == false -%}
+      <p class="jp-bs__empty">
+        Choose a collection for at least one tab in the section settings to show products.
+      </p>
+    {%- endif -%}
+    <div
+      class="jp-bs__dots"
+      data-jp-bs-dots
+      data-dot-label="{{ section.settings.dot_label | escape }}"
+    ></div>
   </div>
 </section>
 
@@ -164,7 +156,7 @@
     {
       "type": "header",
       "content": "Tabs",
-      "info": "Each tab shows the products of one collection. Leave a collection empty to hide that tab."
+      "info": "Each tab shows one collection. Leave a collection empty to hide its tab."
     },
     {
       "type": "collection",
@@ -245,13 +237,39 @@
       "type": "checkbox",
       "id": "show_badge",
       "label": "Show badge",
+      "info": "The badge only shows once a badge image is uploaded below.",
       "default": true
     },
     {
       "type": "image_picker",
       "id": "badge",
       "label": "Badge image",
-      "info": "Upload the badge image. Nothing shows until you upload one."
+      "info": "Shown in the top right corner of every product image."
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "previous_label",
+      "label": "Previous button label",
+      "info": "Read by screen readers.",
+      "default": "Previous products"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next button label",
+      "info": "Read by screen readers.",
+      "default": "Next products"
+    },
+    {
+      "type": "text",
+      "id": "dot_label",
+      "label": "Page dot label",
+      "info": "Read by screen readers. {page} is replaced by the page number.",
+      "default": "Go to page {page}"
     },
     {
       "type": "header",

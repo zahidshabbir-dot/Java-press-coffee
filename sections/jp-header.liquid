@@ -1,7 +1,19 @@
-{%- assign sid = section.id -%}
+{%- comment -%}
+  The cart icon is drawn as a CSS background from a data URI on purpose: after an
+  add-to-cart, Shopify's cart scripts replace the innerHTML of #cart-icon-bubble, so an
+  inline <svg> inside the link would disappear. The SVG still comes from the jp-icon-cart
+  snippet, and its stroke follows the section's accent color setting.
+{%- endcomment -%}
 {%- capture cart_icon_svg -%}
-  {%- render 'jp-icon-cart' -%}
+  {% render 'jp-icon-cart', color: section.settings.accent %}
 {%- endcapture -%}
+{%- assign cart_icon_data_uri = cart_icon_svg | strip | base64_encode -%}
+{%- assign cta_url = section.settings.cta_url | default: routes.all_products_collection_url -%}
+{%- assign main_menu = section.settings.menu -%}
+{%- comment -%}
+  Mobile menu footer icon order; each network has a social_<network> setting.
+{%- endcomment -%}
+{%- assign social_networks = 'instagram,youtube,facebook,pinterest,tiktok' | split: ',' -%}
 
 {{ 'jp-header.css' | asset_url | stylesheet_tag }}
 
@@ -14,50 +26,74 @@
     --jp-hd-sub-dark: {{ section.settings.dropdown_color }};
     --jp-hd-logo-width: {{ section.settings.logo_width }}px;
     --jp-hd-logo-width-mobile: {{ section.settings.logo_width_mobile }}px;
-    --jp-hd-cart-icon: url('data:image/svg+xml;base64,{{ cart_icon_svg | strip | base64_encode }}');
+    --jp-hd-cart-icon: url('data:image/svg+xml;base64,{{ cart_icon_data_uri }}');
   "
 >
   <div class="jp-hd__inner">
-    <a class="jp-hd__logo" href="{{ routes.root_url }}">
-      {%- if section.settings.logo != blank -%}
-        {{ section.settings.logo | image_url: width: 440 | image_tag: width: section.settings.logo_width, alt: shop.name, loading: 'eager' }}
-      {%- else -%}
-        {{ shop.name }}
-      {%- endif -%}
-    </a>
+    {% render 'jp-header-logo',
+      class: 'jp-hd__logo',
+      logo: section.settings.logo,
+      width: section.settings.logo_width,
+      loading: 'eager'
+    %}
 
-    <nav class="jp-hd__nav" id="jp-hd-nav-{{ sid }}" aria-label="Main">
+    <nav
+      class="jp-hd__nav"
+      id="jp-hd-nav-{{ section.id }}"
+      aria-label="{{ section.settings.navigation_label | escape }}"
+    >
       <div class="jp-hd__drawer-top">
-        <button type="button" class="jp-hd__close" aria-label="Close menu" data-jp-hd-close>
+        <button
+          type="button"
+          class="jp-hd__close"
+          aria-label="{{ section.settings.close_menu_label | escape }}"
+          data-jp-hd-close
+        >
           {% render 'jp-icon-close' %}
         </button>
-        <a class="jp-hd__drawer-logo" href="{{ routes.root_url }}">
-          {%- if section.settings.logo != blank -%}
-            {{ section.settings.logo | image_url: width: 440 | image_tag: width: section.settings.logo_width_mobile, alt: shop.name, loading: 'lazy' }}
-          {%- else -%}
-            {{ shop.name }}
-          {%- endif -%}
-        </a>
+        {% render 'jp-header-logo',
+          class: 'jp-hd__drawer-logo',
+          logo: section.settings.logo,
+          width: section.settings.logo_width_mobile,
+          loading: 'lazy'
+        %}
       </div>
-      {%- assign main_menu = section.settings.menu -%}
-      {%- if main_menu != blank and main_menu.links.size > 0 -%}
+      {%- if main_menu != blank and main_menu.links != empty -%}
         {%- for link in main_menu.links -%}
-          {%- assign has_sub = false -%}
-          {%- if link.links.size > 0 -%}
-            {%- assign has_sub = true -%}
+          {%- assign has_dropdown = false -%}
+          {%- if link.links != empty -%}
+            {%- assign has_dropdown = true -%}
           {%- endif -%}
-          <div class="jp-hd__item{% if has_sub %} has-sub{% endif %}">
-            <a class="jp-hd__link" href="{{ link.url }}"{% if link.current or link.child_current %} aria-current="page"{% endif %}>{{ link.title }}</a>
-            {%- if has_sub -%}
+          <div class="jp-hd__item{% if has_dropdown %} has-sub{% endif %}">
+            <a
+              class="jp-hd__link"
+              href="{{ link.url }}"
+              {% if link.current or link.child_current %}aria-current="page"{% endif %}
+            >
+              {{- link.title -}}
+            </a>
+            {%- if has_dropdown -%}
               <div class="jp-hd__sub">
                 <ul class="jp-hd__sub-list">
-                  {%- for child in link.links -%}
-                    <li{% if child.links.size > 0 %} class="has-grand"{% endif %}>
-                      <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a>
-                      {%- if child.links.size > 0 -%}
+                  {%- for child_link in link.links -%}
+                    <li{% if child_link.links != empty %} class="has-grand"{% endif %}>
+                      <a
+                        href="{{ child_link.url }}"
+                        {% if child_link.current %}aria-current="page"{% endif %}
+                      >
+                        {{- child_link.title -}}
+                      </a>
+                      {%- if child_link.links != empty -%}
                         <ul class="jp-hd__grand">
-                          {%- for grand in child.links -%}
-                            <li><a href="{{ grand.url }}">{{ grand.title }}</a></li>
+                          {%- for grandchild_link in child_link.links -%}
+                            <li>
+                              <a
+                                href="{{ grandchild_link.url }}"
+                                {% if grandchild_link.current %}aria-current="page"{% endif %}
+                              >
+                                {{- grandchild_link.title -}}
+                              </a>
+                            </li>
                           {%- endfor -%}
                         </ul>
                       {%- endif -%}
@@ -70,18 +106,39 @@
         {%- endfor -%}
       {%- else -%}
         {%- for block in section.blocks -%}
-          {%- assign sub_menu = block.settings.dropdown_menu -%}
-          {%- assign has_sub = false -%}
-          {%- if sub_menu != blank and sub_menu.links.size > 0 -%}
-            {%- assign has_sub = true -%}
+          {%- assign dropdown_menu = block.settings.dropdown_menu -%}
+          {%- assign has_dropdown = false -%}
+          {%- if dropdown_menu != blank and dropdown_menu.links != empty -%}
+            {%- assign has_dropdown = true -%}
           {%- endif -%}
-          <div class="jp-hd__item{% if has_sub %} has-sub{% endif %}" {{ block.shopify_attributes }}>
-            <a class="jp-hd__link" href="{{ block.settings.url | default: '#' }}">{{ block.settings.label }}</a>
-            {%- if has_sub -%}
+          <div
+            class="jp-hd__item{% if has_dropdown %} has-sub{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.url != blank -%}
+              <a class="jp-hd__link" href="{{ block.settings.url }}">
+                {{- block.settings.label -}}
+              </a>
+            {%- elsif has_dropdown -%}
+              {%- comment -%} No link set: a button still opens the dropdown. {%- endcomment -%}
+              <button type="button" class="jp-hd__link">
+                {{- block.settings.label -}}
+              </button>
+            {%- else -%}
+              <span class="jp-hd__link">{{ block.settings.label }}</span>
+            {%- endif -%}
+            {%- if has_dropdown -%}
               <div class="jp-hd__sub">
                 <ul class="jp-hd__sub-list">
-                  {%- for child in sub_menu.links -%}
-                    <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a></li>
+                  {%- for child_link in dropdown_menu.links -%}
+                    <li>
+                      <a
+                        href="{{ child_link.url }}"
+                        {% if child_link.current %}aria-current="page"{% endif %}
+                      >
+                        {{- child_link.title -}}
+                      </a>
+                    </li>
                   {%- endfor -%}
                 </ul>
               </div>
@@ -90,55 +147,40 @@
         {%- endfor -%}
       {%- endif -%}
       {%- if section.settings.cta_label != blank -%}
-        <a class="jp-hd__cta jp-hd__nav-cta" href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}">{{ section.settings.cta_label }}</a>
+        <a class="jp-hd__cta jp-hd__nav-cta" href="{{ cta_url }}">
+          {{- section.settings.cta_label -}}
+        </a>
       {%- endif -%}
       <div class="jp-hd__drawer-foot">
-        <a class="jp-hd__acct" href="{{ routes.account_url }}">
+        <a class="jp-hd__account" href="{{ routes.account_url }}">
           {% render 'jp-icon-account' %}
           {{ section.settings.login_label }}
         </a>
-        <div class="jp-hd__loc">{{ localization.country.name }} | {{ localization.country.currency.iso_code }} {{ localization.country.currency.symbol }}</div>
+        <div class="jp-hd__location">
+          {{- localization.country.name }} |
+          {{ localization.country.currency.iso_code }}
+          {{ localization.country.currency.symbol -}}
+        </div>
         <ul class="jp-hd__social">
-          {%- if section.settings.social_instagram != blank -%}
-            <li>
-              <a href="{{ section.settings.social_instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
-                {%- render 'jp-icon-instagram' -%}
-              </a>
-            </li>
-          {%- endif -%}
-          {%- if section.settings.social_youtube != blank -%}
-            <li>
-              <a href="{{ section.settings.social_youtube }}" target="_blank" rel="noopener" aria-label="YouTube">
-                {%- render 'jp-icon-youtube' -%}
-              </a>
-            </li>
-          {%- endif -%}
-          {%- if section.settings.social_facebook != blank -%}
-            <li>
-              <a href="{{ section.settings.social_facebook }}" target="_blank" rel="noopener" aria-label="Facebook">
-                {%- render 'jp-icon-facebook' -%}
-              </a>
-            </li>
-          {%- endif -%}
-          {%- if section.settings.social_pinterest != blank -%}
-            <li>
-              <a href="{{ section.settings.social_pinterest }}" target="_blank" rel="noopener" aria-label="Pinterest">
-                {%- render 'jp-icon-pinterest' -%}
-              </a>
-            </li>
-          {%- endif -%}
-          {%- if section.settings.social_tiktok != blank -%}
-            <li>
-              <a href="{{ section.settings.social_tiktok }}" target="_blank" rel="noopener" aria-label="TikTok">
-                {%- render 'jp-icon-tiktok' -%}
-              </a>
-            </li>
-          {%- endif -%}
+          {%- for network in social_networks -%}
+            {%- assign social_setting_key = 'social_' | append: network -%}
+            {%- assign social_url = section.settings[social_setting_key] -%}
+            {%- if social_url != blank -%}
+              <li>
+                {% render 'jp-social-link', network: network, url: social_url %}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
         </ul>
       </div>
     </nav>
 
-    <a class="jp-hd__cart" href="{{ routes.cart_url }}" id="cart-icon-bubble" aria-label="{{ 'templates.cart.cart' | t }}">
+    <a
+      class="jp-hd__cart"
+      href="{{ routes.cart_url }}"
+      id="cart-icon-bubble"
+      aria-label="{{ 'templates.cart.cart' | t }}"
+    >
       <span class="svg-wrapper"></span>
       <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
       {%- if cart != empty -%}
@@ -146,18 +188,31 @@
           {%- if cart.item_count < 100 -%}
             <span aria-hidden="true">{{ cart.item_count }}</span>
           {%- endif -%}
-          <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+          <span class="visually-hidden">
+            {{- 'sections.header.cart_count' | t: count: cart.item_count -}}
+          </span>
         </div>
       {%- endif -%}
     </a>
 
     {%- if section.settings.cta_label != blank -%}
-      <a class="jp-hd__cta" href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}">
-        <span class="jp-hd__cta-d">{{ section.settings.cta_label }}</span><span class="jp-hd__cta-m">{{ section.settings.cta_label_mobile | default: section.settings.cta_label }}</span>
+      <a class="jp-hd__cta" href="{{ cta_url }}">
+        <span class="jp-hd__cta-desktop">{{ section.settings.cta_label }}</span>
+        {%- comment -%} No whitespace between the two spans. {%- endcomment -%}
+        <span class="jp-hd__cta-mobile">
+          {{- section.settings.cta_label_mobile | default: section.settings.cta_label -}}
+        </span>
       </a>
     {%- endif -%}
 
-    <button type="button" class="jp-hd__burger" aria-expanded="false" aria-controls="jp-hd-nav-{{ sid }}" aria-label="Menu" data-jp-hd-burger>
+    <button
+      type="button"
+      class="jp-hd__burger"
+      aria-expanded="false"
+      aria-controls="jp-hd-nav-{{ section.id }}"
+      aria-label="{{ section.settings.open_menu_label | escape }}"
+      data-jp-hd-burger
+    >
       {% render 'jp-icon-burger' %}
     </button>
   </div>
@@ -217,14 +272,30 @@
     {
       "type": "color",
       "id": "dropdown_color",
-      "label": "Dropdown highlight",
+      "label": "Dropdown highlight color",
       "default": "#1b4540"
+    },
+    {
+      "type": "header",
+      "content": "Button"
     },
     {
       "type": "text",
       "id": "cta_label",
       "label": "Button text",
       "default": "Shop now →"
+    },
+    {
+      "type": "text",
+      "id": "cta_label_mobile",
+      "label": "Button text (mobile)",
+      "default": "Shop"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link",
+      "info": "If empty, the button links to all products."
     },
     {
       "type": "header",
@@ -262,15 +333,26 @@
       "label": "TikTok link"
     },
     {
-      "type": "text",
-      "id": "cta_label_mobile",
-      "label": "Button text (mobile)",
-      "default": "Shop"
+      "type": "header",
+      "content": "Accessibility"
     },
     {
-      "type": "url",
-      "id": "cta_url",
-      "label": "Button link"
+      "type": "text",
+      "id": "navigation_label",
+      "label": "Navigation name for screen readers",
+      "default": "Main"
+    },
+    {
+      "type": "text",
+      "id": "open_menu_label",
+      "label": "Open menu button name for screen readers",
+      "default": "Menu"
+    },
+    {
+      "type": "text",
+      "id": "close_menu_label",
+      "label": "Close menu button name for screen readers",
+      "default": "Close menu"
     }
   ],
   "blocks": [
@@ -287,7 +369,8 @@
         {
           "type": "url",
           "id": "url",
-          "label": "Link"
+          "label": "Link",
+          "info": "If empty, the label shows without a link."
         },
         {
           "type": "link_list",
@@ -300,33 +383,7 @@
   ],
   "presets": [
     {
-      "name": "JP Header",
-      "blocks": [
-        {
-          "type": "link",
-          "settings": {
-            "label": "Learning Centre"
-          }
-        },
-        {
-          "type": "link",
-          "settings": {
-            "label": "Our Coffee Solutions"
-          }
-        },
-        {
-          "type": "link",
-          "settings": {
-            "label": "About Us"
-          }
-        },
-        {
-          "type": "link",
-          "settings": {
-            "label": "Blogs"
-          }
-        }
-      ]
+      "name": "JP Header"
     }
   ]
 }

@@ -1,0 +1,222 @@
+/*
+  Buy box (snippets/jp-product-info.liquid), shared by JP Featured product (.jp-fp) and
+  JP Product (.jp-mp).
+  Only declarations that are the same in both sections and that no section media query
+  overrides live here, so the order of the stylesheets on the page never matters.
+  Colors, spacing and responsive changes stay in jp-featured-product.css and
+  jp-main-product.css.
+*/
+
+.jp-fp .jp-fp__pills,
+.jp-mp .jp-mp__pills {
+  display: flex;
+  gap: 8px;
+}
+
+.jp-fp .jp-fp__pill,
+.jp-mp .jp-mp__pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 500;
+  text-align: center;
+}
+
+.jp-fp .jp-fp__title,
+.jp-mp .jp-mp__title {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.jp-fp .jp-fp__rating,
+.jp-fp .jp-fp__app,
+.jp-mp .jp-mp__rating,
+.jp-mp .jp-mp__app {
+  margin: 0 0 16px;
+  font-size: 12px;
+  line-height: normal;
+}
+
+.jp-fp .jp-fp__rating,
+.jp-mp .jp-mp__rating {
+  display: flex;
+  align-items: center;
+}
+
+.jp-fp .jp-fp__price,
+.jp-mp .jp-mp__price {
+  display: flex;
+  align-items: baseline;
+}
+
+.jp-fp .jp-fp__now,
+.jp-mp .jp-mp__now {
+  font-size: 24px;
+  line-height: 22px;
+  font-weight: 700;
+}
+
+.jp-fp .jp-fp__was,
+.jp-mp .jp-mp__was {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+  color: #929292;
+  text-decoration: line-through;
+}
+
+.jp-fp .jp-fp__desc,
+.jp-mp .jp-mp__desc {
+  margin: 0 0 16px;
+  padding: 0 0 15px;
+  border-bottom: 1px solid #ebeae6;
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.jp-fp .jp-fp__desc p,
+.jp-mp .jp-mp__desc p {
+  margin: 0;
+}
+
+.jp-fp .jp-fp__label,
+.jp-mp .jp-mp__label {
+  display: block;
+  margin: 0 0 16px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.jp-fp .jp-fp__options,
+.jp-mp .jp-mp__options {
+  display: grid;
+  margin: 0 0 16px;
+}
+
+.jp-fp .jp-fp__select,
+.jp-mp .jp-mp__select {
+  width: 100%;
+  height: 52px;
+  padding: 0 48px 0 23px;
+  border-radius: 5px;
+  font: 500 16px/normal var(--font-body-family);
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.jp-fp .jp-fp__buy,
+.jp-mp .jp-mp__buy {
+  display: flex;
+}
+
+.jp-fp .jp-fp__qty,
+.jp-mp .jp-mp__qty {
+  display: flex;
+  align-items: stretch;
+  height: 52px;
+  border-radius: 5px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.jp-fp .jp-fp__qty button,
+.jp-mp .jp-mp__qty button {
+  border: 0;
+  background: #f2f2f2;
+  cursor: pointer;
+}
+
+.jp-fp .jp-fp__qty button svg,
+.jp-mp .jp-mp__qty button svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: auto;
+}
+
+.jp-fp .jp-fp__qty input,
+.jp-mp .jp-mp__qty input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  font: 500 20px/normal var(--font-body-family);
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.jp-fp .jp-fp__qty input::-webkit-outer-spin-button,
+.jp-fp .jp-fp__qty input::-webkit-inner-spin-button,
+.jp-mp .jp-mp__qty input::-webkit-outer-spin-button,
+.jp-mp .jp-mp__qty input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.jp-fp .jp-fp__cart,
+.jp-mp .jp-mp__cart {
+  flex: 1 1 auto;
+  min-width: 0;
+  container-type: inline-size;
+}
+
+.jp-fp .jp-fp__btn,
+.jp-mp .jp-mp__btn {
+  display: block;
+  width: 100%;
+  height: 50px;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  font: 800 18px/50px var(--font-body-family);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.jp-fp .jp-fp__btn:hover,
+.jp-mp .jp-mp__btn:hover {
+  filter: brightness(0.93);
+}
+
+.jp-fp .jp-fp__btn:disabled,
+.jp-mp .jp-mp__btn:disabled {
+  background: #b5b5b5;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.jp-fp .jp-fp__trust,
+.jp-mp .jp-mp__trust {
+  display: flex;
+  list-style: none;
+}
+
+.jp-fp .jp-fp__trust li,
+.jp-mp .jp-mp__trust li {
+  display: flex;
+  align-items: center;
+  gap: clamp(3px, 1.6cqw, 6px);
+  font-size: clamp(8px, 2.9cqw, 11px);
+  line-height: normal;
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.jp-fp .jp-fp__trust svg,
+.jp-mp .jp-mp__trust svg {
+  width: clamp(10px, 3.4cqw, 13px);
+  height: clamp(10px, 3.4cqw, 13px);
+  flex: 0 0 auto;
+}
+
+.jp-icon-check-circle__mark {
+  stroke: #fff;
+}

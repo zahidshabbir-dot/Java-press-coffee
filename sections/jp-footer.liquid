@@ -14,7 +14,11 @@
       <div class="jp-ft__brand">
         <a class="jp-ft__logo" href="{{ routes.root_url }}">
           {%- if section.settings.logo != blank -%}
-            {{ section.settings.logo | image_url: width: 400 | image_tag: alt: section.settings.logo_text, loading: 'lazy' }}
+            {{
+              section.settings.logo
+              | image_url: width: 400
+              | image_tag: alt: section.settings.logo_text, loading: 'lazy'
+            }}
           {%- else -%}
             {{ section.settings.logo_text }}
           {%- endif -%}
@@ -24,59 +28,97 @@
           <div class="jp-ft__about">{{ section.settings.about }}</div>
         {%- endif -%}
 
-        {%- assign socials = section.blocks | where: 'type', 'social' -%}
-        {%- if socials.size > 0 -%}
+        {%- assign social_blocks = section.blocks | where: 'type', 'social' -%}
+        {%- if social_blocks.size > 0 -%}
           <ul class="jp-ft__social">
-            {%- for block in socials -%}
+            {%- for block in social_blocks -%}
               <li {{ block.shopify_attributes }}>
-                <a
-                  href="{{ block.settings.url | default: '#' }}"
-                  aria-label="{{ block.settings.network | capitalize }}"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  {%- if block.settings.icon != blank -%}
-                    {{
-                      block.settings.icon
-                      | image_url: width: 72
-                      | image_tag: class: 'jp-ft__social-custom', width: 20, height: 20, alt: '', loading: 'lazy'
-                    }}
-                  {%- endif -%}
-                </a>
+                {% render 'jp-social-link',
+                  network: block.settings.network,
+                  url: block.settings.url,
+                  class: 'jp-ft__social-link',
+                  icon_image: block.settings.icon,
+                  icon_image_class: 'jp-ft__social-custom'
+                %}
               </li>
             {%- endfor -%}
           </ul>
         {%- endif -%}
       </div>
 
-      {%- assign columns = section.blocks | where: 'type', 'column' -%}
-      {%- for block in columns -%}
-        <nav class="jp-ft__col" aria-label="{{ block.settings.title | escape }}" {{ block.shopify_attributes }}>
+      {%- assign column_blocks = section.blocks | where: 'type', 'column' -%}
+      {%- for block in column_blocks -%}
+        {%- assign column_menu = block.settings.menu -%}
+        {%- assign use_column_menu = false -%}
+        {%- if column_menu != blank and column_menu.links != empty -%}
+          {%- assign use_column_menu = true -%}
+        {%- endif -%}
+        {%- comment -%}
+          Each textarea row is "Label | /link"; a row without a link is plain text.
+        {%- endcomment -%}
+        {%- assign link_rows = block.settings.links | newline_to_br | split: '<br />' -%}
+
+        {%- assign column_has_links = use_column_menu -%}
+        {%- unless use_column_menu -%}
+          {%- for link_row in link_rows -%}
+            {%- assign link_parts = link_row | strip_newlines | split: '|' -%}
+            {%- assign link_label = link_parts[0] | strip -%}
+            {%- assign link_url = link_parts[1] | strip -%}
+            {%- if link_label != blank and link_url != blank -%}
+              {%- assign column_has_links = true -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endunless -%}
+
+        {%- comment -%} Only a column with links is a navigation landmark. {%- endcomment -%}
+        {%- if column_has_links -%}
+          <nav
+            class="jp-ft__col"
+            aria-label="{{ block.settings.title | escape }}"
+            {{ block.shopify_attributes }}
+          >
+        {%- else -%}
+          <div class="jp-ft__col" {{ block.shopify_attributes }}>
+        {%- endif -%}
           <h2 class="jp-ft__title">{{ block.settings.title }}</h2>
           <ul class="jp-ft__links">
-            {%- assign rows = block.settings.links | newline_to_br | split: '<br />' -%}
-            {%- for row in rows -%}
-              {%- assign parts = row | strip_newlines | split: '|' -%}
-              {%- assign label = parts[0] | strip -%}
-              {%- if label != blank -%}
-                {%- assign href = parts[1] | strip -%}
-                <li>
-                  {%- if href != blank -%}
-                    <a href="{{ href }}">{{ label }}</a>
-                  {%- else -%}
-                    {{ label }}
-                  {%- endif -%}
-                </li>
-              {%- endif -%}
-            {%- endfor -%}
+            {%- if use_column_menu -%}
+              {%- for link in column_menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            {%- else -%}
+              {%- for link_row in link_rows -%}
+                {%- assign link_parts = link_row | strip_newlines | split: '|' -%}
+                {%- assign link_label = link_parts[0] | strip -%}
+                {%- if link_label != blank -%}
+                  {%- assign link_url = link_parts[1] | strip -%}
+                  <li>
+                    {%- if link_url != blank -%}
+                      <a href="{{ link_url }}">{{ link_label }}</a>
+                    {%- else -%}
+                      {{ link_label }}
+                    {%- endif -%}
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
           </ul>
-        </nav>
+        {%- if column_has_links -%}
+          </nav>
+        {%- else -%}
+          </div>
+        {%- endif -%}
       {%- endfor -%}
     </div>
 
-    {%- if section.settings.copyright != blank -%}
-      <div class="jp-ft__bar">{{ section.settings.copyright }}</div>
-    {%- endif -%}
+    <div class="jp-ft__bar">
+      {%- if section.settings.copyright != blank -%}
+        {{ section.settings.copyright }}
+      {%- else -%}
+        © {{ 'now' | date: '%Y' }} {{ shop.name }}
+      {%- endif -%}
+    </div>
   </div>
 </footer>
 
@@ -89,23 +131,17 @@
       "content": "Brand"
     },
     {
-      "type": "text",
-      "id": "logo_text",
-      "label": "Logo text",
-      "default": "Organic Cafe"
-    },
-    {
-      "type": "color",
-      "id": "social_box_color",
-      "label": "Social icon box color",
-      "default": "#003f3a",
-      "info": "The box behind each social icon. Uploaded icons are shown inside it."
-    },
-    {
       "type": "image_picker",
       "id": "logo",
       "label": "Logo image",
-      "info": "Optional. Replaces the script logo text."
+      "info": "Optional. If empty, the logo text is shown."
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text",
+      "default": "Organic Cafe",
+      "info": "Also used as the logo image's alt text."
     },
     {
       "type": "richtext",
@@ -121,7 +157,7 @@
       "type": "text",
       "id": "copyright",
       "label": "Copyright text",
-      "default": "Copyright © 2023 JavaPresse. All Rights Reserved"
+      "info": "If empty, shows © with the current year and the store name."
     },
     {
       "type": "header",
@@ -138,6 +174,13 @@
       "id": "text_color",
       "label": "Text color",
       "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "social_box_color",
+      "label": "Social icon box color",
+      "default": "#003f3a",
+      "info": "The box behind each social icon."
     },
     {
       "type": "color",
@@ -159,10 +202,16 @@
           "default": "About"
         },
         {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "info": "Optional. When chosen, its links are shown instead of the list below."
+        },
+        {
           "type": "textarea",
           "id": "links",
           "label": "Links",
-          "info": "One per line: Label | /link",
+          "info": "Used when no menu is chosen. One per line: Label | /link. Leave out \"| /link\" to show plain text.",
           "default": "My Account | /account\nShipping | /policies/shipping-policy\nReturns | /policies/refund-policy\nBeyond the Bean | /pages/beyond-the-bean"
         }
       ]
@@ -188,7 +237,7 @@
             },
             {
               "value": "twitter",
-              "label": "Twitter"
+              "label": "X (Twitter)"
             }
           ]
         },
@@ -196,12 +245,13 @@
           "type": "image_picker",
           "id": "icon",
           "label": "Icon",
-          "info": "Upload the icon for this network. It shows inside the box."
+          "info": "Optional. Replaces the built-in icon for this network; shown inside the box."
         },
         {
           "type": "url",
           "id": "url",
-          "label": "Link"
+          "label": "Link",
+          "info": "If empty, the icon shows without a link."
         }
       ]
     }
@@ -220,14 +270,14 @@
           "type": "column",
           "settings": {
             "title": "Company",
-            "links": "FAQ’s | /pages/faq\nWarranty | /pages/warranty\nPrivacy Statements | /policies/privacy-policy\nTerms of Services | /policies/terms-of-service"
+            "links": "FAQs | /pages/faq\nWarranty | /pages/warranty\nPrivacy Statements | /policies/privacy-policy\nTerms of Service | /policies/terms-of-service"
           }
         },
         {
           "type": "column",
           "settings": {
             "title": "Contact",
-            "links": "Contact Us | /pages/contact\nPhone: (+971 1234  567)"
+            "links": "Contact Us | /pages/contact\nPhone: (+971 1234 567)"
           }
         },
         {
