@@ -80,15 +80,25 @@
   }
 
   .jp-ft-{{ sid }} .jp-ft__social a {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 36px;
     height: 36px;
+    background: {{ section.settings.social_box_color }};
   }
 
   .jp-ft-{{ sid }} .jp-ft__social img {
     display: block;
     width: 36px;
     height: 36px;
+  }
+
+  /* uploaded icons sit inside the dark box */
+  .jp-ft-{{ sid }} .jp-ft__social img.jp-ft__social-custom {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
   }
 
   .jp-ft-{{ sid }} .jp-ft__rating {
@@ -217,13 +227,10 @@
         {%- if socials.size > 0 -%}
           <ul class="jp-ft__social">
             {%- for block in socials -%}
-              {%- assign icon = 'social-' | append: block.settings.network | append: '.svg' -%}
               <li {{ block.shopify_attributes }}>
                 <a href="{{ block.settings.url | default: '#' }}" aria-label="{{ block.settings.network | capitalize }}" target="_blank" rel="noopener">
                   {%- if block.settings.icon != blank -%}
-                    {{ block.settings.icon | image_url: width: 72 | image_tag: width: 36, height: 36, alt: '', loading: 'lazy' }}
-                  {%- else -%}
-                    <img src="{{ icon | asset_url }}" width="36" height="36" alt="" loading="lazy">
+                    {{ block.settings.icon | image_url: width: 72 | image_tag: class: 'jp-ft__social-custom', width: 20, height: 20, alt: '', loading: 'lazy' }}
                   {%- endif -%}
                 </a>
               </li>
@@ -280,6 +287,7 @@
   "settings": [
     { "type": "header", "content": "Brand" },
     { "type": "text", "id": "logo_text", "label": "Logo text", "default": "Organic Cafe" },
+    { "type": "color", "id": "social_box_color", "label": "Social icon box color", "default": "#003f3a", "info": "The box behind each social icon. Uploaded icons are shown inside it." },
     { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Optional. Replaces the script logo text." },
     { "type": "richtext", "id": "about", "label": "Description", "default": "<p>Our journey into coffee started in 2015 with a passion for developing the best entry level burr coffee grinder on the market.</p>" },
 
@@ -316,7 +324,7 @@
           { "value": "linkedin", "label": "LinkedIn" },
           { "value": "twitter", "label": "Twitter" }
         ] },
-        { "type": "image_picker", "id": "icon", "label": "Icon", "info": "Leave empty to use the default icon for the network." },
+        { "type": "image_picker", "id": "icon", "label": "Icon", "info": "Upload the icon for this network. It shows inside the box." },
         { "type": "url", "id": "url", "label": "Link" }
       ]
     }

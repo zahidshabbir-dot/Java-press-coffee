@@ -786,8 +786,6 @@
               {%- if section.settings.show_badge -%}
                 {%- if section.settings.badge != blank -%}
                   {{ section.settings.badge | image_url: width: 200 | image_tag: class: 'jp-cl__badge', alt: '', loading: 'lazy' }}
-                {%- else -%}
-                  <img class="jp-cl__badge" src="{{ 'badge-farmed-for-good.png' | asset_url }}" width="171" height="189" alt="" loading="lazy">
                 {%- endif -%}
               {%- endif -%}
             </a>
@@ -907,7 +905,7 @@
     { "type": "text", "id": "tag_text", "label": "Label tag", "info": "Products with this tag show a label on the image. Leave empty to hide.", "default": "Best Seller" },
     { "type": "checkbox", "id": "show_description", "label": "Show collection description", "info": "Shows the description from the collection page in Shopify admin, under the title.", "default": true },
     { "type": "checkbox", "id": "show_badge", "label": "Show badge", "default": true },
-    { "type": "image_picker", "id": "badge", "label": "Badge image", "info": "Leave empty to use the Farmed for Good badge." },
+    { "type": "image_picker", "id": "badge", "label": "Badge image", "info": "Upload the badge image. Nothing shows until you upload one." },
 
     { "type": "header", "content": "Reviews" },
     { "type": "range", "id": "default_stars", "label": "Stars when a product has no reviews", "min": 0, "max": 5, "step": 1, "default": 5 },

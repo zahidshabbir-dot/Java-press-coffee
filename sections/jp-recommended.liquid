@@ -235,8 +235,6 @@
               {%- if section.settings.show_badge -%}
                 {%- if section.settings.badge != blank -%}
                   {{ section.settings.badge | image_url: width: 200 | image_tag: class: 'jp-rc__badge', alt: '', loading: 'lazy' }}
-                {%- else -%}
-                  <img class="jp-rc__badge" src="{{ 'badge-farmed-for-good.png' | asset_url }}" width="171" height="189" alt="" loading="lazy">
                 {%- endif -%}
               {%- endif -%}
             </a>
@@ -281,7 +279,7 @@
     { "type": "text", "id": "button_options_label", "label": "Button text (products with options)", "default": "Choose options" },
     { "type": "text", "id": "sold_out_label", "label": "Sold out text", "default": "Sold out" },
     { "type": "checkbox", "id": "show_badge", "label": "Show badge", "default": true },
-    { "type": "image_picker", "id": "badge", "label": "Badge image", "info": "Leave empty to use the Farmed for Good badge." },
+    { "type": "image_picker", "id": "badge", "label": "Badge image", "info": "Upload the badge image. Nothing shows until you upload one." },
 
     { "type": "header", "content": "Reviews" },
     { "type": "range", "id": "default_stars", "label": "Stars when a product has no reviews", "min": 0, "max": 5, "step": 1, "default": 5 },

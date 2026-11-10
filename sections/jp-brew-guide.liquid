@@ -497,25 +497,25 @@
 
 <script>
   (function () {
-    let dlg = document.currentScript.previousElementSibling;
-    if (!dlg || !dlg.hasAttribute('data-jp-brew')) return;
-    let $ = function (s) { return dlg.querySelector(s); };
-    let cfg = JSON.parse($('[data-cfg]').textContent);
-    let T = cfg.t;
-    let steps = Array.prototype.map.call(dlg.querySelectorAll('[data-step]'), function (li) {
-      return { action: li.getAttribute('data-action'), title: li.getAttribute('data-title'), text: li.getAttribute('data-text') };
+    let brewDialog = document.currentScript.previousElementSibling;
+    if (!brewDialog || !brewDialog.hasAttribute('data-jp-brew')) return;
+    let queryInDialog = function (s) { return brewDialog.querySelector(s); };
+    let config = JSON.parse(queryInDialog('[data-cfg]').textContent);
+    let translations = config.t;
+    let steps = Array.prototype.map.call(brewDialog.querySelectorAll('[data-step]'), function (stepItem) {
+      return { action: stepItem.getAttribute('data-action'), title: stepItem.getAttribute('data-title'), text: stepItem.getAttribute('data-text') };
     });
-    let SVGNS = 'http://www.w3.org/2000/svg';
-    let BOT = 216, TOP_Y = 52;
-    let slow = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.01 : 1;
+    let SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
+    let CUP_BOTTOM_Y = 216, STREAM_TOP_Y = 52;
+    let motionScale = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.01 : 1;
 
-    let el = {
-      stage: $('[data-stage]'), wrap: $('[data-cupwrap]'), layers: $('[data-layers]'), surface: $('[data-surface]'),
-      swirl: $('[data-swirl]'), stream: $('[data-stream]'), fx: $('[data-fx]'), spoon: $('[data-spoon]'),
-      spoonLine: $('[data-spoon-line]'), spoonBowl: $('[data-spoon-bowl]'), pourer: $('[data-pourer]'),
-      body: $('[data-body]'), handle: $('[data-handle]'), rim: $('[data-rim]'),
-      dots: $('[data-dots]'), label: $('[data-step-label]'), title: $('[data-step-title]'),
-      text: $('[data-step-text]'), controls: $('[data-controls]')
+    let elements = {
+      stage: queryInDialog('[data-stage]'), wrap: queryInDialog('[data-cupwrap]'), layers: queryInDialog('[data-layers]'), surface: queryInDialog('[data-surface]'),
+      swirl: queryInDialog('[data-swirl]'), stream: queryInDialog('[data-stream]'), fx: queryInDialog('[data-fx]'), spoon: queryInDialog('[data-spoon]'),
+      spoonLine: queryInDialog('[data-spoon-line]'), spoonBowl: queryInDialog('[data-spoon-bowl]'), pourer: queryInDialog('[data-pourer]'),
+      body: queryInDialog('[data-body]'), handle: queryInDialog('[data-handle]'), rim: queryInDialog('[data-rim]'),
+      dots: queryInDialog('[data-dots]'), label: queryInDialog('[data-step-label]'), title: queryInDialog('[data-step-title]'),
+      text: queryInDialog('[data-step-text]'), controls: queryInDialog('[data-controls]')
     };
 
     /* Every reset starts a new session. Animations from an older session stop on their own,
@@ -524,20 +524,20 @@
     const CANCELLED = new Error('cancelled');
 
     /* ---------- helpers ---------- */
-    function hex(c) {
+    function hexToRgb(c) {
       c = String(c).replace('#', '');
       if (c.length === 3) c = c.split('').map(function (x) { return x + x; }).join('');
       return [parseInt(c.substr(0, 2), 16), parseInt(c.substr(2, 2), 16), parseInt(c.substr(4, 2), 16)];
     }
-    function toHex(a) { return '#' + a.map(function (v) { v = Math.max(0, Math.min(255, Math.round(v))); return (v < 16 ? '0' : '') + v.toString(16); }).join(''); }
-    function lerpColor(a, b, t) { let x = hex(a), y = hex(b); return toHex([x[0] + (y[0] - x[0]) * t, x[1] + (y[1] - x[1]) * t, x[2] + (y[2] - x[2]) * t]); }
+    function rgbToHex(a) { return '#' + a.map(function (v) { v = Math.max(0, Math.min(255, Math.round(v))); return (v < 16 ? '0' : '') + v.toString(16); }).join(''); }
+    function lerpColor(a, b, t) { let x = hexToRgb(a), y = hexToRgb(b); return rgbToHex([x[0] + (y[0] - x[0]) * t, x[1] + (y[1] - x[1]) * t, x[2] + (y[2] - x[2]) * t]); }
     function shade(c, amt) { return amt >= 0 ? lerpColor(c, '#ffffff', amt) : lerpColor(c, '#000000', -amt); }
-    function hw(y) { if (y <= 150) return 70; let k = (y - 150) / 66; return 70 - k * k * 42; }
+    function cupHalfWidth(y) { if (y <= 150) return 70; let k = (y - 150) / 66; return 70 - k * k * 42; }
     function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
     function easeOut(p) { return 1 - Math.pow(1 - p, 3); }
     function easeInOut(p) { return p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; }
-    function anim(ms, fn, ease) {
-      ms = ms * slow;
+    function animate(ms, fn, ease) {
+      ms = ms * motionScale;
       return new Promise(function (resolve, reject) {
         let t0 = performance.now();
         let mine = session;
@@ -549,8 +549,8 @@
         })(t0);
       });
     }
-    function make(tag, attrs) {
-      let n = document.createElementNS(SVGNS, tag);
+    function createSvgElement(tag, attrs) {
+      let n = document.createElementNS(SVG_NAMESPACE, tag);
       for (let k in attrs) n.setAttribute(k, attrs[k]);
       return n;
     }
@@ -562,34 +562,34 @@
       session++;
       busy = false;
       stream.on = false;
-      state = { i: 0, cup: Math.max(0, Math.min(2, (parseInt(cfg.defaultCup, 10) || 1) - 1)), layers: [], base: null, sugar: 0, done: false };
-      el.layers.replaceChildren();
-      el.fx.replaceChildren();
-      el.swirl.setAttribute('opacity', '0');
-      el.spoon.setAttribute('opacity', '0');
-      el.stream.setAttribute('opacity', '0');
-      el.pourer.setAttribute('opacity', '0');
-      el.stage.classList.remove('is-done');
+      state = { i: 0, cup: Math.max(0, Math.min(2, (parseInt(config.defaultCup, 10) || 1) - 1)), layers: [], base: null, sugar: 0, done: false };
+      elements.layers.replaceChildren();
+      elements.fx.replaceChildren();
+      elements.swirl.setAttribute('opacity', '0');
+      elements.spoon.setAttribute('opacity', '0');
+      elements.stream.setAttribute('opacity', '0');
+      elements.pourer.setAttribute('opacity', '0');
+      elements.stage.classList.remove('is-done');
       setCup(state.cup);
       draw();
       showStep();
     }
     function setCup(i) {
       state.cup = i;
-      let c = cfg.cups[i].color;
-      el.body.setAttribute('fill', c);
-      el.handle.setAttribute('stroke', c);
-      el.rim.setAttribute('fill', shade(c, .12));
+      let c = config.cups[i].color;
+      elements.body.setAttribute('fill', c);
+      elements.handle.setAttribute('stroke', c);
+      elements.rim.setAttribute('fill', shade(c, .12));
     }
     function surfaceY() {
-      let y = BOT;
+      let y = CUP_BOTTOM_Y;
       state.layers.forEach(function (l) { y -= l.h; });
       return y;
     }
     function draw() {
-      let y = BOT;
+      let y = CUP_BOTTOM_Y;
       state.layers.forEach(function (l, idx) {
-        if (!l.node) { l.node = make('rect', { x: 30, width: 200 }); el.layers.appendChild(l.node); }
+        if (!l.node) { l.node = createSvgElement('rect', { x: 30, width: 200 }); elements.layers.appendChild(l.node); }
         let top = y - l.h;
         l.node.setAttribute('y', top);
         l.node.setAttribute('height', Math.max(0, l.h + (idx === 0 ? 30 : 0.6)));
@@ -597,65 +597,65 @@
         y = top;
       });
       let top = state.layers.length ? state.layers[state.layers.length - 1] : null;
-      if (top && y < BOT - 0.5) {
-        let rx = hw(y) - 2;
-        el.surface.setAttribute('cx', 130);
-        el.surface.setAttribute('cy', y);
-        el.surface.setAttribute('rx', rx);
-        el.surface.setAttribute('ry', rx * 0.16);
-        el.surface.setAttribute('fill', shade(top.color, state.done ? .06 : .14));
-        el.surface.setAttribute('opacity', '1');
+      if (top && y < CUP_BOTTOM_Y - 0.5) {
+        let rx = cupHalfWidth(y) - 2;
+        elements.surface.setAttribute('cx', 130);
+        elements.surface.setAttribute('cy', y);
+        elements.surface.setAttribute('rx', rx);
+        elements.surface.setAttribute('ry', rx * 0.16);
+        elements.surface.setAttribute('fill', shade(top.color, state.done ? .06 : .14));
+        elements.surface.setAttribute('opacity', '1');
       } else {
-        el.surface.setAttribute('opacity', '0');
+        elements.surface.setAttribute('opacity', '0');
       }
       if (stream.on) {
-        el.stream.setAttribute('height', Math.max(0, y - TOP_Y));
+        elements.stream.setAttribute('height', Math.max(0, y - STREAM_TOP_Y));
       }
     }
 
     /* ---------- pourer ---------- */
     function showPourer(type) {
-      Array.prototype.forEach.call(el.pourer.querySelectorAll('[data-pr]'), function (g) {
+      Array.prototype.forEach.call(elements.pourer.querySelectorAll('[data-pr]'), function (g) {
         g.style.display = g.getAttribute('data-pr') === type ? '' : 'none';
       });
-      el.pourer.setAttribute('opacity', '1');
+      elements.pourer.setAttribute('opacity', '1');
     }
     function placePourer(p, tilt) {
       /* p: 0 = away (top right), 1 = in place above the cup */
       let x = 262 - 100 * p, y = -20 + 64 * p;
-      el.pourer.setAttribute('transform', 'translate(' + x + ',' + y + ') rotate(' + (-20 * tilt) + ')');
-      el.pourer.setAttribute('opacity', String(clamp(p * 1.6, 0, 1)));
+      elements.pourer.setAttribute('transform', 'translate(' + x + ',' + y + ') rotate(' + (-20 * tilt) + ')');
+      elements.pourer.setAttribute('opacity', String(clamp(p * 1.6, 0, 1)));
     }
     function pourLiquid(type, color, addH) {
       let layer = { color: color, h: 0 };
       state.layers.push(layer);
       showPourer(type);
-      el.stream.setAttribute('fill', shade(color, .08));
-      return anim(450, function (p) { placePourer(p, p); }, easeOut)
+      elements.stream.setAttribute('fill', shade(color, .08));
+      return animate(450, function (p) { placePourer(p, p); }, easeOut)
         .then(function () {
           stream.on = true;
-          el.stream.setAttribute('opacity', '.92');
-          return anim(1300, function (p) { layer.h = addH * p; draw(); }, easeInOut);
+          elements.stream.setAttribute('opacity', '.92');
+          return animate(1300, function (p) { layer.h = addH * p; draw(); }, easeInOut);
         })
         .then(function () {
           stream.on = false;
-          return anim(260, function (p) { el.stream.setAttribute('opacity', String(.92 * (1 - p))); });
+          return animate(260, function (p) { elements.stream.setAttribute('opacity', String(.92 * (1 - p))); });
         })
-        .then(function () { return anim(380, function (p) { placePourer(1 - p, 1 - p); }, easeInOut); })
-        .then(function () { el.pourer.setAttribute('opacity', '0'); });
+        .then(function () { return animate(380, function (p) { placePourer(1 - p, 1 - p); }, easeInOut); })
+        .then(function () { elements.pourer.setAttribute('opacity', '0'); });
     }
     function addCoffee(addH) {
-      let layer = { color: cfg.coffee, h: 0 };
+      let layer = { color: config.coffee, h: 0 };
       state.layers.push(layer);
       showPourer('coffee');
       let dots = [];
       for (let i = 0; i < 16; i++) {
-        let c = make('circle', { r: 2.6 + (i % 3) * 0.7, fill: i % 2 ? '#3a2214' : '#5a3a26', opacity: 0, cx: 128 + ((i * 7) % 14), cy: 54 });
-        el.fx.appendChild(c); dots.push(c);
+        let c = createSvgElement('circle', { r: 2.6 + (i % 3) * 0.7, fill: i % 2 ? '#3a2214' : '#5a3a26', opacity: 0, cx: 128 + ((i * 7) % 14), cy: 54 });
+        elements.fx.appendChild(c); dots.push(c);
       }
-      return anim(450, function (p) { placePourer(p, p * 1.2); }, easeOut)
+      return animate(450, function (p) { placePourer(p, p * 1.2); }, easeOut)
         .then(function () {
-          return anim(1500, function (p) {
+          return animate(1500, function (p) {
             let t = p * 1500, sy = surfaceY();
             dots.forEach(function (d, i) {
               let q = clamp((t - i * 55) / 420, 0, 1);
@@ -666,22 +666,22 @@
             draw();
           });
         })
-        .then(function () { el.fx.replaceChildren(); return anim(380, function (p) { placePourer(1 - p, 1 - p); }, easeInOut); })
-        .then(function () { el.pourer.setAttribute('opacity', '0'); });
+        .then(function () { elements.fx.replaceChildren(); return animate(380, function (p) { placePourer(1 - p, 1 - p); }, easeInOut); })
+        .then(function () { elements.pourer.setAttribute('opacity', '0'); });
     }
     function addSugar() {
       showPourer('sugar');
-      let cube = make('rect', { x: -8, y: -8, width: 16, height: 16, rx: 3, fill: '#fff', stroke: '#e1e4e8', 'stroke-width': 1.5 });
-      el.fx.appendChild(cube);
+      let cube = createSvgElement('rect', { x: -8, y: -8, width: 16, height: 16, rx: 3, fill: '#fff', stroke: '#e1e4e8', 'stroke-width': 1.5 });
+      elements.fx.appendChild(cube);
       let sy = surfaceY();
-      el.pourer.setAttribute('opacity', '0');
-      return anim(650, function (p) {
+      elements.pourer.setAttribute('opacity', '0');
+      return animate(650, function (p) {
         let y = 20 + p * (sy - 24 - 20);
         cube.setAttribute('transform', 'translate(' + (130 + Math.sin(p * 6) * 6) + ',' + y + ') rotate(' + (p * 220) + ')');
         cube.setAttribute('opacity', '1');
       }, function (p) { return p * p; })
         .then(function () {
-          return anim(900, function (p) {
+          return animate(900, function (p) {
             cube.setAttribute('transform', 'translate(130,' + (sy - 4 + p * 6) + ') rotate(220) scale(' + (1 - p * .85) + ')');
             cube.setAttribute('opacity', String(1 - p));
           });
@@ -689,22 +689,22 @@
         .then(function () { if (cube.parentNode) cube.parentNode.removeChild(cube); });
     }
     function finalColor() {
-      return state.base === 'milk' ? lerpColor(cfg.coffee, cfg.milk, .55) : lerpColor(cfg.coffee, cfg.water, .12);
+      return state.base === 'milk' ? lerpColor(config.coffee, config.milk, .55) : lerpColor(config.coffee, config.water, .12);
     }
     function stir() {
       let from = state.layers.map(function (l) { return l.color; });
       let to = finalColor();
       let sy = surfaceY();
       let total = state.layers.reduce(function (a, l) { return a + l.h; }, 0);
-      el.spoon.setAttribute('opacity', '1');
-      el.swirl.setAttribute('opacity', '1');
-      return anim(2600, function (p) {
+      elements.spoon.setAttribute('opacity', '1');
+      elements.swirl.setAttribute('opacity', '1');
+      return animate(2600, function (p) {
         let a = p * Math.PI * 2 * 4;
         let r = 22 * Math.sin(Math.min(1, p * 6) * Math.PI / 2) * (p > .9 ? (1 - p) * 10 : 1);
         let tx = 130 + Math.cos(a) * r, ty = sy + 4 + Math.sin(a) * r * .22;
-        el.spoonLine.setAttribute('x2', tx); el.spoonLine.setAttribute('y2', ty);
-        el.spoonBowl.setAttribute('cx', tx); el.spoonBowl.setAttribute('cy', ty);
-        el.swirl.setAttribute('transform', 'translate(130,' + (sy + 2) + ') rotate(' + (a * 57.3) + ') scale(' + (hw(sy) / 62) + ',' + (hw(sy) / 62 * .3) + ')');
+        elements.spoonLine.setAttribute('x2', tx); elements.spoonLine.setAttribute('y2', ty);
+        elements.spoonBowl.setAttribute('cx', tx); elements.spoonBowl.setAttribute('cy', ty);
+        elements.swirl.setAttribute('transform', 'translate(130,' + (sy + 2) + ') rotate(' + (a * 57.3) + ') scale(' + (cupHalfWidth(sy) / 62) + ',' + (cupHalfWidth(sy) / 62 * .3) + ')');
         let m = clamp((p - .1) / .75, 0, 1);
         state.layers.forEach(function (l, i) { l.color = lerpColor(from[i], to, m); });
         draw();
@@ -713,9 +713,9 @@
         state.layers = [{ color: to, h: total }];
         state.done = true;
         draw();
-        return anim(450, function (p) {
-          el.spoon.setAttribute('opacity', String(1 - p));
-          el.swirl.setAttribute('opacity', String(1 - p));
+        return animate(450, function (p) {
+          elements.spoon.setAttribute('opacity', String(1 - p));
+          elements.swirl.setAttribute('opacity', String(1 - p));
         });
       });
     }
@@ -731,7 +731,7 @@
     }
     function lock(on) {
       busy = on;
-      Array.prototype.forEach.call(el.controls.querySelectorAll('button'), function (b) { b.disabled = on; });
+      Array.prototype.forEach.call(elements.controls.querySelectorAll('button'), function (b) { b.disabled = on; });
     }
     function run(promiseFn, then) {
       if (busy) return;
@@ -749,66 +749,66 @@
       showStep();
     }
     function finish() {
-      el.dots.replaceChildren();
-      steps.forEach(function () { let d = document.createElement('span'); d.className = 'jp-bg__dot is-on'; el.dots.appendChild(d); });
-      el.label.textContent = '';
-      el.title.textContent = T.readyTitle;
-      el.text.textContent = T.readyText;
-      el.controls.replaceChildren();
-      el.stage.classList.add('is-done');
-      let c = el.wrap;
-      anim(700, function (p) { c.style.translate = '0 ' + (-Math.sin(p * Math.PI) * 8) + 'px'; }).catch(function () {});
+      elements.dots.replaceChildren();
+      steps.forEach(function () { let d = document.createElement('span'); d.className = 'jp-bg__dot is-on'; elements.dots.appendChild(d); });
+      elements.label.textContent = '';
+      elements.title.textContent = translations.readyTitle;
+      elements.text.textContent = translations.readyText;
+      elements.controls.replaceChildren();
+      elements.stage.classList.add('is-done');
+      let c = elements.wrap;
+      animate(700, function (p) { c.style.translate = '0 ' + (-Math.sin(p * Math.PI) * 8) + 'px'; }).catch(function () {});
     }
     function showStep() {
       let s = steps[state.i];
-      el.dots.replaceChildren();
-      steps.forEach(function (_, n) { let d = document.createElement('span'); d.className = 'jp-bg__dot' + (n <= state.i ? ' is-on' : ''); el.dots.appendChild(d); });
-      el.label.textContent = T.step + ' ' + (state.i + 1) + ' ' + T.of + ' ' + steps.length;
-      el.title.textContent = s.title;
-      el.text.textContent = s.text;
-      el.controls.replaceChildren();
+      elements.dots.replaceChildren();
+      steps.forEach(function (_, n) { let d = document.createElement('span'); d.className = 'jp-bg__dot' + (n <= state.i ? ' is-on' : ''); elements.dots.appendChild(d); });
+      elements.label.textContent = translations.step + ' ' + (state.i + 1) + ' ' + translations.of + ' ' + steps.length;
+      elements.title.textContent = s.title;
+      elements.text.textContent = s.text;
+      elements.controls.replaceChildren();
 
       if (s.action === 'cup') {
         let sw = document.createElement('div'); sw.className = 'jp-bg__swatches';
-        cfg.cups.forEach(function (c, n) {
+        config.cups.forEach(function (c, n) {
           let b = document.createElement('button'); b.type = 'button';
           b.className = 'jp-bg__swatch' + (n === state.cup ? ' is-on' : '');
           b.style.background = c.color; b.setAttribute('aria-label', c.name); b.title = c.name;
           b.addEventListener('click', function () {
             setCup(n);
             Array.prototype.forEach.call(sw.children, function (x, k) { x.classList.toggle('is-on', k === n); });
-            anim(420, function (p) { el.wrap.style.translate = '0 ' + (-Math.sin(p * Math.PI) * 10) + 'px'; }).catch(function () {});
+            animate(420, function (p) { elements.wrap.style.translate = '0 ' + (-Math.sin(p * Math.PI) * 10) + 'px'; }).catch(function () {});
           });
           sw.appendChild(b);
         });
-        el.controls.appendChild(sw);
-        el.controls.appendChild(btn(T.next, '', function () { next(); }));
+        elements.controls.appendChild(sw);
+        elements.controls.appendChild(btn(translations.next, '', function () { next(); }));
       } else if (s.action === 'base') {
-        el.controls.appendChild(btn(T.water, '', function () {
-          run(function () { state.base = 'water'; return pourLiquid('water', cfg.water, 58); }, next);
+        elements.controls.appendChild(btn(translations.water, '', function () {
+          run(function () { state.base = 'water'; return pourLiquid('water', config.water, 58); }, next);
         }));
-        el.controls.appendChild(btn(T.milk, 'jp-bg__btn--ghost', function () {
-          run(function () { state.base = 'milk'; return pourLiquid('milk', cfg.milk, 58); }, next);
+        elements.controls.appendChild(btn(translations.milk, 'jp-bg__btn--ghost', function () {
+          run(function () { state.base = 'milk'; return pourLiquid('milk', config.milk, 58); }, next);
         }));
       } else if (s.action === 'coffee') {
-        el.controls.appendChild(btn(T.coffee, '', function () {
+        elements.controls.appendChild(btn(translations.coffee, '', function () {
           run(function () { if (!state.base) state.base = 'water'; return addCoffee(34); }, next);
         }));
       } else if (s.action === 'sugar') {
         let count = document.createElement('span'); count.className = 'jp-bg__count'; count.textContent = '0 / 3';
-        let skip = btn(T.skip, 'jp-bg__btn--ghost', function () { next(); });
-        let add = btn(T.sugar, '', function () {
+        let skip = btn(translations.skip, 'jp-bg__btn--ghost', function () { next(); });
+        let add = btn(translations.sugar, '', function () {
           if (state.sugar >= 3) return;
           run(function () { state.sugar++; return addSugar(); }, function () {
             count.textContent = state.sugar + ' / 3';
-            skip.textContent = T.next;
+            skip.textContent = translations.next;
             if (state.sugar >= 3) add.disabled = true;
           });
         });
-        el.controls.appendChild(add); el.controls.appendChild(skip); el.controls.appendChild(count);
+        elements.controls.appendChild(add); elements.controls.appendChild(skip); elements.controls.appendChild(count);
       } else if (s.action === 'stir') {
-        if (!state.layers.length) { state.base = 'water'; state.layers.push({ color: cfg.water, h: 58 }); draw(); }
-        el.controls.appendChild(btn(T.stir, '', function () { run(stir, next); }));
+        if (!state.layers.length) { state.base = 'water'; state.layers.push({ color: config.water, h: 58 }); draw(); }
+        elements.controls.appendChild(btn(translations.stir, '', function () { run(stir, next); }));
       }
     }
 
@@ -816,36 +816,36 @@
     function open() {
       if (!steps.length) return; /* no step blocks yet: nothing to show */
       reset();
-      if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else { dlg.setAttribute('open', ''); }
+      if (typeof brewDialog.showModal === 'function') { if (!brewDialog.open) brewDialog.showModal(); } else { brewDialog.setAttribute('open', ''); }
     }
     function close() {
       session++; /* stops any running animation */
       busy = false;
       stream.on = false;
-      if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open');
+      if (typeof brewDialog.close === 'function') brewDialog.close(); else brewDialog.removeAttribute('open');
     }
     function onOpenClick(e) {
       /* stop when the section was re-rendered (theme editor) */
-      if (!dlg.isConnected) { document.removeEventListener('click', onOpenClick); return; }
+      if (!brewDialog.isConnected) { document.removeEventListener('click', onOpenClick); return; }
       let t = e.target.closest && e.target.closest('[data-jp-brew-open]');
       if (t) { e.preventDefault(); open(); }
     }
     document.addEventListener('click', onOpenClick);
-    $('[data-close]').addEventListener('click', close);
-    $('[data-restart]').addEventListener('click', function () { if (!busy) reset(); });
-    dlg.addEventListener('click', function (e) { if (e.target === dlg) close(); });
+    queryInDialog('[data-close]').addEventListener('click', close);
+    queryInDialog('[data-restart]').addEventListener('click', function () { if (!busy) reset(); });
+    brewDialog.addEventListener('click', function (e) { if (e.target === brewDialog) close(); });
     /* Esc closes the dialog without going through close(): stop any running animation too */
-    dlg.addEventListener('close', function () { session++; busy = false; stream.on = false; });
+    brewDialog.addEventListener('close', function () { session++; busy = false; stream.on = false; });
 
     /* 3D tilt */
-    el.stage.addEventListener('pointermove', function (e) {
-      let r = el.stage.getBoundingClientRect();
+    elements.stage.addEventListener('pointermove', function (e) {
+      let r = elements.stage.getBoundingClientRect();
       let x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-      el.wrap.style.transform = 'rotateY(' + (x * 22) + 'deg) rotateX(' + (-y * 12) + 'deg)';
+      elements.wrap.style.transform = 'rotateY(' + (x * 22) + 'deg) rotateX(' + (-y * 12) + 'deg)';
     });
-    el.stage.addEventListener('pointerleave', function () { el.wrap.style.transform = ''; });
+    elements.stage.addEventListener('pointerleave', function () { elements.wrap.style.transform = ''; });
 
-    if (cfg.preview && window.Shopify && window.Shopify.designMode) open();
+    if (config.preview && window.Shopify && window.Shopify.designMode) open();
   })();
 </script>
 

@@ -508,7 +508,7 @@
       {%- if section.settings.logo != blank -%}
         {{ section.settings.logo | image_url: width: 440 | image_tag: width: section.settings.logo_width, alt: shop.name, loading: 'eager' }}
       {%- else -%}
-        <img src="{{ 'logo-organic-cafe.svg' | asset_url }}" width="158" height="39" alt="{{ shop.name | escape }}">
+        {{ shop.name }}
       {%- endif -%}
     </a>
 
@@ -521,7 +521,7 @@
           {%- if section.settings.logo != blank -%}
             {{ section.settings.logo | image_url: width: 440 | image_tag: width: section.settings.logo_width_mobile, alt: shop.name, loading: 'lazy' }}
           {%- else -%}
-            <img src="{{ 'logo-organic-cafe.svg' | asset_url }}" width="158" height="39" alt="{{ shop.name | escape }}">
+        {{ shop.name }}
           {%- endif -%}
         </a>
       </div>
@@ -686,7 +686,7 @@
       "type": "image_picker",
       "id": "logo",
       "label": "Logo",
-      "info": "Leave empty to use the default Organic Cafe logo."
+      "info": "Upload your logo. If empty, the store name is shown as text."
     },
     {
       "type": "range",

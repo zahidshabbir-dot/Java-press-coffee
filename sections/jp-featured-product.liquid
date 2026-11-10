@@ -394,8 +394,6 @@
         {%- if section.settings.show_badge -%}
           {%- if section.settings.badge != blank -%}
             {{ section.settings.badge | image_url: width: 300 | image_tag: class: 'jp-fp__badge', alt: '', loading: 'lazy' }}
-          {%- else -%}
-            <img class="jp-fp__badge" src="{{ 'badge-farmed-for-good.png' | asset_url }}" width="171" height="189" alt="" loading="lazy">
           {%- endif -%}
         {%- endif -%}
       </div>
@@ -594,7 +592,7 @@
       "type": "image_picker",
       "id": "badge",
       "label": "Badge image",
-      "info": "Leave empty to use the default 'Farmed for good' badge."
+      "info": "Upload the badge image. Nothing shows until you upload one."
     },
     {
       "type": "header",

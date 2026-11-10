@@ -1,141 +1,9 @@
-{%- assign sid = section.id -%}
-
-{% style %}
-  .jp-ann-{{ sid }} {
-    --jp-ann-bg: {{ section.settings.bg }};
-    --jp-ann-text: {{ section.settings.text_color }};
-    --jp-ann-link: {{ section.settings.link_color }};
-    background: var(--jp-ann-bg);
-    color: var(--jp-ann-text);
-    font-family: 'Raleway', sans-serif;
-  }
-
-  .jp-ann-{{ sid }} .jp-ann__inner {
-    position: relative;
-    max-width: 1440px;
-    height: 60px;
-    margin: 0 auto;
-    padding: 0 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .jp-ann-{{ sid }} .jp-ann__slides {
-    display: grid;
-    width: 100%;
-    text-align: center;
-  }
-
-  .jp-ann-{{ sid }} .jp-ann__slide {
-    grid-area: 1 / 1;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    font-size: 13px;
-    line-height: 16px;
-    font-weight: 500;
-    margin: 0;
-  }
-
-  .jp-ann-{{ sid }} .jp-ann__slide.is-active {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .jp-ann-{{ sid }} .jp-ann__link {
-    color: var(--jp-ann-link);
-    font-weight: 600;
-    text-transform: uppercase;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    margin-left: 6px;
-  }
-
-  .jp-ann-{{ sid }} .jp-ann__arrow {
-    position: absolute;
-    top: 50%;
-    width: 24px;
-    height: 24px;
-    margin-top: -12px;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: var(--jp-ann-text);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .jp-ann-{{ sid }} .jp-ann__arrow--prev {
-    left: 120px;
-  }
-
-  .jp-ann-{{ sid }} .jp-ann__arrow--next {
-    right: 96px;
-  }
-
-  .jp-ann-{{ sid }} .jp-ann__arrow:focus-visible,
-  .jp-ann-{{ sid }} .jp-ann__link:focus-visible {
-    outline: 2px solid var(--jp-ann-text);
-    outline-offset: 2px;
-  }
-
-  .jp-ann-{{ sid }} .jp-ann__arrow svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .jp-ann-{{ sid }}[data-single='true'] .jp-ann__arrow {
-    display: none;
-  }
-
-  @media (max-width: 1199px) {
-    .jp-ann-{{ sid }} .jp-ann__inner {
-      padding: 0 56px;
-    }
-
-    .jp-ann-{{ sid }} .jp-ann__arrow--prev {
-      left: 16px;
-    }
-
-    .jp-ann-{{ sid }} .jp-ann__arrow--next {
-      right: 16px;
-    }
-  }
-
-  @media (max-width: 749px) {
-    .jp-ann-{{ sid }} .jp-ann__inner {
-      height: auto;
-      min-height: 48px;
-      padding: 8px 48px;
-    }
-
-    .jp-ann-{{ sid }} .jp-ann__slide {
-      font-size: 12px;
-      line-height: 16px;
-    }
-
-    .jp-ann-{{ sid }} .jp-ann__arrow--prev {
-      left: 8px;
-    }
-
-    .jp-ann-{{ sid }} .jp-ann__arrow--next {
-      right: 8px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .jp-ann-{{ sid }} .jp-ann__slide {
-      transition: none;
-    }
-  }
-{% endstyle %}
+{{ 'jp-announcement-bar.css' | asset_url | stylesheet_tag }}
 
 {%- if section.blocks.size > 0 -%}
   <div
-    class="jp-ann-{{ sid }}"
+    class="jp-ann"
+    style="--jp-ann-bg: {{ section.settings.bg }}; --jp-ann-text: {{ section.settings.text_color }}; --jp-ann-link: {{ section.settings.link_color }};"
     data-jp-ann
     data-autoplay="{{ section.settings.autoplay }}"
     data-delay="{{ section.settings.delay | times: 1000 }}"
@@ -146,7 +14,7 @@
   >
     <div class="jp-ann__inner">
       <button type="button" class="jp-ann__arrow jp-ann__arrow--prev" data-jp-ann-prev aria-label="Previous announcement">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        {% render 'jp-icon-chevron', direction: 'prev' %}
       </button>
 
       <div class="jp-ann__slides" aria-live="polite">
@@ -161,46 +29,12 @@
       </div>
 
       <button type="button" class="jp-ann__arrow jp-ann__arrow--next" data-jp-ann-next aria-label="Next announcement">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        {% render 'jp-icon-chevron', direction: 'next' %}
       </button>
     </div>
   </div>
 
-  <script>
-    (function () {
-      let root = document.currentScript.previousElementSibling;
-      if (!root || !root.hasAttribute('data-jp-ann')) return;
-      let slides = root.querySelectorAll('[data-jp-ann-slide]');
-      if (slides.length < 2) return;
-      let index = 0;
-      let timer = null;
-
-      function show(i) {
-        slides[index].classList.remove('is-active');
-        index = (i + slides.length) % slides.length;
-        slides[index].classList.add('is-active');
-      }
-      function stop() { if (timer) { clearInterval(timer); timer = null; } }
-      function start() {
-        if (root.dataset.autoplay !== 'true') return;
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        stop();
-        timer = setInterval(function () {
-          /* stop when the section was removed or re-rendered (theme editor) */
-          if (!root.isConnected) { stop(); return; }
-          show(index + 1);
-        }, parseInt(root.dataset.delay, 10) || 5000);
-      }
-
-      let prevButton = root.querySelector('[data-jp-ann-prev]');
-      let nextButton = root.querySelector('[data-jp-ann-next]');
-      if (prevButton) prevButton.addEventListener('click', function () { show(index - 1); start(); });
-      if (nextButton) nextButton.addEventListener('click', function () { show(index + 1); start(); });
-      root.addEventListener('mouseenter', stop);
-      root.addEventListener('mouseleave', start);
-      start();
-    })();
-  </script>
+  <script src="{{ 'jp-announcement-bar.js' | asset_url }}" defer></script>
 {%- endif -%}
 
 {% schema %}

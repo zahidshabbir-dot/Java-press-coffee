@@ -11,8 +11,6 @@
     background: var(--jp-hero-bg);
     {%- if section.settings.bg_image != blank %}
     background-image: url('{{ section.settings.bg_image | image_url: width: 2880 }}');
-    {%- else %}
-    background-image: url('{{ 'hero-banner.webp' | asset_url }}');
     {%- endif %}
     background-size: cover;
     background-position: center right;
@@ -170,8 +168,6 @@
     .jp-hero-{{ sid }} {
       {%- if section.settings.bg_image_mobile != blank %}
       background-image: url('{{ section.settings.bg_image_mobile | image_url: width: 1000 }}');
-      {%- else %}
-      background-image: url('{{ 'hero-banner-mobile.webp' | asset_url }}');
       {%- endif %}
       background-position: center top;
     }
@@ -259,8 +255,6 @@
       {%- if section.settings.image != blank -%}
         {%- assign hero_alt = section.settings.image.alt | default: section.settings.title_before -%}
         {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'jp-hero__product', alt: hero_alt, loading: 'eager', fetchpriority: 'high' }}
-      {%- else -%}
-        <img class="jp-hero__product" src="{{ 'hero-mask-group.webp' | asset_url }}" width="1280" height="1289" alt="{{ section.settings.title_before | escape }}" loading="eager" fetchpriority="high">
       {%- endif -%}
     </div>
   </div>
@@ -287,15 +281,15 @@
     { "type": "range", "id": "stars", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
 
     { "type": "header", "content": "Images" },
-    { "type": "image_picker", "id": "image", "label": "Product image", "info": "Leave empty to use the default coffee bags." },
+    { "type": "image_picker", "id": "image", "label": "Product image", "info": "Upload the product image." },
     { "type": "select", "id": "image_align", "label": "Product image position", "default": "flex-end", "options": [
       { "value": "flex-start", "label": "Left (near the text)" },
       { "value": "center", "label": "Center" },
       { "value": "flex-end", "label": "Right" }
     ] },
     { "type": "range", "id": "image_width", "label": "Product image width", "min": 280, "max": 640, "step": 10, "unit": "px", "default": 450 },
-    { "type": "image_picker", "id": "bg_image", "label": "Background image", "info": "Leave empty to use the default banner." },
-    { "type": "image_picker", "id": "bg_image_mobile", "label": "Background image (mobile)", "info": "Used on phones. Leave empty to use the default mobile banner." },
+    { "type": "image_picker", "id": "bg_image", "label": "Background image", "info": "Upload the banner image." },
+    { "type": "image_picker", "id": "bg_image_mobile", "label": "Background image (mobile)", "info": "Used on phones. If empty, the desktop image is used." },
 
     { "type": "header", "content": "Style" },
     { "type": "color", "id": "bg", "label": "Background", "default": "#075e58" },

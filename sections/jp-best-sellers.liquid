@@ -424,7 +424,7 @@
 
     <div class="jp-bs__carousel">
       <button type="button" class="jp-bs__arrow jp-bs__arrow--prev" data-jp-bs-prev aria-label="Previous products">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        {% render 'jp-icon-chevron', direction: 'prev' %}
       </button>
 
       <div class="jp-bs__track" data-jp-bs-track>
@@ -445,8 +445,6 @@
                   {%- if section.settings.show_badge -%}
                     {%- if section.settings.badge != blank -%}
                       {{ section.settings.badge | image_url: width: 200 | image_tag: class: 'jp-bs__badge', alt: '', loading: 'lazy' }}
-                    {%- else -%}
-                      <img class="jp-bs__badge" src="{{ 'badge-farmed-for-good.png' | asset_url }}" width="171" height="189" alt="" loading="lazy">
                     {%- endif -%}
                   {%- endif -%}
                 </a>
@@ -491,7 +489,7 @@
       </div>
 
       <button type="button" class="jp-bs__arrow jp-bs__arrow--next" data-jp-bs-next aria-label="Next products">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        {% render 'jp-icon-chevron', direction: 'next' %}
       </button>
     </div>
 
@@ -709,7 +707,7 @@
       "type": "image_picker",
       "id": "badge",
       "label": "Badge image",
-      "info": "Leave empty to use the default 'Farmed for good' badge."
+      "info": "Upload the badge image. Nothing shows until you upload one."
     },
     {
       "type": "header",
