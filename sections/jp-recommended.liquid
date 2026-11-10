@@ -1,193 +1,27 @@
-{%- assign sid = section.id -%}
-{%- assign source = section.settings.collection | default: collections.all -%}
-{%- assign limit = section.settings.products_count -%}
-{%- assign current_handle = '' -%}
-{%- if template.name == 'product' -%}{%- assign current_handle = product.handle -%}{%- endif -%}
+{%- liquid
+  assign source = section.settings.collection | default: collections.all
+  assign limit = section.settings.products_count
+  assign current_handle = ''
+  if template.name == 'product'
+    assign current_handle = product.handle
+  endif
+-%}
 
-{% style %}
-  .jp-rc-{{ sid }} {
+{{ 'jp-recommended.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="jp-rc"
+  style="
     --jp-rc-red: {{ section.settings.button_color }};
     --jp-rc-text: {{ section.settings.text_color }};
-    background: {{ section.settings.bg }};
-    color: var(--jp-rc-text);
-    font-family: 'Raleway', sans-serif;
-    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
-  }
-
-  .jp-rc-{{ sid }} * {
-    box-sizing: border-box;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__inner {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__title {
-    margin: 0 0 48px;
-    font-family: inherit;
-    font-size: 32px;
-    line-height: 1.201;
-    font-weight: 700;
-    letter-spacing: normal;
-    text-align: center;
-    text-transform: capitalize;
-    color: var(--jp-rc-text);
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 32px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-width: 0;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__media {
-    position: relative;
-    display: block;
-    aspect-ratio: 274 / 285;
-    border-radius: 5px;
-    background: {{ section.settings.tile_color }};
-    overflow: hidden;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__img {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 87%;
-    height: auto;
-    max-height: 90%;
-    object-fit: contain;
-    transform: translate(-50%, -50%);
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__badge {
-    position: absolute;
-    top: 11px;
-    right: 7px;
-    width: 21%;
-    height: auto;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__name {
-    display: block;
-    flex: 1 0 auto;
-    margin: 0;
-    color: var(--jp-rc-text);
-    font-size: 20px;
-    line-height: 25px;
-    font-weight: 700;
-    text-transform: capitalize;
-    text-decoration: none;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__rating {
-    display: flex;
-    align-items: center;
-    min-height: 16px;
-    font-size: 14px;
-    line-height: normal;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__price {
-    display: flex;
-    align-items: baseline;
-    gap: 5px;
-    margin: 0;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__now {
-    font-size: 20px;
-    line-height: 22px;
-    font-weight: 700;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__was {
-    font-size: 14px;
-    line-height: 22px;
-    font-weight: 500;
-    color: #929292;
-    text-decoration: line-through;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__btn {
-    display: block;
-    width: 100%;
-    height: 50px;
-    padding: 0;
-    border: 0;
-    border-radius: 5px;
-    background: var(--jp-rc-red);
-    color: #fff;
-    font: 800 18px/50px 'Raleway', sans-serif;
-    text-align: center;
-    text-transform: uppercase;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__btn:hover {
-    filter: brightness(0.93);
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__btn--off {
-    background: #b5b5b5;
-    cursor: not-allowed;
-  }
-
-  .jp-rc-{{ sid }} .jp-rc__form {
-    margin: 0;
-  }
-
-  .jp-rc-{{ sid }} a:focus-visible,
-  .jp-rc-{{ sid }} button:focus-visible {
-    outline: 2px solid var(--jp-rc-text);
-    outline-offset: 2px;
-  }
-
-  @media (max-width: 989px) {
-    .jp-rc-{{ sid }} .jp-rc__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 24px 16px;
-    }
-  }
-
-  @media (max-width: 749px) {
-    .jp-rc-{{ sid }} {
-      padding: {{ section.settings.padding_top_mobile }}px 16px {{ section.settings.padding_bottom_mobile }}px;
-    }
-
-    .jp-rc-{{ sid }} .jp-rc__title {
-      font-size: 24px;
-      margin-bottom: 28px;
-    }
-
-    .jp-rc-{{ sid }} .jp-rc__name {
-      font-size: 16px;
-      line-height: 22px;
-    }
-
-    .jp-rc-{{ sid }} .jp-rc__rating {
-      font-size: 12px;
-    }
-
-    .jp-rc-{{ sid }} .jp-rc__btn {
-      font-size: 16px;
-    }
-  }
-{% endstyle %}
-
-<section class="jp-rc-{{ sid }}">
+    --jp-rc-bg: {{ section.settings.bg }};
+    --jp-rc-tile: {{ section.settings.tile_color }};
+    --jp-rc-padding-top: {{ section.settings.padding_top }}px;
+    --jp-rc-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --jp-rc-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --jp-rc-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
   <div class="jp-rc__inner">
     {%- if section.settings.heading != blank -%}
       <h2 class="jp-rc__title">{{ section.settings.heading }}</h2>
@@ -195,13 +29,24 @@
     <ul class="jp-rc__grid">
       {%- assign shown = 0 -%}
       {%- for product in source.products -%}
-        {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+        {%- if shown >= limit -%}
+          {%- break -%}
+        {%- endif -%}
         {%- if product.handle != current_handle -%}
           {%- assign shown = shown | plus: 1 -%}
           <li class="jp-rc__card">
             <a class="jp-rc__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
               {%- if product.featured_image != blank -%}
-                {{ product.featured_image | image_url: width: 600 | image_tag: class: 'jp-rc__img', alt: product.title, loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 990px) 25vw, 50vw' }}
+                {{
+                  product.featured_image
+                  | image_url: width: 600
+                  | image_tag:
+                    class: 'jp-rc__img',
+                    alt: product.title,
+                    loading: 'lazy',
+                    widths: '300, 450, 600',
+                    sizes: '(min-width: 990px) 25vw, 50vw'
+                }}
               {%- else -%}
                 {{ 'product-1' | placeholder_svg_tag: 'jp-rc__img' }}
               {%- endif -%}
@@ -242,27 +87,130 @@
 {
   "name": "JP Recommended",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Recommended For You" },
-    { "type": "collection", "id": "collection", "label": "Collection", "info": "Leave empty to use all products. The product being viewed is skipped." },
-    { "type": "range", "id": "products_count", "label": "Products to show", "min": 2, "max": 8, "step": 1, "default": 4 },
-    { "type": "text", "id": "button_label", "label": "Add to cart text", "default": "Add to cart" },
-    { "type": "text", "id": "button_options_label", "label": "Button text (products with options)", "default": "Choose options" },
-    { "type": "text", "id": "sold_out_label", "label": "Sold out text", "default": "Sold out" },
-    { "type": "checkbox", "id": "show_badge", "label": "Show badge", "default": true },
-    { "type": "image_picker", "id": "badge", "label": "Badge image", "info": "Upload the badge image. Nothing shows until you upload one." },
-
-    { "type": "header", "content": "Style" },
-    { "type": "color", "id": "bg", "label": "Background", "default": "#e3e3e3" },
-    { "type": "color", "id": "tile_color", "label": "Image background", "default": "#d9d9d9" },
-    { "type": "color", "id": "text_color", "label": "Text color", "default": "#424242" },
-    { "type": "color", "id": "button_color", "label": "Button", "default": "#ef4444" },
-    { "type": "range", "id": "padding_top", "label": "Top padding (desktop)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 72 },
-    { "type": "range", "id": "padding_bottom", "label": "Bottom padding (desktop)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 72 },
-    { "type": "range", "id": "padding_top_mobile", "label": "Top padding (mobile)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 40 },
-    { "type": "range", "id": "padding_bottom_mobile", "label": "Bottom padding (mobile)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 40 }
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Recommended For You"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Leave empty to use all products. The product being viewed is skipped."
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "label": "Products to show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Add to cart text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "button_options_label",
+      "label": "Button text (products with options)",
+      "default": "Choose options"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out text",
+      "default": "Sold out"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show badge",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "badge",
+      "label": "Badge image",
+      "info": "Upload the badge image. Nothing shows until you upload one."
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "default": "#e3e3e3"
+    },
+    {
+      "type": "color",
+      "id": "tile_color",
+      "label": "Image background",
+      "default": "#d9d9d9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#424242"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button",
+      "default": "#ef4444"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding (desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding (desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    }
   ],
   "presets": [
-    { "name": "JP Recommended" }
+    {
+      "name": "JP Recommended"
+    }
   ]
 }
 {% endschema %}

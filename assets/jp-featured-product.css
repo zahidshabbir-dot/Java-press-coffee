@@ -1,0 +1,367 @@
+.jp-fp {
+  background: var(--jp-fp-bg);
+  color: var(--jp-fp-text);
+  font-family: var(--jp-font-family);
+  padding: var(--jp-fp-padding-top) 0 var(--jp-fp-padding-bottom);
+}
+
+.jp-fp * {
+  box-sizing: border-box;
+}
+
+.jp-fp .jp-fp__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 120px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 32px;
+  align-items: start;
+}
+
+.jp-fp .jp-fp__media {
+  position: relative;
+  aspect-ratio: 369 / 332;
+  background: var(--jp-fp-tile);
+  overflow: hidden;
+}
+
+.jp-fp .jp-fp__img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 76%;
+  height: auto;
+  max-height: 90%;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+}
+
+.jp-fp .jp-fp__badge {
+  position: absolute;
+  top: 5%;
+  right: 6%;
+  width: 17%;
+  height: auto;
+}
+
+.jp-fp .jp-fp__pills {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.jp-fp .jp-fp__pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 62px;
+  width: 62px;
+  height: 62px;
+  padding: 0 11px;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 15px;
+  font-weight: 500;
+  text-align: center;
+  background: var(--jp-fp-pill-bg);
+  color: var(--jp-fp-pill-color);
+}
+
+.jp-fp .jp-fp__title {
+  margin: 0 0 10px;
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--jp-fp-text);
+}
+
+.jp-fp .jp-fp__rating,
+.jp-fp .jp-fp__app {
+  margin: 0 0 16px;
+  font-size: 12px;
+  line-height: normal;
+}
+
+.jp-fp .jp-fp__rating {
+  display: flex;
+  align-items: center;
+  min-height: 14px;
+}
+
+.jp-fp .jp-fp__price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0 0 16px;
+  line-height: 22px;
+}
+
+.jp-fp .jp-fp__now {
+  font-size: 24px;
+  line-height: 22px;
+  font-weight: 700;
+  color: var(--jp-fp-red);
+}
+
+.jp-fp .jp-fp__was {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+  color: #929292;
+  text-decoration: line-through;
+}
+
+.jp-fp .jp-fp__desc {
+  margin: 0 0 16px;
+  padding: 0 0 15px;
+  border-bottom: 1px solid #ebeae6;
+  font-family: 'Inter', var(--jp-font-family);
+  font-size: 16px;
+  line-height: 30px;
+  font-weight: 500;
+  opacity: 0.8;
+  color: var(--jp-fp-text);
+}
+
+.jp-fp .jp-fp__desc p {
+  margin: 0;
+}
+
+.jp-fp .jp-fp__options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  margin: 0 0 16px;
+}
+
+.jp-fp .jp-fp__label {
+  display: block;
+  height: 24px;
+  margin: 0 0 16px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.jp-fp .jp-fp__select {
+  width: 100%;
+  height: 52px;
+  padding: 0 48px 0 23px;
+  border: 1px solid var(--jp-fp-text);
+  border-radius: 5px;
+  background: #fff var(--jp-fp-select-icon) no-repeat right 12px center;
+  color: var(--jp-fp-text);
+  font: 500 16px var(--jp-font-family);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.jp-fp .jp-fp__buy {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.jp-fp .jp-fp__qty-wrap {
+  flex: 0 0 173px;
+}
+
+.jp-fp .jp-fp__qty {
+  display: flex;
+  align-items: stretch;
+  height: 52px;
+  padding: 1px;
+  border: 1px solid var(--jp-fp-text);
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.jp-fp .jp-fp__qty button {
+  flex: 0 0 48px;
+  border: 0;
+  border-radius: 4px 0 0 4px;
+  background: #f2f2f2;
+  color: var(--jp-fp-text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.jp-fp .jp-fp__qty button:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.jp-fp .jp-fp__qty input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  background: #fff;
+  text-align: center;
+  font: 500 20px var(--jp-font-family);
+  color: var(--jp-fp-text);
+  -moz-appearance: textfield;
+}
+
+.jp-fp .jp-fp__qty input::-webkit-outer-spin-button,
+.jp-fp .jp-fp__qty input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.jp-fp .jp-fp__cart {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-top: 40px;
+  container-type: inline-size;
+}
+
+.jp-fp .jp-fp__btn {
+  display: block;
+  width: 100%;
+  height: 50px;
+  margin-top: 1px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--jp-fp-red);
+  color: #fff;
+  font: 800 18px/50px var(--jp-font-family);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.jp-fp .jp-fp__btn:hover {
+  filter: brightness(0.93);
+}
+
+.jp-fp .jp-fp__btn:disabled {
+  background: #b5b5b5;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.jp-fp .jp-fp__trust {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  max-width: 100%;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  flex-wrap: nowrap;
+}
+
+.jp-fp .jp-fp__trust li {
+  display: flex;
+  align-items: center;
+  gap: clamp(3px, 1.6cqw, 6px);
+  color: var(--jp-fp-green);
+  font-size: clamp(8px, 2.9cqw, 11px);
+  line-height: normal;
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.jp-fp .jp-fp__trust svg {
+  width: clamp(10px, 3.4cqw, 13px);
+  height: clamp(10px, 3.4cqw, 13px);
+  flex: 0 0 auto;
+}
+
+.jp-fp button:focus-visible,
+.jp-fp select:focus-visible,
+.jp-fp input:focus-visible {
+  outline: 2px solid var(--jp-fp-red);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1199px) {
+  .jp-fp .jp-fp__inner {
+    padding: 0 40px;
+    column-gap: 24px;
+  }
+
+  .jp-fp .jp-fp__options {
+    gap: 20px;
+  }
+
+  .jp-fp .jp-fp__buy {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 989px) {
+  .jp-fp .jp-fp__inner {
+    grid-template-columns: 1fr;
+    row-gap: 8px;
+    padding: 0 17px;
+  }
+
+  .jp-fp .jp-fp__pills {
+    margin-bottom: 8px;
+  }
+
+  .jp-fp .jp-fp__pill {
+    flex-basis: 53px;
+    width: 53px;
+    height: 53px;
+    padding: 0 9px;
+    font-size: 12px;
+    line-height: 13px;
+  }
+
+  .jp-fp .jp-fp__title {
+    margin-bottom: 4px;
+  }
+
+  .jp-fp .jp-fp__price {
+    margin-bottom: 25px;
+  }
+
+  .jp-fp .jp-fp__desc {
+    line-height: 25px;
+    padding-bottom: 15px;
+  }
+
+  .jp-fp .jp-fp__options {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .jp-fp .jp-fp__buy {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .jp-fp .jp-fp__qty-wrap {
+    flex-basis: auto;
+  }
+
+  .jp-fp .jp-fp__qty button {
+    flex-basis: 70px;
+  }
+
+  .jp-fp .jp-fp__cart {
+    padding-top: 35px;
+  }
+
+  .jp-fp .jp-fp__btn {
+    margin-top: 0;
+  }
+
+  .jp-fp .jp-fp__trust {
+    justify-content: flex-start;
+    column-gap: clamp(8px, 3cqw, 12px);
+    row-gap: 12px;
+    margin-top: 16px;
+    padding: 0 1px;
+    flex-wrap: wrap;
+  }
+}

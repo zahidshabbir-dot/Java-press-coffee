@@ -3,191 +3,266 @@
    This script only updates the title, the day buttons and the selected value.
    It reads and writes the hidden input [data-jp-delivery-date]; jp-ajax-cart.js saves it on the cart. */
 (() => {
-  if (window.__jpCal) return;
+  if (window.__jpCal) {
+    return;
+  }
   window.__jpCal = true;
 
-  const pad = (n) => (n < 10 ? '0' : '') + n;
-  const iso = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
-  const parse = (v) => {
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || '');
-    return m ? { y: +m[1], m: +m[2] - 1, d: +m[3] } : null;
+  const padTwoDigits = (number) => (number < 10 ? '0' : '') + number;
+
+  /* month is zero-based, like Date.getMonth() */
+  const toIsoString = (year, month, day) => `${year}-${padTwoDigits(month + 1)}-${padTwoDigits(day)}`;
+
+  const parseIsoDate = (isoString) => {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(isoString || '');
+    if (!match) {
+      return null;
+    }
+    return {
+      year: +match[1],
+      month: +match[2] - 1,
+      day: +match[3]
+    };
   };
-  const isoOf = (date) => iso(date.y, date.m, date.d);
-  const show = (d) => `${pad(d.d)} / ${pad(d.m + 1)} / ${d.y}`;
-  const monthName = (y, m) => new Date(y, m, 1).toLocaleString(document.documentElement.lang || undefined, { month: 'long' });
+
+  const dateToIso = (date) => toIsoString(date.year, date.month, date.day);
+
+  const formatDisplayDate = (date) => `${padTwoDigits(date.day)} / ${padTwoDigits(date.month + 1)} / ${date.year}`;
+
+  const getMonthName = (year, month) => new Date(year, month, 1).toLocaleString(document.documentElement.lang || undefined, { month: 'long' });
 
   /* A saved date is only valid when it is on or after the minimum date */
-  const isValidDate = (input) => {
-    const saved = parse(input.value);
-    const min = parse(input.dataset.min);
-    if (!saved) return false;
-    return !min || isoOf(saved) >= isoOf(min);
+  const isValidDate = (dateInput) => {
+    const savedDate = parseIsoDate(dateInput.value);
+    const minDate = parseIsoDate(dateInput.dataset.min);
+    if (!savedDate) {
+      return false;
+    }
+    return !minDate || dateToIso(savedDate) >= dateToIso(minDate);
   };
 
   /* Remove a saved date that is now in the past, and tell the cart */
-  const clearStale = (wrap) => {
-    const input = wrap.querySelector('[data-jp-delivery-date]');
-    if (!input || !input.value || isValidDate(input)) return;
-    input.value = '';
-    const label = wrap.querySelector('[data-jp-cal-label]');
-    if (label && label.dataset.empty) label.textContent = label.dataset.empty;
-    input.dispatchEvent(new Event('change', { bubbles: true }));
+  const clearStaleDate = (calendarField) => {
+    const dateInput = calendarField.querySelector('[data-jp-delivery-date]');
+    if (!dateInput || !dateInput.value || isValidDate(dateInput)) {
+      return;
+    }
+    dateInput.value = '';
+    const fieldLabel = calendarField.querySelector('[data-jp-cal-label]');
+    if (fieldLabel && fieldLabel.dataset.empty) {
+      fieldLabel.textContent = fieldLabel.dataset.empty;
+    }
+    dateInput.dispatchEvent(new Event('change', { bubbles: true }));
   };
 
-  const render = (wrap, state) => {
-    const panel = wrap.querySelector('.jp-cal');
-    const days = panel.querySelector('[data-jp-cal-days]');
-    const title = panel.querySelector('[data-jp-cal-title]');
-    const prev = panel.querySelector('[data-jp-cal-prev]');
-    const value = panel.querySelector('[data-jp-cal-value]');
+  const renderCalendar = (calendarField, calendarState) => {
+    const panel = calendarField.querySelector('.jp-cal');
+    const daysContainer = panel.querySelector('[data-jp-cal-days]');
+    const titleElement = panel.querySelector('[data-jp-cal-title]');
+    const previousButton = panel.querySelector('[data-jp-cal-prev]');
+    const valueElement = panel.querySelector('[data-jp-cal-value]');
     const setButton = panel.querySelector('[data-jp-cal-set]');
-    if (!days || !title || !prev || !value || !setButton) return;
-
-    const { y, m } = state.view;
-    const minIso = isoOf(state.min);
-    const lead = (new Date(y, m, 1).getDay() + 6) % 7; // Monday first
-    const count = new Date(y, m + 1, 0).getDate();
-
-    title.textContent = monthName(y, m) + (y !== new Date().getFullYear() ? ` ${y}` : '');
-    prev.disabled = y < state.min.y || (y === state.min.y && m <= state.min.m);
-
-    days.replaceChildren();
-    for (let i = 0; i < lead; i++) days.appendChild(document.createElement('span'));
-    for (let d = 1; d <= count; d++) {
-      const dayIso = iso(y, m, d);
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'jp-cal__day';
-      button.dataset.jpCalDay = dayIso;
-      button.textContent = d;
-      button.disabled = dayIso < minIso;
-      if (state.pick && dayIso === isoOf(state.pick)) button.classList.add('is-selected');
-      days.appendChild(button);
+    if (!daysContainer || !titleElement || !previousButton || !valueElement || !setButton) {
+      return;
     }
 
-    value.textContent = state.pick ? show(state.pick) : value.dataset.empty;
-    setButton.disabled = !state.pick;
+    const { year, month } = calendarState.view;
+    const minIso = dateToIso(calendarState.min);
+    // Monday first
+    const leadingBlankCount = (new Date(year, month, 1).getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    titleElement.textContent = getMonthName(year, month) + (year !== new Date().getFullYear() ? ` ${year}` : '');
+    previousButton.disabled = year < calendarState.min.year || (year === calendarState.min.year && month <= calendarState.min.month);
+
+    daysContainer.replaceChildren();
+    for (let i = 0; i < leadingBlankCount; i++) {
+      daysContainer.appendChild(document.createElement('span'));
+    }
+    for (let dayNumber = 1; dayNumber <= daysInMonth; dayNumber++) {
+      const dayIso = toIsoString(year, month, dayNumber);
+      const dayButton = document.createElement('button');
+      dayButton.type = 'button';
+      dayButton.className = 'jp-cal__day';
+      dayButton.dataset.jpCalDay = dayIso;
+      dayButton.textContent = dayNumber;
+      dayButton.disabled = dayIso < minIso;
+      if (calendarState.pick && dayIso === dateToIso(calendarState.pick)) {
+        dayButton.classList.add('is-selected');
+      }
+      daysContainer.appendChild(dayButton);
+    }
+
+    valueElement.textContent = calendarState.pick ? formatDisplayDate(calendarState.pick) : valueElement.dataset.empty;
+    setButton.disabled = !calendarState.pick;
   };
 
-  const close = (wrap) => {
-    const panel = wrap.querySelector('.jp-cal');
-    if (panel) panel.hidden = true;
-    const button = wrap.querySelector('[data-jp-cal-open]');
-    if (button) button.setAttribute('aria-expanded', 'false');
-    wrap.__jpState = null;
+  const closeCalendar = (calendarField) => {
+    const panel = calendarField.querySelector('.jp-cal');
+    if (panel) {
+      panel.hidden = true;
+    }
+    const openButton = calendarField.querySelector('[data-jp-cal-open]');
+    if (openButton) {
+      openButton.setAttribute('aria-expanded', 'false');
+    }
+    calendarField.__jpState = null;
   };
 
-  const open = (wrap) => {
-    const input = wrap.querySelector('[data-jp-delivery-date]');
-    const panel = wrap.querySelector('.jp-cal');
-    if (!input || !panel) return;
-    clearStale(wrap);
+  const openCalendar = (calendarField) => {
+    const dateInput = calendarField.querySelector('[data-jp-delivery-date]');
+    const panel = calendarField.querySelector('.jp-cal');
+    if (!dateInput || !panel) {
+      return;
+    }
+    clearStaleDate(calendarField);
     const today = new Date();
-    const min = parse(input.dataset.min) || { y: today.getFullYear(), m: today.getMonth(), d: today.getDate() };
-    const current = parse(input.value);
-    const state = {
-      min,
-      pick: current && isoOf(current) >= isoOf(min) ? current : null,
-      view: { y: (current || min).y, m: (current || min).m }
+    const minDate = parseIsoDate(dateInput.dataset.min) || {
+      year: today.getFullYear(),
+      month: today.getMonth(),
+      day: today.getDate()
     };
-    wrap.__jpState = state;
-    render(wrap, state);
+    const currentDate = parseIsoDate(dateInput.value);
+    const calendarState = {
+      min: minDate,
+      pick: currentDate && dateToIso(currentDate) >= dateToIso(minDate) ? currentDate : null,
+      view: {
+        year: (currentDate || minDate).year,
+        month: (currentDate || minDate).month
+      }
+    };
+    calendarField.__jpState = calendarState;
+    renderCalendar(calendarField, calendarState);
     panel.hidden = false;
-    const button = wrap.querySelector('[data-jp-cal-open]');
-    if (button) button.setAttribute('aria-expanded', 'true');
+    const openButton = calendarField.querySelector('[data-jp-cal-open]');
+    if (openButton) {
+      openButton.setAttribute('aria-expanded', 'true');
+    }
   };
 
-  document.addEventListener('click', (e) => {
-    const t = e.target;
-    if (!t.closest) return;
-    const wrap = t.closest('[data-jp-cal]');
+  /* Blocks checkout when a date is required and none (or only a past one) is set */
+  const requireDateBeforeCheckout = (event) => {
+    const dateInput = document.querySelector('[data-jp-delivery-date]');
+    const calendarField = dateInput ? dateInput.closest('[data-jp-cal]') : null;
+    if (calendarField) {
+      // a date that is already in the past counts as no date
+      clearStaleDate(calendarField);
+    }
+    if (dateInput && dateInput.dataset.required === 'true' && !dateInput.value) {
+      event.preventDefault();
+      if (calendarField) {
+        calendarField.classList.add('has-error');
+        openCalendar(calendarField);
+      }
+    }
+  };
+
+  document.addEventListener('click', (event) => {
+    const clickTarget = event.target;
+    if (!clickTarget.closest) {
+      return;
+    }
+    const calendarField = clickTarget.closest('[data-jp-cal]');
 
     // close any calendar when clicking elsewhere
-    document.querySelectorAll('[data-jp-cal]').forEach((w) => { if (w !== wrap && w.__jpState) close(w); });
+    document.querySelectorAll('[data-jp-cal]').forEach((otherField) => {
+      if (otherField !== calendarField && otherField.__jpState) {
+        closeCalendar(otherField);
+      }
+    });
 
-    if (!wrap) {
+    if (!calendarField) {
       // checkout needs a date?
-      if (t.closest('#CartDrawer-Checkout')) {
-        const input = document.querySelector('[data-jp-delivery-date]');
-        const field = input ? input.closest('[data-jp-cal]') : null;
-        if (field) clearStale(field); // a date that is already in the past counts as no date
-        if (input && input.dataset.required === 'true' && !input.value) {
-          e.preventDefault();
-          if (field) {
-            field.classList.add('has-error');
-            open(field);
-          }
-        }
+      if (clickTarget.closest('#CartDrawer-Checkout')) {
+        requireDateBeforeCheckout(event);
       }
       return;
     }
 
-    const state = wrap.__jpState;
-    if (t.closest('[data-jp-cal-open]')) {
-      e.preventDefault();
-      if (state) close(wrap); else open(wrap);
+    const calendarState = calendarField.__jpState;
+    if (clickTarget.closest('[data-jp-cal-open]')) {
+      event.preventDefault();
+      if (calendarState) {
+        closeCalendar(calendarField);
+      } else {
+        openCalendar(calendarField);
+      }
       return;
     }
-    if (!state) return;
+    if (!calendarState) {
+      return;
+    }
 
-    const day = t.closest('[data-jp-cal-day]');
-    if (day && !day.disabled) {
-      state.pick = parse(day.dataset.jpCalDay);
-      render(wrap, state);
+    const dayButton = clickTarget.closest('[data-jp-cal-day]');
+    if (dayButton && !dayButton.disabled) {
+      calendarState.pick = parseIsoDate(dayButton.dataset.jpCalDay);
+      renderCalendar(calendarField, calendarState);
       return;
     }
-    if (t.closest('[data-jp-cal-prev]')) {
-      state.view.m--;
-      if (state.view.m < 0) { state.view.m = 11; state.view.y--; }
-      render(wrap, state);
+    if (clickTarget.closest('[data-jp-cal-prev]')) {
+      calendarState.view.month--;
+      if (calendarState.view.month < 0) {
+        calendarState.view.month = 11;
+        calendarState.view.year--;
+      }
+      renderCalendar(calendarField, calendarState);
       return;
     }
-    if (t.closest('[data-jp-cal-next]')) {
-      state.view.m++;
-      if (state.view.m > 11) { state.view.m = 0; state.view.y++; }
-      render(wrap, state);
+    if (clickTarget.closest('[data-jp-cal-next]')) {
+      calendarState.view.month++;
+      if (calendarState.view.month > 11) {
+        calendarState.view.month = 0;
+        calendarState.view.year++;
+      }
+      renderCalendar(calendarField, calendarState);
       return;
     }
-    if (t.closest('[data-jp-cal-set]') && state.pick) {
-      const input = wrap.querySelector('[data-jp-delivery-date]');
-      const label = wrap.querySelector('[data-jp-cal-label]');
-      input.value = isoOf(state.pick);
-      if (label) label.textContent = `${pad(state.pick.d)}/${pad(state.pick.m + 1)}/${state.pick.y}`;
-      wrap.classList.remove('has-error');
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-      close(wrap);
+    if (clickTarget.closest('[data-jp-cal-set]') && calendarState.pick) {
+      const dateInput = calendarField.querySelector('[data-jp-delivery-date]');
+      const fieldLabel = calendarField.querySelector('[data-jp-cal-label]');
+      const pickedDate = calendarState.pick;
+      dateInput.value = dateToIso(pickedDate);
+      if (fieldLabel) {
+        fieldLabel.textContent = `${padTwoDigits(pickedDate.day)}/${padTwoDigits(pickedDate.month + 1)}/${pickedDate.year}`;
+      }
+      calendarField.classList.remove('has-error');
+      dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+      closeCalendar(calendarField);
     }
   });
 
   /* Escape closes only the calendar, not the whole cart drawer.
      The drawer listens for Escape on keyup, so that event is stopped too. */
   let escapeUsed = false;
-  document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-    document.querySelectorAll('[data-jp-cal]').forEach((w) => {
-      if (w.__jpState) { close(w); e.stopPropagation(); escapeUsed = true; }
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') {
+      return;
+    }
+    document.querySelectorAll('[data-jp-cal]').forEach((calendarField) => {
+      if (calendarField.__jpState) {
+        closeCalendar(calendarField);
+        event.stopPropagation();
+        escapeUsed = true;
+      }
     });
   }, true);
-  document.addEventListener('keyup', (e) => {
-    if (e.key !== 'Escape' || !escapeUsed) return;
+  document.addEventListener('keyup', (event) => {
+    if (event.key !== 'Escape' || !escapeUsed) {
+      return;
+    }
     escapeUsed = false;
-    e.stopPropagation();
+    event.stopPropagation();
   }, true);
 
   /* Pressing Enter in the cart note submits the cart form to checkout without a click: check the date there too */
-  document.addEventListener('submit', (e) => {
-    const form = e.target;
-    if (!form || form.id !== 'CartDrawer-Form') return;
-    if (e.submitter && e.submitter.name !== 'checkout') return;
-    const input = document.querySelector('[data-jp-delivery-date]');
-    const field = input ? input.closest('[data-jp-cal]') : null;
-    if (field) clearStale(field);
-    if (input && input.dataset.required === 'true' && !input.value) {
-      e.preventDefault();
-      if (field) {
-        field.classList.add('has-error');
-        open(field);
-      }
+  document.addEventListener('submit', (event) => {
+    const form = event.target;
+    if (!form || form.id !== 'CartDrawer-Form') {
+      return;
     }
+    if (event.submitter && event.submitter.name !== 'checkout') {
+      return;
+    }
+    requireDateBeforeCheckout(event);
   });
 })();

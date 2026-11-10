@@ -1,7 +1,7 @@
 .jp-ann {
   background: var(--jp-ann-bg);
   color: var(--jp-ann-text);
-  font-family: 'Raleway', sans-serif;
+  font-family: var(--jp-font-family);
 }
 
 .jp-ann .jp-ann__inner {

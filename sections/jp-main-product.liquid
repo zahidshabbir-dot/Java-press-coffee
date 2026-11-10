@@ -1,550 +1,88 @@
+{%- comment -%}
+  JP Product
+  Product page: gallery, title, price, variant pickers, quantity, add to cart and accordions.
+  Styles: assets/jp-main-product.css. Script: assets/jp-main-product.js.
+{%- endcomment -%}
+
 {%- assign sid = section.id -%}
 {%- assign current = product.selected_or_first_available_variant -%}
+{%- capture select_icon -%}{% render 'jp-icon-caret', format: 'css' %}{%- endcapture -%}
 
-{% style %}
-  .jp-mp-{{ sid }} {
+{{ 'jp-main-product.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="jp-mp"
+  data-jp-mp
+  data-product-url="{{ product.url }}"
+  style="
     --jp-mp-red: {{ section.settings.accent }};
     --jp-mp-text: {{ section.settings.text_color }};
     --jp-mp-green: {{ section.settings.trust_color }};
-    background: {{ section.settings.bg }};
-    color: var(--jp-mp-text);
-    font-family: 'Raleway', sans-serif;
-    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
-  }
-
-  .jp-mp-{{ sid }} * {
-    box-sizing: border-box;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__inner {
-    display: grid;
-    grid-template-columns: minmax(0, 585fr) minmax(0, 584fr);
-    column-gap: 32px;
-    align-items: start;
-    max-width: 1201px;
-    margin: 0 auto;
-  }
-  /* Gallery */
-  .jp-mp-{{ sid }} .jp-mp__stage {
-    position: relative;
-    aspect-ratio: 585 / 554;
-    border-radius: 5px;
-    background: {{ section.settings.tile_color }};
-    overflow: hidden;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__slide {
-    position: absolute;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__slide.is-active {
-    display: flex;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__slide img {
-    display: block;
-    width: auto;
-    height: auto;
-    max-width: 70%;
-    max-height: 70%;
-    object-fit: contain;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__slide.is-photo img {
-    width: 100%;
-    height: 100%;
-    max-width: none;
-    max-height: none;
-    object-fit: cover;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__arrow {
-    position: absolute;
-    top: 50%;
-    width: 45px;
-    height: 45px;
-    margin-top: -22.5px;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    background: #000;
-    color: #fff;
-    cursor: pointer;
-    z-index: 2;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__arrow svg {
-    display: block;
-    width: 20px;
-    height: 20px;
-    margin: auto;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__arrow--prev {
-    left: 14px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__arrow--next {
-    right: 14px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__thumbs {
-    display: flex;
-    gap: 14.8px;
-    margin: 16px 0 0;
-    padding: 0;
-    list-style: none;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__thumbs::-webkit-scrollbar {
-    display: none;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__thumb {
-    flex: 0 0 calc((100% - 5 * 14.8px) / 6);
-    aspect-ratio: 1;
-    padding: 0;
-    border: 0;
-    border-radius: 5px;
-    background: #e0e0e0;
-    overflow: hidden;
-    cursor: pointer;
-    outline-offset: -2px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__thumb img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__thumb[aria-current='true'] {
-    outline: 3px solid var(--jp-mp-text);
-    outline-offset: -3px;
-  }
-  /* Info */
-  .jp-mp-{{ sid }} .jp-mp__info {
-    padding-top: 11px;
-    min-width: 0;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__pills {
-    display: flex;
-    gap: 8px;
-    margin: 0 0 16px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__pill {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 62px;
-    width: 62px;
-    height: 62px;
-    padding: 0 11px;
-    border-radius: 50%;
-    font-size: 14px;
-    line-height: 15px;
-    font-weight: 500;
-    text-align: center;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__title {
-    margin: 0 0 16px;
-    font-family: inherit;
-    font-size: 24px;
-    line-height: 30px;
-    font-weight: 700;
-    letter-spacing: normal;
-    text-transform: capitalize;
-    color: var(--jp-mp-text);
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__rating,
-  .jp-mp-{{ sid }} .jp-mp__app {
-    margin: 0 0 16px;
-    font-size: 12px;
-    line-height: normal;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__rating {
-    display: flex;
-    align-items: center;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__price {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin: 0 0 16px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__now {
-    font-size: 24px;
-    line-height: 22px;
-    font-weight: 700;
-    color: var(--jp-mp-red);
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__was {
-    font-size: 14px;
-    line-height: 22px;
-    font-weight: 500;
-    color: #929292;
-    text-decoration: line-through;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__desc {
-    margin: 0 0 16px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #ebeae6;
-    font-family: 'Inter', 'Raleway', sans-serif;
-    font-size: 16px;
-    line-height: 30px;
-    font-weight: 500;
-    opacity: 0.8;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__desc p {
-    margin: 0;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__label {
-    display: block;
-    margin: 0 0 16px;
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 700;
-    text-transform: capitalize;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__options {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px 32px;
-    margin: 0 0 16px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__select {
-    display: block;
-    width: 100%;
-    height: 52px;
-    padding: 0 48px 0 23px;
-    border: 1px solid var(--jp-mp-text);
-    border-radius: 5px;
-    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5H7z' fill='%23424242'/%3E%3C/svg%3E") right 16px center / 24px 24px no-repeat;
-    color: var(--jp-mp-text);
-    font: 500 16px/normal 'Raleway', sans-serif;
-    -webkit-appearance: none;
-    appearance: none;
-    cursor: pointer;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__buy {
-    display: flex;
-    align-items: flex-start;
-    gap: 32px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__qty-wrap {
-    flex: 0 0 173px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__qty {
-    display: flex;
-    align-items: stretch;
-    width: 173px;
-    height: 52px;
-    border: 1px solid var(--jp-mp-text);
-    border-radius: 5px;
-    background: #fff;
-    overflow: hidden;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__qty button {
-    flex: 0 0 48px;
-    padding: 0;
-    border: 0;
-    background: #f2f2f2;
-    color: var(--jp-mp-text);
-    cursor: pointer;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__qty button svg {
-    display: block;
-    width: 20px;
-    height: 20px;
-    margin: auto;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__qty input {
-    flex: 1 1 auto;
-    min-width: 0;
-    width: 100%;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--jp-mp-text);
-    font: 500 20px/normal 'Raleway', sans-serif;
-    text-align: center;
-    -moz-appearance: textfield;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__qty input::-webkit-outer-spin-button,
-  .jp-mp-{{ sid }} .jp-mp__qty input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__cart {
-    flex: 1 1 auto;
-    min-width: 0;
-    padding-top: 40px;
-    container-type: inline-size;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__btn {
-    display: block;
-    width: 100%;
-    height: 50px;
-    padding: 0;
-    border: 0;
-    border-radius: 5px;
-    background: var(--jp-mp-red);
-    color: #fff;
-    font: 800 18px/50px 'Raleway', sans-serif;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__btn:hover {
-    filter: brightness(0.93);
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__btn[disabled] {
-    background: #b5b5b5;
-    cursor: not-allowed;
-    filter: none;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__trust {
-    display: flex;
-    justify-content: space-between;
-    gap: 4px;
-    margin: 8px 0 0;
-    padding: 0;
-    list-style: none;
-    flex-wrap: nowrap;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__trust li {
-    display: flex;
-    align-items: center;
-    gap: clamp(3px, 1.6cqw, 6px);
-    color: var(--jp-mp-green);
-    font-size: clamp(8px, 2.9cqw, 11px);
-    line-height: normal;
-    font-weight: 600;
-    text-transform: capitalize;
-    white-space: nowrap;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__trust svg {
-    width: clamp(10px, 3.4cqw, 13px);
-    height: clamp(10px, 3.4cqw, 13px);
-    flex: 0 0 auto;
-  }
-  /* Accordions */
-  .jp-mp-{{ sid }} .jp-mp__acc {
-    margin: 37px 0 0;
-    display: grid;
-    gap: 16px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__item {
-    border-radius: 5px;
-    background: {{ section.settings.acc_bg }};
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__item summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 50px;
-    padding: 8px 12px 8px 25px;
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 700;
-    text-transform: capitalize;
-    cursor: pointer;
-    list-style: none;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__item summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__item summary svg {
-    flex: 0 0 24px;
-    width: 24px;
-    height: 24px;
-    transition: transform .2s;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__item[open] summary {
-    padding-top: 14px;
-    padding-bottom: 0;
-    align-items: flex-start;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__item[open] summary svg {
-    transform: rotate(45deg);
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__acc-body {
-    padding: 15px 25px 28px;
-    font-size: 14px;
-    line-height: 22px;
-    font-weight: 500;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__howto {
-    display: block;
-    margin: 14px 0 0;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: var(--jp-mp-accent, {{ section.settings.accent }});
-    font: inherit;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-transform: none;
-    cursor: pointer;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__howto:hover {
-    text-decoration-thickness: 2px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__acc-body p {
-    margin: 0 0 10px;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__acc-body p:last-child {
-    margin-bottom: 0;
-  }
-
-  .jp-mp-{{ sid }} .jp-mp__item summary:focus-visible {
-    outline: 2px solid var(--jp-mp-text);
-    outline-offset: -2px;
-  }
-
-  .jp-mp-{{ sid }} button:focus-visible,
-  .jp-mp-{{ sid }} select:focus-visible,
-  .jp-mp-{{ sid }} input:focus-visible {
-    outline: 2px solid var(--jp-mp-text);
-    outline-offset: 2px;
-  }
-
-  @media (max-width: 989px) {
-    .jp-mp-{{ sid }} .jp-mp__inner {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: 28px;
-    }
-
-    .jp-mp-{{ sid }} .jp-mp__info {
-      padding-top: 0;
-    }
-  }
-
-  @media (max-width: 749px) {
-    .jp-mp-{{ sid }} {
-      padding: {{ section.settings.padding_top_mobile }}px 16px {{ section.settings.padding_bottom_mobile }}px;
-    }
-
-    .jp-mp-{{ sid }} .jp-mp__arrow {
-      width: 36px;
-      height: 36px;
-      margin-top: -18px;
-    }
-
-    .jp-mp-{{ sid }} .jp-mp__thumb {
-      flex-basis: 64px;
-    }
-
-    .jp-mp-{{ sid }} .jp-mp__thumbs {
-      gap: 10px;
-    }
-
-    .jp-mp-{{ sid }} .jp-mp__desc {
-      line-height: 25px;
-    }
-
-    .jp-mp-{{ sid }} .jp-mp__options {
-      grid-template-columns: 1fr;
-    }
-
-    .jp-mp-{{ sid }} .jp-mp__buy {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0;
-    }
-
-    .jp-mp-{{ sid }} .jp-mp__qty-wrap {
-      flex-basis: auto;
-    }
-
-    .jp-mp-{{ sid }} .jp-mp__cart {
-      padding-top: 20px;
-    }
-
-    .jp-mp-{{ sid }} .jp-mp__trust {
-      justify-content: flex-start;
-      column-gap: clamp(8px, 3cqw, 12px);
-      row-gap: 12px;
-      flex-wrap: wrap;
-    }
-  }
-{% endstyle %}
-
-<section class="jp-mp-{{ sid }}" data-jp-mp data-product-url="{{ product.url }}">
+    --jp-mp-bg: {{ section.settings.bg }};
+    --jp-mp-tile: {{ section.settings.tile_color }};
+    --jp-mp-acc-bg: {{ section.settings.acc_bg }};
+    --jp-mp-padding-top: {{ section.settings.padding_top }}px;
+    --jp-mp-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --jp-mp-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --jp-mp-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --jp-mp-select-icon: {{ select_icon | strip | escape }};
+  "
+>
   <div class="jp-mp__inner">
     <div class="jp-mp__gallery">
       <div class="jp-mp__stage" data-jp-mp-stage>
         {%- if product.images.size > 0 -%}
           {%- for image in product.images -%}
-            <div class="jp-mp__slide{% if forloop.first %} is-active{% endif %}{% if image.aspect_ratio >= 0.9 and section.settings.fill_photos %} is-photo{% endif %}" data-jp-mp-slide data-media-id="{{ image.id }}">
+            <div
+              class="jp-mp__slide{% if forloop.first %} is-active{% endif %}{% if image.aspect_ratio >= 0.9 and section.settings.fill_photos %} is-photo{% endif %}"
+              data-jp-mp-slide
+              data-media-id="{{ image.id }}"
+            >
               {%- assign slide_alt = image.alt | default: product.title -%}
-              {%- if forloop.first -%}{%- assign slide_loading = 'eager' -%}{%- assign slide_priority = 'high' -%}{%- else -%}{%- assign slide_loading = 'lazy' -%}{%- assign slide_priority = 'auto' -%}{%- endif -%}
-              {{ image | image_url: width: 1000 | image_tag: alt: slide_alt, loading: slide_loading, fetchpriority: slide_priority, widths: '400, 600, 800, 1000', sizes: '(min-width: 990px) 585px, 100vw' }}
+              {%- if forloop.first -%}
+                {%- assign slide_loading = 'eager' -%}
+                {%- assign slide_priority = 'high' -%}
+              {%- else -%}
+                {%- assign slide_loading = 'lazy' -%}
+                {%- assign slide_priority = 'auto' -%}
+              {%- endif -%}
+              {{
+                image
+                | image_url: width: 1000
+                | image_tag:
+                  alt: slide_alt,
+                  loading: slide_loading,
+                  fetchpriority: slide_priority,
+                  widths: '400, 600, 800, 1000',
+                  sizes: '(min-width: 990px) 585px, 100vw'
+              }}
             </div>
           {%- endfor -%}
         {%- else -%}
           <div class="jp-mp__slide is-active">{{ 'product-1' | placeholder_svg_tag }}</div>
         {%- endif -%}
+
         {%- if product.images.size > 1 -%}
           <button type="button" class="jp-mp__arrow jp-mp__arrow--prev" aria-label="Previous image" data-jp-mp-prev>
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {% render 'jp-icon-slide-arrow', direction: 'prev' %}
           </button>
           <button type="button" class="jp-mp__arrow jp-mp__arrow--next" aria-label="Next image" data-jp-mp-next>
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {% render 'jp-icon-slide-arrow', direction: 'next' %}
           </button>
         {%- endif -%}
       </div>
+
       {%- if product.images.size > 0 -%}
         <ul class="jp-mp__thumbs">
           {%- for image in product.images -%}
-            <li style="display: contents">
-              <button type="button" class="jp-mp__thumb" data-jp-mp-thumb="{{ forloop.index0 }}" aria-label="Show image {{ forloop.index }}"{% if forloop.first %} aria-current="true"{% endif %}>
+            <li>
+              <button
+                type="button"
+                class="jp-mp__thumb"
+                data-jp-mp-thumb="{{ forloop.index0 }}"
+                aria-label="Show image {{ forloop.index }}"
+                {% if forloop.first %}aria-current="true"{% endif %}
+              >
                 {{ image | image_url: width: 200 | image_tag: alt: '', loading: 'lazy' }}
               </button>
             </li>
@@ -558,7 +96,13 @@
       {%- if pills.size > 0 -%}
         <div class="jp-mp__pills">
           {%- for block in pills -%}
-            <span class="jp-mp__pill" style="background: {{ block.settings.bg }}; color: {{ block.settings.color }};" {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+            <span
+              class="jp-mp__pill"
+              style="--jp-mp-pill-bg: {{ block.settings.bg }}; --jp-mp-pill-color: {{ block.settings.color }};"
+              {{ block.shopify_attributes }}
+            >
+              {{- block.settings.text -}}
+            </span>
           {%- endfor -%}
         </div>
       {%- endif -%}
@@ -576,7 +120,13 @@
 
       <div class="jp-mp__price">
         <span class="jp-mp__now" data-jp-mp-price>{{ current.price | money }}</span>
-        <s class="jp-mp__was" data-jp-mp-compare{% unless current.compare_at_price > current.price %} hidden{% endunless %}>{{ current.compare_at_price | money }}</s>
+        <s
+          class="jp-mp__was"
+          data-jp-mp-compare
+          {% unless current.compare_at_price > current.price %}hidden{% endunless %}
+        >
+          {{- current.compare_at_price | money -}}
+        </s>
       </div>
 
       <div class="jp-mp__desc">
@@ -597,7 +147,12 @@
                 <label class="jp-mp__label" for="jp-mp-{{ sid }}-opt-{{ forloop.index }}">{{ option.name }}:</label>
                 <select class="jp-mp__select" id="jp-mp-{{ sid }}-opt-{{ forloop.index }}" data-jp-mp-option>
                   {%- for value in option.values -%}
-                    <option value="{{ value | escape }}"{% if option.selected_value == value %} selected{% endif %}>{{ value }}</option>
+                    <option
+                      value="{{ value | escape }}"
+                      {% if option.selected_value == value %}selected{% endif %}
+                    >
+                      {{- value -}}
+                    </option>
                   {%- endfor -%}
                 </select>
               </div>
@@ -609,21 +164,46 @@
           <div class="jp-mp__qty-wrap">
             <label class="jp-mp__label" for="jp-mp-{{ sid }}-qty">{{ section.settings.quantity_label }}</label>
             <div class="jp-mp__qty">
-              <button type="button" data-jp-mp-minus aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
-              <input type="number" id="jp-mp-{{ sid }}-qty" name="quantity" value="1" min="1" inputmode="numeric" data-jp-mp-qty>
-              <button type="button" data-jp-mp-plus aria-label="Increase quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+              <button type="button" data-jp-mp-minus aria-label="Decrease quantity">
+                {%- render 'jp-icon-minus' -%}
+              </button>
+              <input
+                type="number"
+                id="jp-mp-{{ sid }}-qty"
+                name="quantity"
+                value="1"
+                min="1"
+                inputmode="numeric"
+                data-jp-mp-qty
+              >
+              <button type="button" data-jp-mp-plus aria-label="Increase quantity">
+                {%- render 'jp-icon-plus' -%}
+              </button>
             </div>
           </div>
+
           <div class="jp-mp__cart">
-            <button type="submit" class="jp-mp__btn" data-jp-mp-submit data-label="{{ section.settings.button_label | escape }}" data-soldout="{{ section.settings.sold_out_label | escape }}"{% unless current.available %} disabled{% endunless %}>
-              {%- if current.available %}{{ section.settings.button_label }}{% else %}{{ section.settings.sold_out_label }}{% endif -%}
+            <button
+              type="submit"
+              class="jp-mp__btn"
+              data-jp-mp-submit
+              data-label="{{ section.settings.button_label | escape }}"
+              data-soldout="{{ section.settings.sold_out_label | escape }}"
+              {% unless current.available %}disabled{% endunless %}
+            >
+              {%- if current.available -%}
+                {{- section.settings.button_label -}}
+              {%- else -%}
+                {{- section.settings.sold_out_label -}}
+              {%- endif -%}
             </button>
+
             {%- assign trusts = section.blocks | where: 'type', 'trust' -%}
             {%- if trusts.size > 0 -%}
               <ul class="jp-mp__trust">
                 {%- for block in trusts -%}
                   <li {{ block.shopify_attributes }}>
-                    <svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="6" fill="currentColor"/><path d="M3.3 6.2l1.8 1.8 3.6-3.8" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    {% render 'jp-icon-check-circle' %}
                     {{ block.settings.text }}
                   </li>
                 {%- endfor -%}
@@ -637,10 +217,10 @@
       {%- if accs.size > 0 -%}
         <div class="jp-mp__acc">
           {%- for block in accs -%}
-            <details class="jp-mp__item" {{ block.shopify_attributes }}{% if block.settings.open %} open{% endif %}>
+            <details class="jp-mp__item" {{ block.shopify_attributes }} {% if block.settings.open %}open{% endif %}>
               <summary>
                 <span>{{ block.settings.title }}</span>
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="#424242" stroke-width="1.6" stroke-linecap="round"/></svg>
+                {% render 'jp-icon-plus', color: '#424242', stroke_width: 1.6 %}
               </summary>
               <div class="jp-mp__acc-body">
                 {%- if block.settings.content != blank -%}
@@ -659,69 +239,12 @@
     </div>
   </div>
 
-  <script type="application/json" data-jp-mp-variants>{% render 'jp-variants-json', product: product %}</script>
+  <script type="application/json" data-jp-mp-variants>
+    {%- render 'jp-variants-json', product: product -%}
+  </script>
 </section>
 
-<script>
-  (function () {
-    let root = document.currentScript.previousElementSibling;
-    if (!root || !root.hasAttribute('data-jp-mp')) return;
-
-    /* Gallery */
-    let slides = Array.prototype.slice.call(root.querySelectorAll('[data-jp-mp-slide]'));
-    let thumbs = Array.prototype.slice.call(root.querySelectorAll('[data-jp-mp-thumb]'));
-    let index = 0;
-    function show(i) {
-      if (!slides.length) return;
-      index = (i + slides.length) % slides.length;
-      slides.forEach(function (s, n) { s.classList.toggle('is-active', n === index); });
-      thumbs.forEach(function (t, n) { if (n === index) t.setAttribute('aria-current', 'true'); else t.removeAttribute('aria-current'); });
-    }
-    let prev = root.querySelector('[data-jp-mp-prev]');
-    let next = root.querySelector('[data-jp-mp-next]');
-    if (prev) prev.addEventListener('click', function () { show(index - 1); });
-    if (next) next.addEventListener('click', function () { show(index + 1); });
-    thumbs.forEach(function (t) { t.addEventListener('click', function () { show(parseInt(t.dataset.jpMpThumb, 10)); }); });
-
-    /* Variants */
-    let variantsNode = root.querySelector('[data-jp-mp-variants]');
-    let variants = variantsNode ? JSON.parse(variantsNode.textContent) : [];
-    let selects = Array.prototype.slice.call(root.querySelectorAll('[data-jp-mp-option]'));
-    let idInput = root.querySelector('[data-jp-mp-id]');
-    let price = root.querySelector('[data-jp-mp-price]');
-    let compare = root.querySelector('[data-jp-mp-compare]');
-    let submit = root.querySelector('[data-jp-mp-submit]');
-    let qty = root.querySelector('[data-jp-mp-qty]');
-    function update() {
-      if (!selects.length) return;
-      let chosen = selects.map(function (s) { return s.value; });
-      let v = variants.find(function (x) { return chosen.every(function (c, i) { return x.options[i] === c; }); });
-      if (!v) { submit.disabled = true; submit.textContent = submit.dataset.soldout; return; }
-      idInput.value = v.id;
-      price.textContent = v.price_formatted;
-      if (v.compare_at_price && v.compare_at_price > v.price) { compare.textContent = v.compare_formatted; compare.hidden = false; }
-      else { compare.hidden = true; }
-      submit.disabled = !v.available;
-      submit.textContent = v.available ? submit.dataset.label : submit.dataset.soldout;
-      if (v.featured_image && v.featured_image.id) {
-        let m = slides.findIndex(function (s) { return s.dataset.mediaId === String(v.featured_image.id); });
-        if (m > -1) show(m);
-      }
-      let url = new URL(window.location.href);
-      url.searchParams.set('variant', v.id);
-      window.history.replaceState({}, '', url.toString());
-    }
-    selects.forEach(function (s) { s.addEventListener('change', update); });
-
-    let minusButton = root.querySelector('[data-jp-mp-minus]');
-    let plusButton = root.querySelector('[data-jp-mp-plus]');
-    if (qty) {
-      if (minusButton) minusButton.addEventListener('click', function () { qty.value = Math.max(1, (parseInt(qty.value, 10) || 1) - 1); });
-      if (plusButton) plusButton.addEventListener('click', function () { qty.value = (parseInt(qty.value, 10) || 1) + 1; });
-      qty.addEventListener('change', function () { qty.value = Math.max(1, parseInt(qty.value, 10) || 1); });
-    }
-  })();
-</script>
+<script src="{{ 'jp-main-product.js' | asset_url }}" defer></script>
 
 <script type="application/ld+json">{{ product | structured_data }}</script>
 
@@ -729,52 +252,202 @@
 {
   "name": "JP Product",
   "settings": [
-    { "type": "richtext", "id": "description", "label": "Short description override", "info": "Leave empty to use the product description." },
-    { "type": "range", "id": "description_words", "label": "Description length (words)", "min": 10, "max": 60, "step": 1, "default": 28 },
-    { "type": "checkbox", "id": "fill_photos", "label": "Fill the image area with photos", "info": "Square or wide photos fill the grey area. Tall product shots (like the coffee bag) stay centered.", "default": true },
-    { "type": "text", "id": "quantity_label", "label": "Quantity label", "default": "Quantity:" },
-    { "type": "text", "id": "button_label", "label": "Add to cart text", "default": "Add to cart" },
-    { "type": "text", "id": "sold_out_label", "label": "Sold out text", "default": "Sold out" },
-    { "type": "text", "id": "howto_label", "label": "\"How to use\" link text", "info": "Opens the brew guide pop-up (add the JP Brew guide section to this page). Leave empty to hide.", "default": "How to use" },
-
-    { "type": "header", "content": "Style" },
-    { "type": "color", "id": "bg", "label": "Background", "default": "#ffffff" },
-    { "type": "color", "id": "tile_color", "label": "Image background", "default": "#d9d9d9" },
-    { "type": "color", "id": "acc_bg", "label": "Accordion background", "default": "#f2f2f2" },
-    { "type": "color", "id": "text_color", "label": "Text color", "default": "#424242" },
-    { "type": "color", "id": "accent", "label": "Price and button", "default": "#ef4444" },
-    { "type": "color", "id": "trust_color", "label": "Trust text color", "default": "#075d57" },
-    { "type": "range", "id": "padding_top", "label": "Top padding (desktop)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 34 },
-    { "type": "range", "id": "padding_bottom", "label": "Bottom padding (desktop)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 60 },
-    { "type": "range", "id": "padding_top_mobile", "label": "Top padding (mobile)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 20 },
-    { "type": "range", "id": "padding_bottom_mobile", "label": "Bottom padding (mobile)", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 40 }
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Short description override",
+      "info": "Leave empty to use the product description."
+    },
+    {
+      "type": "range",
+      "id": "description_words",
+      "label": "Description length (words)",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "default": 28
+    },
+    {
+      "type": "checkbox",
+      "id": "fill_photos",
+      "label": "Fill the image area with photos",
+      "info": "Square or wide photos fill the grey area. Tall product shots (like the coffee bag) stay centered.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "quantity_label",
+      "label": "Quantity label",
+      "default": "Quantity:"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Add to cart text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out text",
+      "default": "Sold out"
+    },
+    {
+      "type": "text",
+      "id": "howto_label",
+      "label": "\"How to use\" link text",
+      "info": "Opens the brew guide pop-up (add the JP Brew guide section to this page). Leave empty to hide.",
+      "default": "How to use"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "tile_color",
+      "label": "Image background",
+      "default": "#d9d9d9"
+    },
+    {
+      "type": "color",
+      "id": "acc_bg",
+      "label": "Accordion background",
+      "default": "#f2f2f2"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#424242"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Price and button",
+      "default": "#ef4444"
+    },
+    {
+      "type": "color",
+      "id": "trust_color",
+      "label": "Trust text color",
+      "default": "#075d57"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding (desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding (desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    }
   ],
   "blocks": [
-    { "type": "@app" },
+    {
+      "type": "@app"
+    },
     {
       "type": "pill",
       "name": "Badge",
       "settings": [
-        { "type": "text", "id": "text", "label": "Text", "default": "Best Seller" },
-        { "type": "color", "id": "bg", "label": "Background", "default": "#ece03a" },
-        { "type": "color", "id": "color", "label": "Text color", "default": "#434343" }
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Best Seller"
+        },
+        {
+          "type": "color",
+          "id": "bg",
+          "label": "Background",
+          "default": "#ece03a"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Text color",
+          "default": "#434343"
+        }
       ]
     },
     {
       "type": "trust",
       "name": "Trust point",
       "settings": [
-        { "type": "text", "id": "text", "label": "Text", "default": "Secure Checkout" }
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Secure Checkout"
+        }
       ]
     },
     {
       "type": "accordion",
       "name": "Accordion",
       "settings": [
-        { "type": "text", "id": "title", "label": "Title", "default": "About Product:" },
-        { "type": "richtext", "id": "content", "label": "Content", "info": "Leave empty to use the product description." },
-        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false },
-        { "type": "checkbox", "id": "show_howto", "label": "Show the \"How to use\" link", "default": false }
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "About Product:"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "info": "Leave empty to use the product description."
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_howto",
+          "label": "Show the \"How to use\" link",
+          "default": false
+        }
       ]
     }
   ],
@@ -782,13 +455,54 @@
     {
       "name": "JP Product",
       "blocks": [
-        { "type": "pill", "settings": { "text": "Best Seller", "bg": "#ece03a", "color": "#434343" } },
-        { "type": "pill", "settings": { "text": "Staff Pick", "bg": "#424242", "color": "#ffffff" } },
-        { "type": "trust", "settings": { "text": "Secure Checkout" } },
-        { "type": "trust", "settings": { "text": "Secure Shipping" } },
-        { "type": "trust", "settings": { "text": "Satisfaction Guarantee" } },
-        { "type": "accordion", "settings": { "title": "About Product:", "open": true, "show_howto": true } },
-        { "type": "accordion", "settings": { "title": "Ingredients:" } }
+        {
+          "type": "pill",
+          "settings": {
+            "text": "Best Seller",
+            "bg": "#ece03a",
+            "color": "#434343"
+          }
+        },
+        {
+          "type": "pill",
+          "settings": {
+            "text": "Staff Pick",
+            "bg": "#424242",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "type": "trust",
+          "settings": {
+            "text": "Secure Checkout"
+          }
+        },
+        {
+          "type": "trust",
+          "settings": {
+            "text": "Secure Shipping"
+          }
+        },
+        {
+          "type": "trust",
+          "settings": {
+            "text": "Satisfaction Guarantee"
+          }
+        },
+        {
+          "type": "accordion",
+          "settings": {
+            "title": "About Product:",
+            "open": true,
+            "show_howto": true
+          }
+        },
+        {
+          "type": "accordion",
+          "settings": {
+            "title": "Ingredients:"
+          }
+        }
       ]
     }
   ]

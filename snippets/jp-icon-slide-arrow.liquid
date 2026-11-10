@@ -1,0 +1,14 @@
+{%- comment -%}
+  Bold arrow used on the product gallery buttons.
+  Accepts:
+  - direction: 'prev' (points left) or 'next' (points right). Default 'next'.
+{%- endcomment -%}
+{%- if direction == 'prev' -%}
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+{%- else -%}
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+{%- endif -%}

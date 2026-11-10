@@ -143,6 +143,17 @@
         "unit": "%",
         "label": "t:settings_schema.typography.settings.body_scale.label",
         "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Java Press sections"
+      },
+      {
+        "type": "font_picker",
+        "id": "jp_font",
+        "default": "raleway_n4",
+        "label": "Font",
+        "info": "Used by the Java Press sections and the cart drawer. Weights 400 to 800 are loaded."
       }
     ]
   },

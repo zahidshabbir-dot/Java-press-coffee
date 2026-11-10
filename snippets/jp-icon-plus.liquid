@@ -1,0 +1,11 @@
+{%- comment -%}
+  Plus icon (quantity selector, accordion toggle).
+  Accepts:
+  - color: stroke color. Default currentColor.
+  - stroke_width: line thickness. Default 2.2.
+{%- endcomment -%}
+{%- assign plus_color = color | default: 'currentColor' -%}
+{%- assign plus_stroke_width = stroke_width | default: 2.2 -%}
+<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <path d="M12 5v14M5 12h14" stroke="{{ plus_color }}" stroke-width="{{ plus_stroke_width }}" stroke-linecap="round"/>
+</svg>

@@ -320,15 +320,29 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
-    <link rel="preload" href="{{ 'raleway-var.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
-    <style>
-      @font-face {
-        font-family: 'Raleway';
-        font-style: normal;
-        font-weight: 400 800;
-        font-display: swap;
-        src: url('{{ 'raleway-var.woff2' | asset_url }}') format('woff2');
+    {%- unless settings.jp_font.system? -%}
+      {% comment %}theme-check-disable AssetPreload{% endcomment %}
+      <link rel="preload" as="font" href="{{ settings.jp_font | font_url }}" type="font/woff2" crossorigin>
+      {% comment %}theme-check-enable AssetPreload{% endcomment %}
+    {%- endunless -%}
+    {%- liquid
+      assign jp_font_400 = settings.jp_font | font_modify: 'weight', '400'
+      assign jp_font_500 = settings.jp_font | font_modify: 'weight', '500'
+      assign jp_font_600 = settings.jp_font | font_modify: 'weight', '600'
+      assign jp_font_700 = settings.jp_font | font_modify: 'weight', '700'
+      assign jp_font_800 = settings.jp_font | font_modify: 'weight', '800'
+    -%}
+    {% style %}
+      {{ jp_font_400 | font_face: font_display: 'swap' }}
+      {{ jp_font_500 | font_face: font_display: 'swap' }}
+      {{ jp_font_600 | font_face: font_display: 'swap' }}
+      {{ jp_font_700 | font_face: font_display: 'swap' }}
+      {{ jp_font_800 | font_face: font_display: 'swap' }}
+
+      :root {
+        --jp-font-family: {{ settings.jp_font.family }}, {{ settings.jp_font.fallback_families }};
       }
+
       @media (prefers-reduced-motion: reduce) {
         [class*='jp-'], [class*='jp-']::before, [class*='jp-']::after {
           animation-duration: 0.01ms !important;
@@ -337,7 +351,7 @@
           scroll-behavior: auto !important;
         }
       }
-    </style>
+    {% endstyle %}
     {%- liquid
       assign jp_fonts_url = 'https://fonts.googleapis.com/css2?family=Comforter&family=Inter:wght@500;600'
       if template.name == 'collection'
@@ -350,7 +364,7 @@
     {%- comment -%} Loaded without blocking the page: the fonts swap in when ready. {%- endcomment %}
     <link rel="stylesheet" href="{{ jp_fonts_url }}" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="{{ jp_fonts_url }}"></noscript>
-</head>
+  </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">

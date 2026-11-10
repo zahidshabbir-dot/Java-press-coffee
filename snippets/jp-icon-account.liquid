@@ -1,0 +1,10 @@
+{%- comment -%}
+  Account (person in circle) icon.
+  Accepts:
+  - class: optional class for the <svg>.
+{%- endcomment -%}
+<svg{% if class != blank %} class="{{ class }}"{% endif %} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/>
+  <circle cx="12" cy="9.5" r="3" stroke="currentColor" stroke-width="1.8"/>
+  <path d="M6.5 18.5c1.2-2.4 3.100-3.500 5.500-3.500s4.300 1.100 5.500 3.500" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+</svg>

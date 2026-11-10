@@ -1,11 +1,11 @@
 (function () {
   const DEFAULT_DELAY = 5000;
 
-  function initAnnouncementBar(root) {
-    if (root.dataset.jpAnnReady === 'true') return;
-    const slides = root.querySelectorAll('[data-jp-ann-slide]');
+  function initAnnouncementBar(announcementBar) {
+    if (announcementBar.dataset.jpAnnReady === 'true') return;
+    const slides = announcementBar.querySelectorAll('[data-jp-ann-slide]');
     if (slides.length < 2) return;
-    root.dataset.jpAnnReady = 'true';
+    announcementBar.dataset.jpAnnReady = 'true';
 
     let activeIndex = 0;
     let autoplayTimer = null;
@@ -24,23 +24,23 @@
     }
 
     function startAutoplay() {
-      if (root.dataset.autoplay !== 'true') return;
+      if (announcementBar.dataset.autoplay !== 'true') return;
       /* do not rotate while the pointer or keyboard focus is on the bar */
-      if (root.matches(':hover') || root.contains(document.activeElement)) return;
+      if (announcementBar.matches(':hover') || announcementBar.contains(document.activeElement)) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       stopAutoplay();
       autoplayTimer = setInterval(function () {
         /* stop when the section was removed or re-rendered (theme editor) */
-        if (!root.isConnected) {
+        if (!announcementBar.isConnected) {
           stopAutoplay();
           return;
         }
         showSlide(activeIndex + 1);
-      }, parseInt(root.dataset.delay, 10) || DEFAULT_DELAY);
+      }, parseInt(announcementBar.dataset.delay, 10) || DEFAULT_DELAY);
     }
 
-    const previousButton = root.querySelector('[data-jp-ann-prev]');
-    const nextButton = root.querySelector('[data-jp-ann-next]');
+    const previousButton = announcementBar.querySelector('[data-jp-ann-prev]');
+    const nextButton = announcementBar.querySelector('[data-jp-ann-next]');
 
     if (previousButton) {
       previousButton.addEventListener('click', function () {
@@ -54,21 +54,21 @@
         startAutoplay();
       });
     }
-    root.addEventListener('mouseenter', stopAutoplay);
-    root.addEventListener('mouseleave', startAutoplay);
-    root.addEventListener('focusin', stopAutoplay);
-    root.addEventListener('focusout', startAutoplay);
+    announcementBar.addEventListener('mouseenter', stopAutoplay);
+    announcementBar.addEventListener('mouseleave', startAutoplay);
+    announcementBar.addEventListener('focusin', stopAutoplay);
+    announcementBar.addEventListener('focusout', startAutoplay);
     startAutoplay();
   }
 
-  function initAll() {
+  function initAllAnnouncementBars() {
     document.querySelectorAll('[data-jp-ann]').forEach(initAnnouncementBar);
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAll);
+    document.addEventListener('DOMContentLoaded', initAllAnnouncementBars);
   } else {
-    initAll();
+    initAllAnnouncementBars();
   }
-  document.addEventListener('shopify:section:load', initAll);
+  document.addEventListener('shopify:section:load', initAllAnnouncementBars);
 })();

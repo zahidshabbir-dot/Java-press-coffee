@@ -1,0 +1,107 @@
+.jp-co {
+  background: var(--jp-co-bg);
+  color: var(--jp-co-heading);
+  font-family: var(--jp-font-family);
+  padding: var(--jp-co-padding-top) 20px var(--jp-co-padding-bottom);
+}
+
+.jp-co * {
+  box-sizing: border-box;
+}
+
+.jp-co .jp-co__inner {
+  max-width: 1201px;
+  margin: 0 auto;
+}
+
+.jp-co .jp-co__title {
+  margin: 0 0 40px;
+  font-family: inherit;
+  font-size: 32px;
+  line-height: 45px;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-align: center;
+  text-transform: capitalize;
+  color: var(--jp-co-heading);
+}
+
+.jp-co .jp-co__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 32px;
+  row-gap: 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jp-co .jp-co__item {
+  text-align: center;
+}
+
+.jp-co .jp-co__icon {
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 17px;
+  background: var(--jp-co-icon-color);
+  -webkit-mask: var(--jp-co-icon) center / contain no-repeat;
+  mask: var(--jp-co-icon) center / contain no-repeat;
+}
+
+.jp-co .jp-co__icon--svg {
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+  color: var(--jp-co-icon-color);
+}
+
+.jp-co .jp-co__icon--svg svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.jp-co .jp-co__item-title {
+  margin: 0 0 16px;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: capitalize;
+  color: var(--jp-co-text);
+}
+
+.jp-co .jp-co__text {
+  margin: 0 auto;
+  max-width: 276px;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+  color: var(--jp-co-text);
+}
+
+@media (max-width: 989px) {
+  .jp-co .jp-co__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 749px) {
+  .jp-co {
+    padding: var(--jp-co-padding-top-mobile) 20px var(--jp-co-padding-bottom-mobile);
+  }
+
+  .jp-co .jp-co__title {
+    font-size: 24px;
+    line-height: 32px;
+    margin-bottom: 32px;
+  }
+
+  .jp-co .jp-co__grid {
+    grid-template-columns: 1fr;
+    row-gap: 36px;
+  }
+}

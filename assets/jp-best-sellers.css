@@ -1,0 +1,378 @@
+.jp-bs {
+  --jp-bs-gap: 32px;
+  --jp-bs-per: 4;
+  background: var(--jp-bs-bg);
+  color: var(--jp-bs-text);
+  font-family: var(--jp-font-family);
+  padding: var(--jp-bs-padding-top) 0 var(--jp-bs-padding-bottom);
+}
+
+.jp-bs * {
+  box-sizing: border-box;
+}
+
+.jp-bs .jp-bs__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 120px;
+}
+
+.jp-bs .jp-bs__title {
+  margin: 0 0 83px;
+  text-align: center;
+  font-size: 32px;
+  line-height: 1.201;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--jp-bs-text);
+}
+
+.jp-bs .jp-bs__tabs {
+  display: flex;
+  justify-content: flex-start;
+  gap: 62px;
+  margin: 0 0 47px;
+  box-shadow: inset 0 -1px 0 #ebeae6;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.jp-bs .jp-bs__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.jp-bs .jp-bs__tab:first-child {
+  margin-left: auto;
+}
+
+.jp-bs .jp-bs__tab:last-child {
+  margin-right: auto;
+}
+
+.jp-bs .jp-bs__tab {
+  flex: 0 0 auto;
+  padding: 0 5.5px 20px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  margin-bottom: 0;
+  background: none;
+  color: #2d2d2d;
+  font: 400 20px/22px var(--jp-font-family);
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.jp-bs .jp-bs__tab[aria-selected='true'] {
+  border-bottom-color: var(--jp-bs-tab);
+  font-weight: 500;
+}
+
+.jp-bs .jp-bs__tab:focus-visible {
+  outline: 2px solid var(--jp-bs-text);
+  outline-offset: -2px;
+}
+
+.jp-bs .jp-bs__carousel {
+  position: relative;
+}
+
+.jp-bs .jp-bs__track {
+  display: flex;
+  gap: var(--jp-bs-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.jp-bs .jp-bs__track::-webkit-scrollbar {
+  display: none;
+}
+
+.jp-bs .jp-bs__card {
+  flex: 0 0 calc((100% - (var(--jp-bs-per) - 1) * var(--jp-bs-gap)) / var(--jp-bs-per));
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+.jp-bs .jp-bs__card[hidden] {
+  display: none;
+}
+
+.jp-bs .jp-bs__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 274 / 285;
+  background: var(--jp-bs-tile);
+  overflow: hidden;
+}
+
+.jp-bs .jp-bs__img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 88%;
+  height: auto;
+  max-height: 90%;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+}
+
+.jp-bs .jp-bs__badge {
+  position: absolute;
+  top: 11px;
+  right: 7px;
+  width: 25%;
+  height: auto;
+}
+
+.jp-bs .jp-bs__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jp-bs .jp-bs__name {
+  display: block;
+  flex: 1 0 auto;
+  margin: 0;
+  color: var(--jp-bs-text);
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 700;
+  text-transform: capitalize;
+  text-decoration: none;
+}
+
+.jp-bs .jp-bs__rating {
+  display: flex;
+  align-items: center;
+  min-height: 16px;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.jp-bs .jp-bs__price {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin: 0;
+}
+
+.jp-bs .jp-bs__now {
+  font-size: 20px;
+  line-height: 22px;
+  font-weight: 700;
+}
+
+.jp-bs .jp-bs__was {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+  color: #929292;
+  text-decoration: line-through;
+}
+
+.jp-bs .jp-bs__btn {
+  display: block;
+  height: 50px;
+  border-radius: 5px;
+  background: var(--jp-bs-red);
+  color: #fff;
+  font-size: 18px;
+  line-height: 50px;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.jp-bs button.jp-bs__btn {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.jp-bs .jp-bs__form {
+  margin: 0;
+}
+
+.jp-bs .jp-bs__btn--off {
+  background: #b5b5b5;
+  cursor: not-allowed;
+}
+
+.jp-bs .jp-bs__empty {
+  text-align: center;
+  margin: 0;
+}
+
+.jp-bs .jp-bs__btn:hover {
+  filter: brightness(0.93);
+}
+
+.jp-bs a:focus-visible {
+  outline: 2px solid var(--jp-bs-text);
+  outline-offset: 2px;
+}
+
+.jp-bs .jp-bs__arrow {
+  position: absolute;
+  top: 142.5px;
+  width: 45px;
+  height: 45px;
+  margin-top: -22.5px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #000;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.jp-bs .jp-bs__arrow--prev {
+  left: 0;
+}
+
+.jp-bs .jp-bs__arrow--next {
+  right: 0;
+}
+
+.jp-bs .jp-bs__arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.jp-bs .jp-bs__arrow:focus-visible {
+  outline: 2px solid var(--jp-bs-red);
+  outline-offset: 2px;
+}
+
+.jp-bs .jp-bs__arrow[hidden] {
+  display: none;
+}
+
+.jp-bs .jp-bs__dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 70px;
+  min-height: 11px;
+}
+
+.jp-bs .jp-bs__dot {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #c4c4c4;
+  cursor: pointer;
+}
+
+.jp-bs .jp-bs__dot.is-active {
+  background: #000;
+}
+
+@media (max-width: 1199px) {
+  .jp-bs .jp-bs__inner {
+    padding: 0 40px;
+  }
+
+  .jp-bs {
+    --jp-bs-per: 3;
+    --jp-bs-gap: 24px;
+  }
+}
+
+@media (max-width: 989px) {
+  .jp-bs {
+    --jp-bs-per: 2;
+  }
+}
+
+@media (max-width: 749px) {
+  .jp-bs .jp-bs__inner {
+    padding: 0 17px;
+  }
+
+  .jp-bs {
+    --jp-bs-gap: 10px;
+  }
+
+  .jp-bs .jp-bs__title {
+    font-size: 24px;
+    margin-bottom: 48px;
+  }
+
+  .jp-bs .jp-bs__tabs {
+    justify-content: flex-start;
+    gap: 30px;
+    margin-bottom: 38px;
+  }
+
+  .jp-bs .jp-bs__tab {
+    font-size: 14px;
+    line-height: 15px;
+    padding: 0 0 11px;
+  }
+
+  .jp-bs .jp-bs__card {
+    flex: 0 0 194px;
+  }
+
+  .jp-bs .jp-bs__name {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .jp-bs .jp-bs__rating {
+    font-size: 12px;
+  }
+
+  .jp-bs .jp-bs__now {
+    font-size: 16px;
+  }
+
+  .jp-bs .jp-bs__btn {
+    font-size: 16px;
+  }
+
+  .jp-bs .jp-bs__arrow {
+    width: 30px;
+    height: 30px;
+    top: 110px;
+    margin-top: -15px;
+  }
+
+  .jp-bs .jp-bs__arrow--prev {
+    left: 13px;
+  }
+
+  .jp-bs .jp-bs__arrow--next {
+    right: 13px;
+  }
+
+  .jp-bs .jp-bs__arrow svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .jp-bs .jp-bs__dots {
+    margin-top: 58px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jp-bs .jp-bs__track {
+    scroll-behavior: auto;
+  }
+}

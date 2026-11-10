@@ -3,7 +3,11 @@
 {%- if section.blocks.size > 0 -%}
   <div
     class="jp-ann"
-    style="--jp-ann-bg: {{ section.settings.bg }}; --jp-ann-text: {{ section.settings.text_color }}; --jp-ann-link: {{ section.settings.link_color }};"
+    style="
+      --jp-ann-bg: {{ section.settings.bg }};
+      --jp-ann-text: {{ section.settings.text_color }};
+      --jp-ann-link: {{ section.settings.link_color }};
+    "
     data-jp-ann
     data-autoplay="{{ section.settings.autoplay }}"
     data-delay="{{ section.settings.delay | times: 1000 }}"
@@ -13,22 +17,44 @@
     aria-label="Announcements"
   >
     <div class="jp-ann__inner">
-      <button type="button" class="jp-ann__arrow jp-ann__arrow--prev" data-jp-ann-prev aria-label="Previous announcement">
+      <button
+        type="button"
+        class="jp-ann__arrow jp-ann__arrow--prev"
+        data-jp-ann-prev
+        aria-label="Previous announcement"
+      >
         {% render 'jp-icon-chevron', direction: 'prev' %}
       </button>
 
-      <div class="jp-ann__slides" aria-live="{% if section.settings.autoplay %}off{% else %}polite{% endif %}">
+      <div
+        class="jp-ann__slides"
+        aria-live="{% if section.settings.autoplay %}off{% else %}polite{% endif %}"
+      >
         {%- for block in section.blocks -%}
-          <p class="jp-ann__slide{% if forloop.first %} is-active{% endif %}" data-jp-ann-slide {{ block.shopify_attributes }}>
+          <p
+            class="jp-ann__slide{% if forloop.first %} is-active{% endif %}"
+            data-jp-ann-slide
+            {{ block.shopify_attributes }}
+          >
             {{- block.settings.text -}}
             {%- if block.settings.link_label != blank -%}
-              <a class="jp-ann__link" href="{{ block.settings.link_url | default: '#' }}">{{ block.settings.link_label }}</a>
+              <a
+                class="jp-ann__link"
+                href="{{ block.settings.link_url | default: '#' }}"
+              >
+                {{- block.settings.link_label -}}
+              </a>
             {%- endif -%}
           </p>
         {%- endfor -%}
       </div>
 
-      <button type="button" class="jp-ann__arrow jp-ann__arrow--next" data-jp-ann-next aria-label="Next announcement">
+      <button
+        type="button"
+        class="jp-ann__arrow jp-ann__arrow--next"
+        data-jp-ann-next
+        aria-label="Next announcement"
+      >
         {% render 'jp-icon-chevron', direction: 'next' %}
       </button>
     </div>
@@ -41,20 +67,62 @@
 {
   "name": "JP Announcement bar",
   "settings": [
-    { "type": "color", "id": "bg", "label": "Background", "default": "#d4d4d4" },
-    { "type": "color", "id": "text_color", "label": "Text color", "default": "#2d2d2d" },
-    { "type": "color", "id": "link_color", "label": "Link color", "default": "#ef4444" },
-    { "type": "checkbox", "id": "autoplay", "label": "Auto-rotate announcements", "default": false },
-    { "type": "range", "id": "delay", "label": "Seconds between announcements", "min": 3, "max": 10, "step": 1, "default": 5 }
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "default": "#d4d4d4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2d2d2d"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#ef4444"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-rotate announcements",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "delay",
+      "label": "Seconds between announcements",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "default": 5
+    }
   ],
   "blocks": [
     {
       "type": "message",
       "name": "Announcement",
       "settings": [
-        { "type": "text", "id": "text", "label": "Text", "default": "We are here to help as your coffee concierge!" },
-        { "type": "text", "id": "link_label", "label": "Link text", "default": "Take the survey" },
-        { "type": "url", "id": "link_url", "label": "Link" }
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "We are here to help as your coffee concierge!"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link text",
+          "default": "Take the survey"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link"
+        }
       ]
     }
   ],
@@ -62,7 +130,9 @@
     {
       "name": "JP Announcement bar",
       "blocks": [
-        { "type": "message" }
+        {
+          "type": "message"
+        }
       ]
     }
   ]
