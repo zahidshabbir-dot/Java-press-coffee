@@ -166,12 +166,20 @@
   width: 24px;
   height: 24px;
   margin: 0 32px 0 0;
-  background: var(--jp-hd-cart-icon) center / 24px 24px no-repeat;
+  color: var(--jp-hd-red);
   text-decoration: none;
 }
 
 .jp-hd .jp-hd__cart .svg-wrapper {
-  display: none;
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.jp-hd .jp-hd__cart .svg-wrapper svg {
+  display: block;
+  width: 24px;
+  height: 24px;
 }
 
 .jp-hd .jp-hd__cart .cart-count-bubble {
@@ -346,12 +354,7 @@
     cursor: pointer;
   }
 
-  .jp-hd .jp-hd__close svg {
-    display: block;
-    width: 20px;
-    height: 20px;
-    margin: auto;
-  }
+  
 
   .jp-hd .jp-hd__drawer-logo {
     position: absolute;

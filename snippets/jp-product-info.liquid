@@ -100,22 +100,26 @@
           <label class="{{ prefix }}__label" for="{{ option_select_id }}">
             {{- option_label_format | replace: '[option]', option.name -}}
           </label>
-          <select
-            class="{{ prefix }}__select"
-            id="{{ option_select_id }}"
-            data-{{ prefix }}-option
-          >
-            {%- for value in option.values -%}
-              <option
-                value="{{ value | escape }}"
-                {% if option.selected_value == value %}
-                  selected
-                {% endif %}
-              >
-                {{- value -}}
-              </option>
-            {%- endfor -%}
-          </select>
+          <div class="{{ prefix }}__select-field">
+            <select
+              class="{{ prefix }}__select"
+              id="{{ option_select_id }}"
+              data-{{ prefix }}-option
+            >
+              {%- for value in option.values -%}
+                <option
+                  value="{{ value | escape }}"
+                  {% if option.selected_value == value %}
+                    selected
+                  {% endif %}
+                >
+                  {{- value -}}
+                </option>
+              {%- endfor -%}
+            </select>
+            {%- assign select_icon_class = prefix | append: '__select-icon' -%}
+            {% render 'jp-icon-caret', class: select_icon_class %}
+          </div>
         </div>
       {%- endfor -%}
     </div>

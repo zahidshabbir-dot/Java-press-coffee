@@ -59,15 +59,6 @@
   font-weight: 700;
 }
 
-.jp-fp .jp-fp__was,
-.jp-mp .jp-mp__was {
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 500;
-  color: #929292;
-  text-decoration: line-through;
-}
-
 .jp-fp .jp-fp__desc,
 .jp-mp .jp-mp__desc {
   margin: 0 0 16px;
@@ -131,14 +122,6 @@
   border: 0;
   background: #f2f2f2;
   cursor: pointer;
-}
-
-.jp-fp .jp-fp__qty button svg,
-.jp-mp .jp-mp__qty button svg {
-  display: block;
-  width: 20px;
-  height: 20px;
-  margin: auto;
 }
 
 .jp-fp .jp-fp__qty input,
@@ -219,4 +202,21 @@
 
 .jp-icon-check-circle__mark {
   stroke: #fff;
+}
+
+/* Option dropdown: the caret icon sits on top of the select */
+.jp-fp .jp-fp__select-field,
+.jp-mp .jp-mp__select-field {
+  position: relative;
+}
+
+.jp-fp .jp-fp__select-icon,
+.jp-mp .jp-mp__select-icon {
+  position: absolute;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  color: #424242;
+  transform: translateY(-50%);
+  pointer-events: none;
 }

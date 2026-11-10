@@ -23,8 +23,8 @@
       const parsedVariants = JSON.parse(variantsScript.textContent);
 
       return Array.isArray(parsedVariants) ? parsedVariants : [];
-    } catch (error) {
-      console.error('JpProductForm: the variants JSON could not be read.', error);
+    } catch {
+      /* broken variants JSON: the form keeps working with the default variant */
       return [];
     }
   }

@@ -26,15 +26,6 @@
   color: var(--jp-rc-text);
 }
 
-.jp-rc .jp-rc__grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 32px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
 /* Shared card rules: jp-product-card.css */
 .jp-rc .jp-rc__media {
   aspect-ratio: 274 / 285;
@@ -76,13 +67,6 @@
 .jp-rc button:focus-visible {
   outline: 2px solid var(--jp-rc-text);
   outline-offset: 2px;
-}
-
-@media (max-width: 989px) {
-  .jp-rc .jp-rc__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 16px;
-  }
 }
 
 @media (max-width: 749px) {

@@ -10,8 +10,6 @@
 {{ 'jp-buy-box.css' | asset_url | stylesheet_tag }}
 {{ 'jp-featured-product.css' | asset_url | stylesheet_tag }}
 
-{%- capture select_icon -%}{% render 'jp-icon-caret', format: 'css' %}{%- endcapture -%}
-
 {%- capture section_style -%}
   --jp-fp-red: {{ section.settings.accent }};
   --jp-fp-text: {{ section.settings.text_color }};
@@ -20,7 +18,6 @@
   --jp-fp-tile: {{ section.settings.tile_bg }};
   --jp-fp-padding-top: {{ section.settings.padding_top }}px;
   --jp-fp-padding-bottom: {{ section.settings.padding_bottom }}px;
-  --jp-fp-select-icon: {{ select_icon | strip | escape }};
 {%- endcapture -%}
 
 {%- if featured_product == blank -%}

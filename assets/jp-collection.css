@@ -187,12 +187,34 @@
   padding: 0 40px 0 15px;
   border: 1px solid var(--jp-cl-line);
   border-radius: 5px;
-  background: #fff var(--jp-cl-caret-icon) right 10px center / 24px 24px no-repeat;
+  background: #fff;
   color: #000;
   font: 700 18px/30px var(--font-body-family);
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
+}
+
+.jp-cl .jp-cl__select-field {
+  position: relative;
+  display: block;
+}
+
+.jp-cl .jp-cl__select-icon,
+.jp-cl .jp-cl__select-arrow {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  color: #424242;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.jp-cl .jp-cl__select-arrow,
+.jp-cl .jp-cl__drop-arrow {
+  display: none;
 }
 
 .jp-cl .jp-cl__count {
@@ -208,14 +230,6 @@
 }
 
 /* Grid */
-.jp-cl .jp-cl__grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 32px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
 
 /* Shared card rules: jp-product-card.css */
 .jp-cl .jp-cl__media {
@@ -315,11 +329,6 @@
 }
 
 @media (max-width: 989px) {
-  .jp-cl .jp-cl__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 16px;
-  }
-
   .jp-cl .jp-cl__bar {
     flex-wrap: wrap;
   }
@@ -472,15 +481,15 @@
     display: none;
   }
 
-  .jp-cl .jp-cl__drop summary::after {
-    content: '';
+  .jp-cl .jp-cl__drop-arrow {
+    display: block;
     flex: 0 0 22px;
     width: 22px;
     height: 22px;
-    background: var(--jp-cl-arrow-icon) center / 22px 22px no-repeat;
+    color: #424242;
   }
 
-  .jp-cl .jp-cl__drop[open] summary::after {
+  .jp-cl .jp-cl__drop[open] .jp-cl__drop-arrow {
     transform: rotate(90deg);
   }
 
@@ -513,15 +522,29 @@
     padding: 17px 0;
   }
 
-  .jp-cl .jp-cl__select {
+  .jp-cl .jp-cl__select-field {
     flex: 1;
-    width: auto;
+  }
+
+  .jp-cl .jp-cl__select {
+    width: 100%;
     height: 30px;
     padding: 0 30px 0 0;
     border: 0;
     font: 400 18px/30px var(--font-body-family);
     color: inherit;
-    background: var(--jp-cl-arrow-icon) right center / 22px 22px no-repeat;
+    background: none;
+  }
+
+  .jp-cl .jp-cl__select-icon {
+    display: none;
+  }
+
+  .jp-cl .jp-cl__select-arrow {
+    display: block;
+    right: 0;
+    width: 22px;
+    height: 22px;
   }
 
   .jp-cl .jp-cl__count {

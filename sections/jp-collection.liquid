@@ -5,8 +5,6 @@
     assign clear_filters_url = clear_filters_url | append: '?sort_by=' | append: sort_by
   endif
 -%}
-{%- capture caret_icon -%}{% render 'jp-icon-caret', format: 'css' %}{%- endcapture -%}
-{%- capture arrow_icon -%}{% render 'jp-icon-arrow-right', format: 'css' %}{%- endcapture -%}
 
 {%- assign badge_markup = '' -%}
 {%- if section.settings.show_badge and section.settings.badge != blank -%}
@@ -38,8 +36,6 @@
       --jp-cl-padding-bottom: {{ section.settings.padding_bottom }}px;
       --jp-cl-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
       --jp-cl-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
-      --jp-cl-caret-icon: {{ caret_icon | strip | escape }};
-      --jp-cl-arrow-icon: {{ arrow_icon | strip | escape }};
     "
   >
     <div class="jp-cl__inner">
@@ -98,6 +94,7 @@
                   <summary>
                     <span>{{ filter.label }}</span>
                     {% render 'jp-icon-caret', class: 'jp-cl__caret' %}
+                    {% render 'jp-icon-arrow-right', class: 'jp-cl__drop-arrow' %}
                   </summary>
                   <div class="jp-cl__panel">
                     {%- if filter.type == 'price_range' -%}
@@ -175,21 +172,25 @@
             {%- if section.settings.enable_sorting -%}
               <div class="jp-cl__sort-wrap">
                 <label for="jp-cl-sort-{{ section.id }}">{{ section.settings.sort_label }}</label>
-                <select
-                  class="jp-cl__select"
-                  id="jp-cl-sort-{{ section.id }}"
-                  name="sort_by"
-                  data-jp-cl-auto
-                >
-                  {%- for option in collection.sort_options -%}
-                    <option
-                      value="{{ option.value }}"
-                      {% if option.value == sort_by %}selected{% endif %}
-                    >
-                      {{- option.name -}}
-                    </option>
-                  {%- endfor -%}
-                </select>
+                <span class="jp-cl__select-field">
+                  <select
+                    class="jp-cl__select"
+                    id="jp-cl-sort-{{ section.id }}"
+                    name="sort_by"
+                    data-jp-cl-auto
+                  >
+                    {%- for option in collection.sort_options -%}
+                      <option
+                        value="{{ option.value }}"
+                        {% if option.value == sort_by %}selected{% endif %}
+                      >
+                        {{- option.name -}}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                  {% render 'jp-icon-caret', class: 'jp-cl__select-icon' %}
+                  {% render 'jp-icon-arrow-right', class: 'jp-cl__select-arrow' %}
+                </span>
               </div>
             {%- endif -%}
             <span class="jp-cl__count">

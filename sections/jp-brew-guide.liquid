@@ -9,7 +9,6 @@
 {%- endcomment -%}
 
 {%- assign brew_settings = section.settings -%}
-{%- capture check_icon -%}{% render 'jp-icon-check', format: 'css' %}{%- endcapture -%}
 
 {{ 'jp-brew-guide.css' | asset_url | stylesheet_tag }}
 
@@ -22,7 +21,6 @@
     --jp-bg-text: {{ brew_settings.text_color }};
     --jp-bg-accent: {{ brew_settings.accent }};
     --jp-bg-stage: {{ brew_settings.stage_bg }};
-    --jp-bg-check-icon: {{ check_icon | strip | escape }};
   "
 >
   <div class="jp-bg__head">

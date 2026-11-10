@@ -7,6 +7,10 @@
 */
 (function () {
   function initMainProduct(productRoot) {
+    if (!window.JpProductForm) {
+      return;
+    }
+
     if (productRoot.dataset.jpMpReady) {
       return;
     }
@@ -101,23 +105,5 @@
 
   /* ---------- start ---------- */
 
-  function initAllMainProducts(scope) {
-    if (!window.JpProductForm) {
-      return;
-    }
-
-    scope.querySelectorAll('[data-jp-mp]').forEach(initMainProduct);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      initAllMainProducts(document);
-    });
-  } else {
-    initAllMainProducts(document);
-  }
-
-  document.addEventListener('shopify:section:load', function (event) {
-    initAllMainProducts(event.target);
-  });
+  window.JpSections.onSectionReady('[data-jp-mp]', initMainProduct);
 })();

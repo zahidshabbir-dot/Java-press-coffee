@@ -3,7 +3,7 @@
   Rules shared with JP Product are in assets/jp-buy-box.css.
   Section settings arrive as custom properties set on the .jp-fp root:
   --jp-fp-red, --jp-fp-text, --jp-fp-green, --jp-fp-bg, --jp-fp-tile,
-  --jp-fp-padding-top, --jp-fp-padding-bottom, --jp-fp-select-icon.
+  --jp-fp-padding-top, --jp-fp-padding-bottom.
   Each badge sets --jp-fp-pill-bg and --jp-fp-pill-color on itself.
 */
 
@@ -104,7 +104,7 @@
 
 .jp-fp .jp-fp__select {
   border: 1px solid var(--jp-fp-text);
-  background: #fff var(--jp-fp-select-icon) no-repeat right 12px center;
+  background: #fff;
   color: var(--jp-fp-text);
 }
 
@@ -248,4 +248,8 @@
     padding: 0 1px;
     flex-wrap: wrap;
   }
+}
+
+.jp-fp .jp-fp__select-icon {
+  right: 12px;
 }

@@ -782,6 +782,7 @@
         swatchButton.style.background = cup.color;
         swatchButton.setAttribute('aria-label', cup.name);
         swatchButton.title = cup.name;
+        swatchButton.appendChild(cloneShape(this.brewDialog, 'swatch-check'));
 
         swatchButton.addEventListener('click', () => {
           this.selectCup(cupIndex);
@@ -1032,19 +1033,5 @@
     new BrewGuide(brewDialog, brewSettings);
   }
 
-  function initAllBrewGuides(scope) {
-    scope.querySelectorAll('[data-jp-brew]').forEach(initBrewGuide);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      initAllBrewGuides(document);
-    });
-  } else {
-    initAllBrewGuides(document);
-  }
-
-  document.addEventListener('shopify:section:load', function (event) {
-    initAllBrewGuides(event.target);
-  });
+  window.JpSections.onSectionReady('[data-jp-brew]', initBrewGuide);
 })();

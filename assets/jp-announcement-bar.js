@@ -86,14 +86,5 @@
     startAutoplay();
   }
 
-  function initAllAnnouncementBars() {
-    document.querySelectorAll(ANNOUNCEMENT_BAR_SELECTOR).forEach(initAnnouncementBar);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAllAnnouncementBars);
-  } else {
-    initAllAnnouncementBars();
-  }
-  document.addEventListener('shopify:section:load', initAllAnnouncementBars);
+  window.JpSections.onSectionReady(ANNOUNCEMENT_BAR_SELECTOR, initAnnouncementBar);
 })();

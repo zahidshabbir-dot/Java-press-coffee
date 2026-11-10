@@ -5,6 +5,10 @@
 */
 (function () {
   function initFeaturedProduct(featuredProductRoot) {
+    if (!window.JpProductForm) {
+      return;
+    }
+
     if (featuredProductRoot.dataset.jpFpReady === 'true') {
       return;
     }
@@ -13,19 +17,5 @@
     window.JpProductForm.init(featuredProductRoot, { prefix: 'jp-fp' });
   }
 
-  function initAllFeaturedProducts() {
-    if (!window.JpProductForm) {
-      return;
-    }
-
-    document.querySelectorAll('[data-jp-fp]').forEach(initFeaturedProduct);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAllFeaturedProducts);
-  } else {
-    initAllFeaturedProducts();
-  }
-
-  document.addEventListener('shopify:section:load', initAllFeaturedProducts);
+  window.JpSections.onSectionReady('[data-jp-fp]', initFeaturedProduct);
 })();

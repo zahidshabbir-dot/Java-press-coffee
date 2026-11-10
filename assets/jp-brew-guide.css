@@ -1,7 +1,7 @@
 /*
   JP Brew guide pop-up (sections/jp-brew-guide.liquid).
   Colors come from the section settings as custom properties set on the <dialog>:
-  --jp-bg-panel, --jp-bg-text, --jp-bg-accent, --jp-bg-stage, --jp-bg-check-icon.
+  --jp-bg-panel, --jp-bg-text, --jp-bg-accent, --jp-bg-stage.
 */
 
 .jp-bg {
@@ -256,15 +256,22 @@
   transform: scale(1.08);
 }
 
-.jp-bg .jp-bg__swatch.is-on::after {
-  content: '';
+.jp-bg .jp-bg__swatch-check {
+  display: none;
   position: absolute;
   top: -6px;
   right: -6px;
+  box-sizing: border-box;
   width: 20px;
   height: 20px;
+  padding: 3px;
   border-radius: 50%;
-  background: var(--jp-bg-accent) var(--jp-bg-check-icon) center / 14px no-repeat;
+  background: var(--jp-bg-accent);
+  color: #fff;
+}
+
+.jp-bg .jp-bg__swatch.is-on .jp-bg__swatch-check {
+  display: block;
 }
 
 .jp-bg .jp-bg__btn {

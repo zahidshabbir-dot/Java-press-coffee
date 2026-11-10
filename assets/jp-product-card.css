@@ -84,16 +84,6 @@
   font-weight: 700;
 }
 
-.jp-bs .jp-bs__was,
-.jp-cl .jp-cl__was,
-.jp-rc .jp-rc__was {
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 500;
-  color: #929292;
-  text-decoration: line-through;
-}
-
 .jp-bs .jp-bs__btn,
 .jp-cl .jp-cl__btn,
 .jp-rc .jp-rc__btn {

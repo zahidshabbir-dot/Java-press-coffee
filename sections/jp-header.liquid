@@ -1,13 +1,3 @@
-{%- comment -%}
-  The cart icon is drawn as a CSS background from a data URI on purpose: after an
-  add-to-cart, Shopify's cart scripts replace the innerHTML of #cart-icon-bubble, so an
-  inline <svg> inside the link would disappear. The SVG still comes from the jp-icon-cart
-  snippet, and its stroke follows the section's accent color setting.
-{%- endcomment -%}
-{%- capture cart_icon_svg -%}
-  {% render 'jp-icon-cart', color: section.settings.accent %}
-{%- endcapture -%}
-{%- assign cart_icon_data_uri = cart_icon_svg | strip | base64_encode -%}
 {%- assign cta_url = section.settings.cta_url | default: routes.all_products_collection_url -%}
 {%- assign main_menu = section.settings.menu -%}
 {%- comment -%}
@@ -26,7 +16,6 @@
     --jp-hd-sub-dark: {{ section.settings.dropdown_color }};
     --jp-hd-logo-width: {{ section.settings.logo_width }}px;
     --jp-hd-logo-width-mobile: {{ section.settings.logo_width_mobile }}px;
-    --jp-hd-cart-icon: url('data:image/svg+xml;base64,{{ cart_icon_data_uri }}');
   "
 >
   <div class="jp-hd__inner">
@@ -181,7 +170,7 @@
       id="cart-icon-bubble"
       aria-label="{{ 'templates.cart.cart' | t }}"
     >
-      <span class="svg-wrapper"></span>
+      <span class="svg-wrapper">{% render 'jp-icon-cart' %}</span>
       <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
       {%- if cart != empty -%}
         <div class="cart-count-bubble">

@@ -6,14 +6,6 @@
   const OPEN_DROPDOWN_SELECTOR = 'details.jp-cl__drop[open]';
   const FILTER_PANEL_SELECTOR = '.jp-cl__bar';
   const OVERLAY_SELECTOR = '.jp-cl__overlay';
-  const FOCUSABLE_SELECTOR = [
-    'a[href]',
-    'button:not([disabled])',
-    'input:not([disabled]):not([type="hidden"])',
-    'select:not([disabled])',
-    'summary',
-    '[tabindex]:not([tabindex="-1"])'
-  ].join(', ');
 
   function initCollection(collectionRoot) {
     if (collectionRoot.dataset.jpClReady) {
@@ -32,7 +24,7 @@
     const overlay = collectionRoot.querySelector(OVERLAY_SELECTOR);
     let autoSubmitTimeoutId;
     let isFilterPanelOpen = false;
-    let previousPageOverflow = '';
+    let unlockPageScroll = null;
     let focusBeforeOpen = null;
 
     function getPanelFocusableElements() {
@@ -40,11 +32,7 @@
         return [];
       }
 
-      return Array.from(filterPanel.querySelectorAll(FOCUSABLE_SELECTOR)).filter(
-        function (focusableElement) {
-          return focusableElement.offsetParent !== null;
-        }
-      );
+      return window.JpSections.getFocusableElements(filterPanel);
     }
 
     function setFilterPanelOpen(shouldOpen) {
@@ -61,8 +49,7 @@
 
       /* only undo the page scroll lock that this panel set itself */
       if (shouldOpen) {
-        previousPageOverflow = document.documentElement.style.overflow;
-        document.documentElement.style.overflow = 'hidden';
+        unlockPageScroll = window.JpSections.lockPageScroll();
         focusBeforeOpen = document.activeElement;
 
         const focusableElements = getPanelFocusableElements();
@@ -74,7 +61,10 @@
         return;
       }
 
-      document.documentElement.style.overflow = previousPageOverflow;
+      if (unlockPageScroll) {
+        unlockPageScroll();
+        unlockPageScroll = null;
+      }
 
       if (focusBeforeOpen && collectionRoot.contains(focusBeforeOpen)) {
         focusBeforeOpen.focus();
@@ -84,21 +74,8 @@
     }
 
     function trapFocus(event) {
-      const focusableElements = getPanelFocusableElements();
-
-      if (!focusableElements.length) {
-        return;
-      }
-
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (event.shiftKey && document.activeElement === firstElement) {
-        event.preventDefault();
-        lastElement.focus();
-      } else if (!event.shiftKey && document.activeElement === lastElement) {
-        event.preventDefault();
-        firstElement.focus();
+      if (filterPanel) {
+        window.JpSections.keepFocusInside(event, filterPanel);
       }
     }
 
@@ -188,19 +165,5 @@
     document.addEventListener('click', onDocumentClick);
   }
 
-  function initAllCollections(scope) {
-    scope.querySelectorAll('[data-jp-cl]').forEach(initCollection);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      initAllCollections(document);
-    });
-  } else {
-    initAllCollections(document);
-  }
-
-  document.addEventListener('shopify:section:load', function (event) {
-    initAllCollections(event.target);
-  });
+  window.JpSections.onSectionReady('[data-jp-cl]', initCollection);
 })();

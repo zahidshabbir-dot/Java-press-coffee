@@ -187,15 +187,5 @@
     showTab(hasTabs ? tabButtons[0].dataset.jpBsTab : DEFAULT_TAB_ID);
   }
 
-  function initAllBestSellers() {
-    document.querySelectorAll('[data-jp-bs]').forEach(initBestSellers);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAllBestSellers);
-  } else {
-    initAllBestSellers();
-  }
-
-  document.addEventListener('shopify:section:load', initAllBestSellers);
+  window.JpSections.onSectionReady('[data-jp-bs]', initBestSellers);
 })();

@@ -8,8 +8,6 @@
 
 {%- comment -%} Photos at least this wide (width / height) fill the image area. {%- endcomment -%}
 {%- assign photo_min_aspect_ratio = 0.9 -%}
-{%- capture select_icon -%}{% render 'jp-icon-caret', format: 'css' %}{%- endcapture -%}
-
 {%- capture section_style -%}
   --jp-mp-red: {{ section.settings.accent }};
   --jp-mp-text: {{ section.settings.text_color }};
@@ -21,7 +19,6 @@
   --jp-mp-padding-bottom: {{ section.settings.padding_bottom }}px;
   --jp-mp-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
   --jp-mp-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
-  --jp-mp-select-icon: {{ select_icon | strip | escape }};
 {%- endcapture -%}
 
 {{ 'jp-buy-box.css' | asset_url | stylesheet_tag }}

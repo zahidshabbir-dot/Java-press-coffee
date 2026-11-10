@@ -7,12 +7,6 @@
   const ACTIVE_ITEM_SELECTOR = '.jp-hd__item.is-active';
   const DROPDOWN_PARENT_LINK_SELECTOR = '.jp-hd__item.has-sub > .jp-hd__link';
   const GRANDCHILD_PARENT_LINK_SELECTOR = '.jp-hd__sub-list li.has-grand > a';
-  const FOCUSABLE_SELECTOR = [
-    'a[href]',
-    'button:not([disabled])',
-    'input:not([disabled])',
-    '[tabindex]:not([tabindex="-1"])',
-  ].join(', ');
   const OPEN_CLASS = 'is-open';
   const ACTIVE_CLASS = 'is-active';
   const HAS_ACTIVE_CLASS = 'has-active';
@@ -31,7 +25,7 @@
     headerRoot.dataset.jpHdReady = 'true';
 
     const mobileMediaQuery = window.matchMedia(MOBILE_MEDIA_QUERY);
-    let previousPageOverflow = '';
+    let unlockPageScroll = null;
 
     function isMenuOpen() {
       return headerRoot.classList.contains(OPEN_CLASS);
@@ -44,10 +38,10 @@
 
       /* only undo the page scroll lock that this menu set itself */
       if (shouldOpen && !wasOpen) {
-        previousPageOverflow = document.documentElement.style.overflow;
-        document.documentElement.style.overflow = 'hidden';
-      } else if (!shouldOpen && wasOpen) {
-        document.documentElement.style.overflow = previousPageOverflow;
+        unlockPageScroll = window.JpSections.lockPageScroll();
+      } else if (!shouldOpen && wasOpen && unlockPageScroll) {
+        unlockPageScroll();
+        unlockPageScroll = null;
       }
 
       if (shouldOpen && !wasOpen && mobileMediaQuery.matches) {
@@ -108,21 +102,7 @@
         return;
       }
 
-      const focusableElements = navigationPanel.querySelectorAll(FOCUSABLE_SELECTOR);
-      if (!focusableElements.length) {
-        return;
-      }
-
-      const firstFocusable = focusableElements[0];
-      const lastFocusable = focusableElements[focusableElements.length - 1];
-
-      if (event.shiftKey && document.activeElement === firstFocusable) {
-        event.preventDefault();
-        lastFocusable.focus();
-      } else if (!event.shiftKey && document.activeElement === lastFocusable) {
-        event.preventDefault();
-        firstFocusable.focus();
-      }
+      window.JpSections.keepFocusInside(event, navigationPanel);
     }
 
     /* document listeners remove themselves when the section is re-rendered (theme editor) */
@@ -149,14 +129,5 @@
     document.addEventListener('keydown', onKeyDown);
   }
 
-  function initAllHeaders() {
-    document.querySelectorAll(HEADER_SELECTOR).forEach(initHeader);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAllHeaders);
-  } else {
-    initAllHeaders();
-  }
-  document.addEventListener('shopify:section:load', initAllHeaders);
+  window.JpSections.onSectionReady(HEADER_SELECTOR, initHeader);
 })();

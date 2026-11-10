@@ -4,7 +4,7 @@
   Section settings arrive as custom properties set on the <section class="jp-mp">:
   --jp-mp-red, --jp-mp-text, --jp-mp-green, --jp-mp-bg, --jp-mp-tile, --jp-mp-acc-bg,
   --jp-mp-padding-top, --jp-mp-padding-bottom, --jp-mp-padding-top-mobile,
-  --jp-mp-padding-bottom-mobile, --jp-mp-select-icon.
+  --jp-mp-padding-bottom-mobile.
   Each badge sets --jp-mp-pill-bg and --jp-mp-pill-color on itself.
   The "How to use" link uses --jp-mp-red (there is no separate link color setting).
   The accordion icon has the class jp-mp__acc-icon, so jp-reduced-motion.css stops its
@@ -82,13 +82,6 @@
   color: #fff;
   cursor: pointer;
   z-index: 2;
-}
-
-.jp-mp .jp-mp__arrow svg {
-  display: block;
-  width: 20px;
-  height: 20px;
-  margin: auto;
 }
 
 .jp-mp .jp-mp__arrow--prev {
@@ -189,7 +182,7 @@
 .jp-mp .jp-mp__select {
   display: block;
   border: 1px solid var(--jp-mp-text);
-  background: #fff var(--jp-mp-select-icon) right 16px center / 24px 24px no-repeat;
+  background: #fff;
   color: var(--jp-mp-text);
 }
 
@@ -393,4 +386,8 @@
     row-gap: 12px;
     flex-wrap: wrap;
   }
+}
+
+.jp-mp .jp-mp__select-icon {
+  right: 16px;
 }
