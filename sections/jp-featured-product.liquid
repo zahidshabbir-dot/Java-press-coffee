@@ -82,22 +82,17 @@
     color: var(--jp-fp-text);
   }
 
-  .jp-fp-{{ sid }} .jp-fp__rating {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    height: 14px;
+  .jp-fp-{{ sid }} .jp-fp__rating,
+  .jp-fp-{{ sid }} .jp-fp__app {
     margin: 0 0 16px;
     font-size: 12px;
     line-height: normal;
-    font-weight: 700;
-    white-space: pre;
   }
 
-  .jp-fp-{{ sid }} .jp-fp__stars {
-    color: #e5b21a;
-    letter-spacing: 0;
-    font-size: 11.5px;
+  .jp-fp-{{ sid }} .jp-fp__rating {
+    display: flex;
+    align-items: center;
+    min-height: 14px;
   }
 
   .jp-fp-{{ sid }} .jp-fp__price {
@@ -378,16 +373,14 @@
 {% endstyle %}
 
 {%- if product == blank -%}
-  <div class="jp-fp-{{ sid }}"><div class="jp-fp__inner"><p>Select a product in the section settings.</p></div></div>
+  <div class="jp-fp-{{ sid }}"><div class="jp-fp__inner">{%- if request.design_mode -%}<p>Select a product in the section settings.</p>{%- endif -%}</div></div>
 {%- else -%}
   {%- assign current = product.selected_or_first_available_variant -%}
-  {%- assign rating = product.metafields.reviews.rating.value.rating -%}
-  {%- assign rating_count = product.metafields.reviews.rating_count.value -%}
   <section class="jp-fp-{{ sid }}" data-jp-fp data-product-url="{{ product.url }}">
     <div class="jp-fp__inner">
       <div class="jp-fp__media">
         {%- if product.featured_image != blank -%}
-          {{ product.featured_image | image_url: width: 1000 | image_tag: class: 'jp-fp__img', alt: product.title, loading: 'lazy' }}
+          {{ product.featured_image | image_url: width: 1000 | image_tag: class: 'jp-fp__img', alt: product.title, loading: 'lazy', widths: '500, 750, 1000', sizes: '(min-width: 990px) 50vw, 100vw' }}
         {%- else -%}
           {{ 'product-1' | placeholder_svg_tag: 'jp-fp__img' }}
         {%- endif -%}
@@ -410,15 +403,13 @@
 
         <h2 class="jp-fp__title">{{ product.title }}</h2>
 
-        {%- if rating != blank -%}
-          <div class="jp-fp__rating">
-            <span class="jp-fp__stars" role="img" aria-label="{{ rating }} out of 5 stars">
-              {%- assign full = rating | round | at_most: 5 -%}
-              {%- for n in (1..5) -%}{% if n <= full %}★{% else %}☆{% endif %}{%- endfor -%}
-            </span>
-            <span>{{ rating | round: 1 }}/5.00</span>
-            {%- if rating_count != blank and rating_count != 0 -%}<span>( {{ rating_count }} {{ section.settings.reviews_label }} )</span>{%- endif -%}
-          </div>
+        {%- assign app_blocks = section.blocks | where: 'type', '@app' -%}
+        {%- if app_blocks.size > 0 -%}
+          {%- for block in app_blocks -%}
+            <div class="jp-fp__app">{% render block %}</div>
+          {%- endfor -%}
+        {%- elsif product.metafields.judgeme.badge != blank -%}
+          <div class="jp-fp__rating jp-fp__rating--jm">{{ product.metafields.judgeme.badge }}</div>
         {%- endif -%}
 
         <div class="jp-fp__price">
@@ -535,13 +526,6 @@
       "info": "Leave empty to show the first product in the store."
     },
     {
-      "type": "text",
-      "id": "reviews_label",
-      "label": "Reviews word",
-      "info": "Shown after the review count, for example ( 117 Reviews ).",
-      "default": "Reviews"
-    },
-    {
       "type": "richtext",
       "id": "description",
       "label": "Description override",
@@ -650,6 +634,9 @@
     }
   ],
   "blocks": [
+    {
+      "type": "@app"
+    },
     {
       "type": "pill",
       "name": "Round label",

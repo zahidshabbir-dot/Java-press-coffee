@@ -25,6 +25,8 @@
 
     function startAutoplay() {
       if (root.dataset.autoplay !== 'true') return;
+      /* do not rotate while the pointer or keyboard focus is on the bar */
+      if (root.matches(':hover') || root.contains(document.activeElement)) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       stopAutoplay();
       autoplayTimer = setInterval(function () {
@@ -54,6 +56,8 @@
     }
     root.addEventListener('mouseenter', stopAutoplay);
     root.addEventListener('mouseleave', startAutoplay);
+    root.addEventListener('focusin', stopAutoplay);
+    root.addEventListener('focusout', startAutoplay);
     startAutoplay();
   }
 

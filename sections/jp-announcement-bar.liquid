@@ -17,7 +17,7 @@
         {% render 'jp-icon-chevron', direction: 'prev' %}
       </button>
 
-      <div class="jp-ann__slides" aria-live="polite">
+      <div class="jp-ann__slides" aria-live="{% if section.settings.autoplay %}off{% else %}polite{% endif %}">
         {%- for block in section.blocks -%}
           <p class="jp-ann__slide{% if forloop.first %} is-active{% endif %}" data-jp-ann-slide {{ block.shopify_attributes }}>
             {{- block.settings.text -}}

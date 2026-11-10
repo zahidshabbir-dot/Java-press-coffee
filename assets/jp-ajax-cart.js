@@ -21,7 +21,9 @@
     form.dataset.jpBusy = 'true';
 
     const button = form.querySelector('[type="submit"]');
-    const label = button ? button.textContent : '';
+    /* remember the real label once, so a second click during the error message can't overwrite it */
+    if (button && !button.dataset.jpLabel) button.dataset.jpLabel = button.textContent;
+    const label = button ? button.dataset.jpLabel : '';
     if (button) {
       button.setAttribute('aria-busy', 'true');
       button.style.opacity = '0.7';
@@ -52,6 +54,8 @@
         try {
           /* the first add from an empty cart: show the full drawer (header, count, close button) */
           drawer.classList.remove('is-empty');
+          /* lets the drawer return focus to the button when it closes */
+          if (button && typeof drawer.setActiveElement === 'function') drawer.setActiveElement(button);
           drawer.renderContents(state);
         } catch (error) {
           window.location.href = `${routeRoot()}cart`;

@@ -329,6 +329,14 @@
         font-display: swap;
         src: url('{{ 'raleway-var.woff2' | asset_url }}') format('woff2');
       }
+      @media (prefers-reduced-motion: reduce) {
+        [class*='jp-'], [class*='jp-']::before, [class*='jp-']::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
     </style>
     {%- liquid
       assign jp_fonts_url = 'https://fonts.googleapis.com/css2?family=Comforter&family=Inter:wght@500;600'

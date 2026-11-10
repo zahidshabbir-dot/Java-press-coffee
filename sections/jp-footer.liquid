@@ -2,7 +2,6 @@
 
 {% style %}
   .jp-ft-{{ sid }} {
-    --jp-ft-accent: {{ section.settings.accent_color }};
     background: {{ section.settings.bg }};
     color: {{ section.settings.text_color }};
     font-family: 'Raleway', sans-serif;
@@ -101,29 +100,6 @@
     object-fit: contain;
   }
 
-  .jp-ft-{{ sid }} .jp-ft__rating {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    height: 14px;
-    font-size: 11px;
-    line-height: normal;
-    font-weight: 700;
-    white-space: pre;
-  }
-
-  .jp-ft-{{ sid }} .jp-ft__stars {
-    display: flex;
-    flex: 0 0 auto;
-  }
-
-  .jp-ft-{{ sid }} .jp-ft__star {
-    width: 10.881px;
-    height: 11.548px;
-    background: linear-gradient(90deg, var(--jp-ft-accent) var(--fill), rgba(255, 255, 255, 0.35) var(--fill));
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") center / contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") center / contain no-repeat;
-  }
   /* Link columns */
   .jp-ft-{{ sid }} .jp-ft__title {
     margin: 0 0 31px;
@@ -195,10 +171,6 @@
       margin-bottom: 0;
     }
 
-    .jp-ft-{{ sid }} .jp-ft__rating {
-      display: none;
-    }
-
     .jp-ft-{{ sid }} .jp-ft__bar {
       margin: 60px 7px 0;
       padding-top: 15px;
@@ -236,21 +208,6 @@
               </li>
             {%- endfor -%}
           </ul>
-        {%- endif -%}
-
-        {%- if section.settings.rating_text != blank -%}
-          <div class="jp-ft__rating">
-            <span class="jp-ft__stars" role="img" aria-label="{{ section.settings.rating }} out of 5 stars">
-              {%- for n in (1..5) -%}
-                {%- assign fill = section.settings.rating | minus: forloop.index0 -%}
-                {%- if fill > 1 -%}{%- assign fill = 1 -%}{%- endif -%}
-                {%- if fill < 0 -%}{%- assign fill = 0 -%}{%- endif -%}
-                {%- assign pct = fill | times: 100 -%}
-                <span class="jp-ft__star" style="--fill: {{ pct }}%"></span>
-              {%- endfor -%}
-            </span>
-            <span>{{ section.settings.rating_text }}</span>
-          </div>
         {%- endif -%}
       </div>
 
@@ -291,17 +248,12 @@
     { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Optional. Replaces the script logo text." },
     { "type": "richtext", "id": "about", "label": "Description", "default": "<p>Our journey into coffee started in 2015 with a passion for developing the best entry level burr coffee grinder on the market.</p>" },
 
-    { "type": "header", "content": "Rating" },
-    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "4.9/5.00  (Serviced 6,000,000+ Coffee Lovers)", "info": "Leave empty to hide the rating. Hidden on mobile." },
-    { "type": "range", "id": "rating", "label": "Stars", "min": 1, "max": 5, "step": 0.1, "default": 4.9 },
-
     { "type": "header", "content": "Bottom bar" },
     { "type": "text", "id": "copyright", "label": "Copyright text", "default": "Copyright © 2023 JavaPresse. All Rights Reserved" },
 
     { "type": "header", "content": "Style" },
     { "type": "color", "id": "bg", "label": "Background", "default": "#075d57" },
     { "type": "color", "id": "text_color", "label": "Text color", "default": "#ffffff" },
-    { "type": "color", "id": "accent_color", "label": "Star color", "default": "#deb126" },
     { "type": "color", "id": "line_color", "label": "Divider line", "default": "#478a85" }
   ],
   "blocks": [

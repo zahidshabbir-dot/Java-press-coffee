@@ -839,6 +839,7 @@
 
     /* 3D tilt */
     elements.stage.addEventListener('pointermove', function (e) {
+      if (motionScale < 1) return;
       let r = elements.stage.getBoundingClientRect();
       let x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
       elements.wrap.style.transform = 'rotateY(' + (x * 22) + 'deg) rotateX(' + (-y * 12) + 'deg)';
