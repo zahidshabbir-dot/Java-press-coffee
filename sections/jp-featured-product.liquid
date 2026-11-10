@@ -3,7 +3,6 @@
   Shows one product with its photo, price, variant picker and add to cart form.
   Styles are in assets/jp-featured-product.css and the script in assets/jp-featured-product.js.
 {%- endcomment -%}
-{%- assign sid = section.id -%}
 {%- assign product = section.settings.product | default: collections.all.products.first -%}
 
 {{ 'jp-featured-product.css' | asset_url | stylesheet_tag }}
@@ -121,12 +120,12 @@
             <div class="jp-fp__options">
               {%- for option in product.options_with_values -%}
                 <div>
-                  <label class="jp-fp__label" for="jp-fp-{{ sid }}-opt-{{ forloop.index }}">
+                  <label class="jp-fp__label" for="jp-fp-{{ section.id }}-opt-{{ forloop.index }}">
                     {{- option.name -}}:
                   </label>
                   <select
                     class="jp-fp__select"
-                    id="jp-fp-{{ sid }}-opt-{{ forloop.index }}"
+                    id="jp-fp-{{ section.id }}-opt-{{ forloop.index }}"
                     data-jp-fp-option
                   >
                     {%- for value in option.values -%}
@@ -147,14 +146,14 @@
 
           <div class="jp-fp__buy">
             <div class="jp-fp__qty-wrap">
-              <label class="jp-fp__label" for="jp-fp-{{ sid }}-qty">
+              <label class="jp-fp__label" for="jp-fp-{{ section.id }}-qty">
                 {{- section.settings.quantity_label -}}
               </label>
               <div class="jp-fp__qty">
                 <button type="button" data-jp-fp-minus aria-label="Decrease quantity">−</button>
                 <input
                   type="number"
-                  id="jp-fp-{{ sid }}-qty"
+                  id="jp-fp-{{ section.id }}-qty"
                   name="quantity"
                   value="1"
                   min="1"
