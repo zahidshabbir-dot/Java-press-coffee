@@ -220,7 +220,11 @@
               {%- assign icon = 'social-' | append: block.settings.network | append: '.svg' -%}
               <li {{ block.shopify_attributes }}>
                 <a href="{{ block.settings.url | default: '#' }}" aria-label="{{ block.settings.network | capitalize }}" target="_blank" rel="noopener">
-                  <img src="{{ icon | asset_url }}" width="36" height="36" alt="" loading="lazy">
+                  {%- if block.settings.icon != blank -%}
+                    {{ block.settings.icon | image_url: width: 72 | image_tag: width: 36, height: 36, alt: '', loading: 'lazy' }}
+                  {%- else -%}
+                    <img src="{{ icon | asset_url }}" width="36" height="36" alt="" loading="lazy">
+                  {%- endif -%}
                 </a>
               </li>
             {%- endfor -%}
@@ -312,6 +316,7 @@
           { "value": "linkedin", "label": "LinkedIn" },
           { "value": "twitter", "label": "Twitter" }
         ] },
+        { "type": "image_picker", "id": "icon", "label": "Icon", "info": "Leave empty to use the default icon for the network." },
         { "type": "url", "id": "url", "label": "Link" }
       ]
     }
