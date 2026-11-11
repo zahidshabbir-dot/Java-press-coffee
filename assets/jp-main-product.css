@@ -1,0 +1,393 @@
+/*
+  JP Product (sections/jp-main-product.liquid).
+  Rules shared with JP Featured product are in assets/jp-buy-box.css.
+  Section settings arrive as custom properties set on the <section class="jp-mp">:
+  --jp-mp-red, --jp-mp-text, --jp-mp-green, --jp-mp-bg, --jp-mp-tile, --jp-mp-acc-bg,
+  --jp-mp-padding-top, --jp-mp-padding-bottom, --jp-mp-padding-top-mobile,
+  --jp-mp-padding-bottom-mobile.
+  Each badge sets --jp-mp-pill-bg and --jp-mp-pill-color on itself.
+  The "How to use" link uses --jp-mp-red (there is no separate link color setting).
+  The accordion icon has the class jp-mp__acc-icon, so jp-reduced-motion.css stops its
+  rotate transition for visitors who ask for reduced motion.
+*/
+
+.jp-mp {
+  background: var(--jp-mp-bg);
+  color: var(--jp-mp-text);
+  font-family: var(--font-body-family);
+  padding: var(--jp-mp-padding-top) 20px var(--jp-mp-padding-bottom);
+}
+
+.jp-mp * {
+  box-sizing: border-box;
+}
+
+.jp-mp .jp-mp__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 585fr) minmax(0, 584fr);
+  column-gap: 32px;
+  align-items: start;
+  max-width: 1201px;
+  margin: 0 auto;
+}
+
+/* Gallery */
+.jp-mp .jp-mp__stage {
+  position: relative;
+  aspect-ratio: 585 / 554;
+  border-radius: 5px;
+  background: var(--jp-mp-tile);
+  overflow: hidden;
+}
+
+.jp-mp .jp-mp__slide {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.jp-mp .jp-mp__slide.is-active {
+  display: flex;
+}
+
+.jp-mp .jp-mp__slide img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 70%;
+  max-height: 70%;
+  object-fit: contain;
+}
+
+.jp-mp .jp-mp__slide.is-photo img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+}
+
+.jp-mp .jp-mp__arrow {
+  position: absolute;
+  top: 50%;
+  width: 45px;
+  height: 45px;
+  margin-top: -22.5px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #000;
+  color: #fff;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.jp-mp .jp-mp__arrow--prev {
+  left: 14px;
+}
+
+.jp-mp .jp-mp__arrow--next {
+  right: 14px;
+}
+
+.jp-mp .jp-mp__thumbs {
+  display: flex;
+  gap: 14.8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.jp-mp .jp-mp__thumbs > li {
+  display: contents;
+}
+
+.jp-mp .jp-mp__thumbs::-webkit-scrollbar {
+  display: none;
+}
+
+.jp-mp .jp-mp__thumb {
+  flex: 0 0 calc((100% - 5 * 14.8px) / 6);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: #e0e0e0;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.jp-mp .jp-mp__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.jp-mp .jp-mp__thumb[aria-current='true'] {
+  outline: 3px solid var(--jp-mp-text);
+  outline-offset: -3px;
+}
+
+/* Info */
+.jp-mp .jp-mp__info {
+  padding-top: 11px;
+  min-width: 0;
+}
+
+.jp-mp .jp-mp__pills {
+  margin: 0 0 16px;
+}
+
+.jp-mp .jp-mp__pill {
+  flex: 0 0 62px;
+  width: 62px;
+  height: 62px;
+  padding: 0 11px;
+  font-size: 14px;
+  line-height: 15px;
+  background: var(--jp-mp-pill-bg);
+  color: var(--jp-mp-pill-color);
+}
+
+.jp-mp .jp-mp__title {
+  margin: 0 0 16px;
+  font-family: inherit;
+  letter-spacing: normal;
+  color: var(--jp-mp-text);
+}
+
+.jp-mp .jp-mp__price {
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.jp-mp .jp-mp__now {
+  color: var(--jp-mp-red);
+}
+
+.jp-mp .jp-mp__desc {
+  line-height: 30px;
+}
+
+.jp-mp .jp-mp__options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 32px;
+}
+
+.jp-mp .jp-mp__select {
+  display: block;
+  border: 1px solid var(--jp-mp-text);
+  background: #fff;
+  color: var(--jp-mp-text);
+}
+
+.jp-mp .jp-mp__buy {
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.jp-mp .jp-mp__qty-wrap {
+  flex: 0 0 173px;
+}
+
+.jp-mp .jp-mp__qty {
+  width: 173px;
+  border: 1px solid var(--jp-mp-text);
+}
+
+.jp-mp .jp-mp__qty button {
+  flex: 0 0 48px;
+  padding: 0;
+  color: var(--jp-mp-text);
+}
+
+.jp-mp .jp-mp__qty input {
+  padding: 0;
+  background: transparent;
+  color: var(--jp-mp-text);
+}
+
+.jp-mp .jp-mp__cart {
+  padding-top: 40px;
+}
+
+.jp-mp .jp-mp__btn {
+  padding: 0;
+  background: var(--jp-mp-red);
+}
+
+.jp-mp .jp-mp__trust {
+  justify-content: space-between;
+  gap: 4px;
+  margin: 8px 0 0;
+  padding: 0;
+  flex-wrap: nowrap;
+}
+
+.jp-mp .jp-mp__trust li {
+  color: var(--jp-mp-green);
+}
+
+/* Accordions */
+.jp-mp .jp-mp__acc {
+  margin: 37px 0 0;
+  display: grid;
+  gap: 16px;
+}
+
+.jp-mp .jp-mp__item {
+  border-radius: 5px;
+  background: var(--jp-mp-acc-bg);
+}
+
+.jp-mp .jp-mp__item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+  padding: 8px 12px 8px 25px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  text-transform: capitalize;
+  cursor: pointer;
+  list-style: none;
+}
+
+.jp-mp .jp-mp__item summary::-webkit-details-marker {
+  display: none;
+}
+
+.jp-mp .jp-mp__item summary svg {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  color: #424242;
+  transition: transform 0.2s;
+}
+
+.jp-mp .jp-mp__item[open] summary {
+  padding-top: 14px;
+  padding-bottom: 0;
+  align-items: flex-start;
+}
+
+.jp-mp .jp-mp__item[open] summary svg {
+  transform: rotate(45deg);
+}
+
+.jp-mp .jp-mp__acc-body {
+  padding: 15px 25px 28px;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+}
+
+.jp-mp .jp-mp__howto {
+  display: block;
+  margin: 14px 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--jp-mp-red);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.jp-mp .jp-mp__howto:hover {
+  text-decoration-thickness: 2px;
+}
+
+.jp-mp .jp-mp__acc-body p {
+  margin: 0 0 10px;
+}
+
+.jp-mp .jp-mp__acc-body p:last-child {
+  margin-bottom: 0;
+}
+
+.jp-mp .jp-mp__item summary:focus-visible {
+  outline: 2px solid var(--jp-mp-text);
+  outline-offset: -2px;
+}
+
+.jp-mp button:focus-visible,
+.jp-mp select:focus-visible,
+.jp-mp input:focus-visible {
+  outline: 2px solid var(--jp-mp-text);
+  outline-offset: 2px;
+}
+
+@media (max-width: 989px) {
+  .jp-mp .jp-mp__inner {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 28px;
+  }
+
+  .jp-mp .jp-mp__info {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 749px) {
+  .jp-mp {
+    padding: var(--jp-mp-padding-top-mobile) 16px var(--jp-mp-padding-bottom-mobile);
+  }
+
+  .jp-mp .jp-mp__arrow {
+    width: 36px;
+    height: 36px;
+    margin-top: -18px;
+  }
+
+  .jp-mp .jp-mp__thumb {
+    flex-basis: 64px;
+  }
+
+  .jp-mp .jp-mp__thumbs {
+    gap: 10px;
+  }
+
+  .jp-mp .jp-mp__desc {
+    line-height: 25px;
+  }
+
+  .jp-mp .jp-mp__options {
+    grid-template-columns: 1fr;
+  }
+
+  .jp-mp .jp-mp__buy {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .jp-mp .jp-mp__qty-wrap {
+    flex-basis: auto;
+  }
+
+  .jp-mp .jp-mp__cart {
+    padding-top: 20px;
+  }
+
+  .jp-mp .jp-mp__trust {
+    justify-content: flex-start;
+    column-gap: clamp(8px, 3cqw, 12px);
+    row-gap: 12px;
+    flex-wrap: wrap;
+  }
+}
+
+.jp-mp .jp-mp__select-icon {
+  right: 16px;
+}

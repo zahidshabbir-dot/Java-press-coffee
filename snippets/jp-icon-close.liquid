@@ -1,0 +1,19 @@
+{%- comment -%}
+  Close (X) icon, drawn with currentColor.
+  Accepts:
+  - class: optional class for the <svg>.
+{%- endcomment -%}
+<svg
+  {% if class != blank %}class="{{ class | escape }}"{% endif %}
+  viewBox="0 0 24 24"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path
+    d="M5 5l14 14M19 5L5 19"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+</svg>

@@ -1,0 +1,229 @@
+{{ 'jp-newsletter.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="jp-nl"
+  style="
+    --jp-nl-red: {{ section.settings.button_color }};
+    --jp-nl-text: {{ section.settings.text_color }};
+    --jp-nl-green: {{ section.settings.accent_color }};
+    --jp-nl-bg: {{ section.settings.bg }};
+    --jp-nl-field-bg: {{ section.settings.field_bg }};
+    --jp-nl-padding-top: {{ section.settings.padding_top }}px;
+    --jp-nl-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --jp-nl-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --jp-nl-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    {%- if section.settings.bg_image != blank %}
+      --jp-nl-bg-image: url('{{ section.settings.bg_image | image_url: width: 2880 }}');
+    {%- endif %}
+    {%- if section.settings.bg_image_mobile != blank %}
+      --jp-nl-bg-image-mobile: url('{{ section.settings.bg_image_mobile | image_url: width: 1000 }}');
+    {%- endif %}
+  "
+>
+  <div class="jp-nl__inner">
+    {%- if section.settings.icon != blank -%}
+      {{ section.settings.icon | image_url: width: 120 | image_tag: class: 'jp-nl__icon', alt: '', loading: 'lazy' }}
+    {%- endif -%}
+
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="jp-nl__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="jp-nl__title">
+        {%- assign lines = section.settings.heading | newline_to_br | split: '<br />' -%}
+        {%- for line in lines -%}
+          <span class="jp-nl__line">{{ line | strip_newlines | strip }}</span>
+          {%- comment -%}
+            The tags strip the newlines around them but keep the single space inside
+            the unless, so the lines still read as separate words when inline on mobile.
+          {%- endcomment -%}
+          {%- unless forloop.last %} {% endunless -%}
+        {%- endfor -%}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.text != blank -%}
+      <div class="jp-nl__text">{{ section.settings.text }}</div>
+    {%- endif -%}
+
+    {%- assign newsletter_form_id = 'jp-newsletter-' | append: section.id -%}
+    {%- assign email_input_id = newsletter_form_id | append: '-email' -%}
+    {%- form 'customer', id: newsletter_form_id, class: 'jp-nl__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="jp-nl__field">
+        <label class="visually-hidden" for="{{ email_input_id }}">
+          {{- section.settings.placeholder -}}
+        </label>
+        {% render 'jp-icon-message' %}
+        <input
+          id="{{ email_input_id }}"
+          class="jp-nl__input"
+          type="email"
+          name="contact[email]"
+          autocomplete="email"
+          placeholder="{{ section.settings.placeholder | escape }}"
+          value="{{ form.email }}"
+          required
+        >
+      </div>
+      <button type="submit" class="jp-nl__btn">{{ section.settings.button_label }}</button>
+      {%- if form.posted_successfully? -%}
+        <p class="jp-nl__msg jp-nl__msg--ok" role="status">{{ section.settings.success_message }}</p>
+      {%- elsif form.errors -%}
+        <p class="jp-nl__msg jp-nl__msg--err" role="alert">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "JP Newsletter",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "icon",
+      "label": "Top icon",
+      "info": "Upload the small icon shown above the heading."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small heading",
+      "default": "Newsletter Subscription"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join our newsletter and get updates on\npromotions and coupons.",
+      "info": "A new line starts a second line on desktop; on mobile the text flows naturally."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Get <strong>“$20 discount”</strong> for your first order</p>"
+    },
+    {
+      "type": "header",
+      "content": "Form"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Email placeholder",
+      "default": "Your Email Address",
+      "info": "Also read out by screen readers as the field name."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button text",
+      "default": "Subscribe Now →"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thanks for subscribing!"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image",
+      "info": "Upload the background image."
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image_mobile",
+      "label": "Background image (mobile)",
+      "info": "Leave empty to use the desktop image."
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background color",
+      "default": "#f2f2f2"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#424242"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (small heading)",
+      "default": "#035d57"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button color",
+      "default": "#ef4444"
+    },
+    {
+      "type": "color",
+      "id": "field_bg",
+      "label": "Email field background",
+      "default": "#d9d9d9"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding (desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 33
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 85
+    }
+  ],
+  "presets": [
+    {
+      "name": "JP Newsletter"
+    }
+  ]
+}
+{% endschema %}

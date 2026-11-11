@@ -1,0 +1,299 @@
+{%- comment -%}
+  JP Featured product
+  Shows one product with its photo, price, variant picker and add to cart form.
+  The buy box is snippets/jp-product-info.liquid (shared with JP Product).
+  Styles: assets/jp-buy-box.css and assets/jp-featured-product.css.
+  Scripts: assets/jp-product-form.js and assets/jp-featured-product.js.
+{%- endcomment -%}
+{%- assign featured_product = section.settings.product | default: collections.all.products.first -%}
+
+{{ 'jp-buy-box.css' | asset_url | stylesheet_tag }}
+{{ 'jp-featured-product.css' | asset_url | stylesheet_tag }}
+
+{%- capture section_style -%}
+  --jp-fp-red: {{ section.settings.accent }};
+  --jp-fp-text: {{ section.settings.text_color }};
+  --jp-fp-green: {{ section.settings.trust_color }};
+  --jp-fp-bg: {{ section.settings.bg }};
+  --jp-fp-tile: {{ section.settings.tile_bg }};
+  --jp-fp-padding-top: {{ section.settings.padding_top }}px;
+  --jp-fp-padding-bottom: {{ section.settings.padding_bottom }}px;
+{%- endcapture -%}
+
+{%- if featured_product == blank -%}
+  <div class="jp-fp" style="{{ section_style | strip_newlines }}">
+    <div class="jp-fp__inner">
+      {%- if request.design_mode -%}
+        <p>Select a product in the section settings.</p>
+      {%- endif -%}
+    </div>
+  </div>
+{%- else -%}
+  <section
+    class="jp-fp"
+    style="{{ section_style | strip_newlines }}"
+    data-jp-fp
+    data-product-url="{{ featured_product.url }}"
+  >
+    <div class="jp-fp__inner">
+      <div class="jp-fp__media">
+        {%- if featured_product.featured_image != blank -%}
+          {{
+            featured_product.featured_image
+            | image_url: width: 1000
+            | image_tag:
+              class: 'jp-fp__img',
+              alt: featured_product.title,
+              loading: 'lazy',
+              widths: '500, 750, 1000',
+              sizes: '(min-width: 990px) 50vw, 100vw'
+          }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'jp-fp__img' }}
+        {%- endif -%}
+        {%- if section.settings.show_badge and section.settings.badge != blank -%}
+          {{
+            section.settings.badge
+            | image_url: width: 300
+            | image_tag: class: 'jp-fp__badge', alt: '', loading: 'lazy'
+          }}
+        {%- endif -%}
+      </div>
+
+      <div class="jp-fp__info">
+        {%- assign app_blocks = section.blocks | where: 'type', '@app' -%}
+        {%- capture app_blocks_html -%}
+          {%- for block in app_blocks -%}
+            <div class="jp-fp__app">{% render block %}</div>
+          {%- endfor -%}
+        {%- endcapture -%}
+        {% render 'jp-product-info',
+          product: featured_product,
+          section: section,
+          prefix: 'jp-fp',
+          heading_tag: 'h2',
+          app_blocks_html: app_blocks_html
+        %}
+      </div>
+    </div>
+
+    <script type="application/json" data-jp-fp-variants>
+      {% render 'jp-variants-json', product: featured_product %}
+    </script>
+  </section>
+
+  <script src="{{ 'jp-product-form.js' | asset_url }}" defer></script>
+  <script src="{{ 'jp-featured-product.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "JP Featured product",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Leave empty to show the first product in the store."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description override",
+      "info": "Leave empty to use the product description."
+    },
+    {
+      "type": "range",
+      "id": "description_words",
+      "label": "Description length (words)",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Labels"
+    },
+    {
+      "type": "text",
+      "id": "quantity_label",
+      "label": "Quantity label",
+      "default": "Quantity:"
+    },
+    {
+      "type": "text",
+      "id": "option_label",
+      "label": "Option label",
+      "info": "[option] is replaced by the option name, for example Size.",
+      "default": "[option]:"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Add to cart text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out text",
+      "default": "Sold out"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show badge",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "badge",
+      "label": "Badge image",
+      "info": "Upload the badge image. Nothing shows until you upload one."
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "tile_bg",
+      "label": "Image tile background",
+      "default": "#d9d9d9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#424242"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Accent color (price & button)",
+      "default": "#ef4444"
+    },
+    {
+      "type": "color",
+      "id": "trust_color",
+      "label": "Trust badges color",
+      "default": "#075d57"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 82
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "default": 110
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "pill",
+      "name": "Badge",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Best Seller"
+        },
+        {
+          "type": "color",
+          "id": "bg",
+          "label": "Background",
+          "default": "#e8dc4b"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Text color",
+          "default": "#424242"
+        }
+      ]
+    },
+    {
+      "type": "trust",
+      "name": "Trust point",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Secure Checkout"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "JP Featured product",
+      "blocks": [
+        {
+          "type": "pill",
+          "settings": {
+            "text": "Best Seller",
+            "bg": "#e8dc4b",
+            "color": "#424242"
+          }
+        },
+        {
+          "type": "pill",
+          "settings": {
+            "text": "Staff Pick",
+            "bg": "#3f3f3f",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "type": "trust",
+          "settings": {
+            "text": "Secure Checkout"
+          }
+        },
+        {
+          "type": "trust",
+          "settings": {
+            "text": "Secure Shipping"
+          }
+        },
+        {
+          "type": "trust",
+          "settings": {
+            "text": "Satisfaction Guarantee"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

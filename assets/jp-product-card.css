@@ -1,0 +1,128 @@
+/*
+  Product card rules shared by JP Best sellers (jp-bs), JP Collection (jp-cl)
+  and JP Recommended (jp-rc). Markup: snippets/jp-product-card.liquid.
+
+  Only declarations that are identical in all three sections live here.
+  A section can be on the page more than once, so this file can load again after
+  a section stylesheet: properties that a section changes (colors, sizes, button
+  height, sold-out state) stay in the section CSS and are never declared here.
+*/
+
+.jp-bs .jp-bs__card,
+.jp-cl .jp-cl__card,
+.jp-rc .jp-rc__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.jp-bs .jp-bs__media,
+.jp-cl .jp-cl__media,
+.jp-rc .jp-rc__media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.jp-bs .jp-bs__img,
+.jp-cl .jp-cl__img,
+.jp-rc .jp-rc__img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: auto;
+  max-height: 90%;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+}
+
+.jp-bs .jp-bs__badge,
+.jp-cl .jp-cl__badge,
+.jp-rc .jp-rc__badge {
+  position: absolute;
+  right: 7px;
+  height: auto;
+}
+
+.jp-bs .jp-bs__name,
+.jp-cl .jp-cl__name,
+.jp-rc .jp-rc__name {
+  display: block;
+  flex: 1 0 auto;
+  margin: 0;
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 700;
+  text-transform: capitalize;
+  text-decoration: none;
+}
+
+.jp-bs .jp-bs__rating,
+.jp-cl .jp-cl__rating,
+.jp-rc .jp-rc__rating {
+  display: flex;
+  align-items: center;
+  min-height: 16px;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.jp-bs .jp-bs__price,
+.jp-cl .jp-cl__price,
+.jp-rc .jp-rc__price {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin: 0;
+}
+
+.jp-bs .jp-bs__now,
+.jp-cl .jp-cl__now,
+.jp-rc .jp-rc__now {
+  line-height: 22px;
+  font-weight: 700;
+}
+
+.jp-bs .jp-bs__btn,
+.jp-cl .jp-cl__btn,
+.jp-rc .jp-rc__btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  font-family: var(--font-body-family);
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.jp-bs .jp-bs__btn:hover,
+.jp-cl .jp-cl__btn:hover,
+.jp-rc .jp-rc__btn:hover {
+  filter: brightness(0.93);
+}
+
+.jp-bs .jp-bs__form,
+.jp-cl .jp-cl__form,
+.jp-rc .jp-rc__form {
+  margin: 0;
+}
+
+@media (max-width: 749px) {
+  .jp-bs .jp-bs__name,
+  .jp-cl .jp-cl__name,
+  .jp-rc .jp-rc__name {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .jp-bs .jp-bs__rating,
+  .jp-cl .jp-cl__rating,
+  .jp-rc .jp-rc__rating {
+    font-size: 12px;
+  }
+}

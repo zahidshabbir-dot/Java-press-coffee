@@ -1,0 +1,168 @@
+{%- if section.blocks.size > 0 -%}
+  {{ 'jp-announcement-bar.css' | asset_url | stylesheet_tag }}
+
+  <div
+    class="jp-ann"
+    style="
+      --jp-ann-bg: {{ section.settings.bg }};
+      --jp-ann-text: {{ section.settings.text_color }};
+      --jp-ann-link: {{ section.settings.link_color }};
+    "
+    data-jp-ann
+    data-autoplay="{{ section.settings.autoplay }}"
+    data-delay="{{ section.settings.delay | times: 1000 }}"
+    data-single="{% if section.blocks.size == 1 %}true{% else %}false{% endif %}"
+    role="region"
+    aria-roledescription="carousel"
+    aria-label="{{ section.settings.region_label | escape }}"
+  >
+    <div class="jp-ann__inner">
+      <button
+        type="button"
+        class="jp-ann__arrow jp-ann__arrow--prev"
+        data-jp-ann-prev
+        aria-label="{{ section.settings.previous_label | escape }}"
+      >
+        {% render 'jp-icon-chevron', direction: 'prev' %}
+      </button>
+
+      <div
+        class="jp-ann__slides"
+        aria-live="{% if section.settings.autoplay %}off{% else %}polite{% endif %}"
+      >
+        {%- for block in section.blocks -%}
+          <p
+            class="jp-ann__slide{% if forloop.first %} is-active{% endif %}"
+            data-jp-ann-slide
+            {{ block.shopify_attributes }}
+          >
+            {{- block.settings.text -}}
+            {%- if block.settings.link_label != blank -%}
+              {%- comment -%}
+                No space before the link: the CSS margin on .jp-ann__link adds the gap.
+              {%- endcomment -%}
+              {%- if block.settings.link_url != blank -%}
+                <a class="jp-ann__link" href="{{ block.settings.link_url }}">
+                  {{- block.settings.link_label -}}
+                </a>
+              {%- else -%}
+                <span class="jp-ann__link">{{ block.settings.link_label }}</span>
+              {%- endif -%}
+            {%- endif -%}
+          </p>
+        {%- endfor -%}
+      </div>
+
+      <button
+        type="button"
+        class="jp-ann__arrow jp-ann__arrow--next"
+        data-jp-ann-next
+        aria-label="{{ section.settings.next_label | escape }}"
+      >
+        {% render 'jp-icon-chevron', direction: 'next' %}
+      </button>
+    </div>
+  </div>
+
+  <script src="{{ 'jp-announcement-bar.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "JP Announcement bar",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "default": "#d4d4d4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2d2d2d"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#ef4444"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-rotate announcements",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "delay",
+      "label": "Time between announcements",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "region_label",
+      "label": "Bar name for screen readers",
+      "default": "Announcements"
+    },
+    {
+      "type": "text",
+      "id": "previous_label",
+      "label": "Previous button name for screen readers",
+      "default": "Previous announcement"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next button name for screen readers",
+      "default": "Next announcement"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Announcement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "We are here to help as your coffee concierge!"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link text",
+          "default": "Take the survey"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link",
+          "info": "If empty, the link text shows without a link."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "JP Announcement bar",
+      "blocks": [
+        {
+          "type": "message"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,255 @@
+/*
+  JP Featured product (sections/jp-featured-product.liquid).
+  Rules shared with JP Product are in assets/jp-buy-box.css.
+  Section settings arrive as custom properties set on the .jp-fp root:
+  --jp-fp-red, --jp-fp-text, --jp-fp-green, --jp-fp-bg, --jp-fp-tile,
+  --jp-fp-padding-top, --jp-fp-padding-bottom.
+  Each badge sets --jp-fp-pill-bg and --jp-fp-pill-color on itself.
+*/
+
+.jp-fp {
+  background: var(--jp-fp-bg);
+  color: var(--jp-fp-text);
+  font-family: var(--font-body-family);
+  padding: var(--jp-fp-padding-top) 0 var(--jp-fp-padding-bottom);
+}
+
+.jp-fp * {
+  box-sizing: border-box;
+}
+
+.jp-fp .jp-fp__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 120px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 32px;
+  align-items: start;
+}
+
+.jp-fp .jp-fp__media {
+  position: relative;
+  aspect-ratio: 369 / 332;
+  background: var(--jp-fp-tile);
+  overflow: hidden;
+}
+
+.jp-fp .jp-fp__img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 76%;
+  height: auto;
+  max-height: 90%;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+}
+
+.jp-fp .jp-fp__badge {
+  position: absolute;
+  top: 5%;
+  right: 6%;
+  width: 17%;
+  height: auto;
+}
+
+.jp-fp .jp-fp__pills {
+  margin: 0 0 16px;
+}
+
+.jp-fp .jp-fp__pill {
+  flex: 0 0 62px;
+  width: 62px;
+  height: 62px;
+  padding: 0 11px;
+  font-size: 14px;
+  line-height: 15px;
+  background: var(--jp-fp-pill-bg);
+  color: var(--jp-fp-pill-color);
+}
+
+.jp-fp .jp-fp__title {
+  margin: 0 0 10px;
+  color: var(--jp-fp-text);
+}
+
+.jp-fp .jp-fp__rating {
+  min-height: 14px;
+}
+
+.jp-fp .jp-fp__price {
+  gap: 6px;
+  margin: 0 0 16px;
+  line-height: 22px;
+}
+
+.jp-fp .jp-fp__now {
+  color: var(--jp-fp-red);
+}
+
+.jp-fp .jp-fp__desc {
+  line-height: 30px;
+  color: var(--jp-fp-text);
+}
+
+.jp-fp .jp-fp__options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.jp-fp .jp-fp__label {
+  height: 24px;
+}
+
+.jp-fp .jp-fp__select {
+  border: 1px solid var(--jp-fp-text);
+  background: #fff;
+  color: var(--jp-fp-text);
+}
+
+.jp-fp .jp-fp__buy {
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.jp-fp .jp-fp__qty-wrap {
+  flex: 0 0 173px;
+}
+
+.jp-fp .jp-fp__qty {
+  padding: 1px;
+  border: 1px solid var(--jp-fp-text);
+}
+
+.jp-fp .jp-fp__qty button {
+  flex: 0 0 48px;
+  border-radius: 4px 0 0 4px;
+  color: var(--jp-fp-text);
+}
+
+.jp-fp .jp-fp__qty button:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.jp-fp .jp-fp__qty input {
+  background: #fff;
+  color: var(--jp-fp-text);
+}
+
+.jp-fp .jp-fp__cart {
+  padding-top: 40px;
+}
+
+.jp-fp .jp-fp__btn {
+  margin-top: 1px;
+  background: var(--jp-fp-red);
+}
+
+.jp-fp .jp-fp__trust {
+  justify-content: space-between;
+  gap: 4px;
+  max-width: 100%;
+  margin: 8px 0 0;
+  padding: 0;
+  flex-wrap: nowrap;
+}
+
+.jp-fp .jp-fp__trust li {
+  color: var(--jp-fp-green);
+}
+
+.jp-fp button:focus-visible,
+.jp-fp select:focus-visible,
+.jp-fp input:focus-visible {
+  outline: 2px solid var(--jp-fp-red);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1199px) {
+  .jp-fp .jp-fp__inner {
+    padding: 0 40px;
+    column-gap: 24px;
+  }
+
+  .jp-fp .jp-fp__options {
+    gap: 20px;
+  }
+
+  .jp-fp .jp-fp__buy {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 989px) {
+  .jp-fp .jp-fp__inner {
+    grid-template-columns: 1fr;
+    row-gap: 8px;
+    padding: 0 17px;
+  }
+
+  .jp-fp .jp-fp__pills {
+    margin-bottom: 8px;
+  }
+
+  .jp-fp .jp-fp__pill {
+    flex-basis: 53px;
+    width: 53px;
+    height: 53px;
+    padding: 0 9px;
+    font-size: 12px;
+    line-height: 13px;
+  }
+
+  .jp-fp .jp-fp__title {
+    margin-bottom: 4px;
+  }
+
+  .jp-fp .jp-fp__price {
+    margin-bottom: 25px;
+  }
+
+  .jp-fp .jp-fp__desc {
+    line-height: 25px;
+  }
+
+  .jp-fp .jp-fp__options {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .jp-fp .jp-fp__buy {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .jp-fp .jp-fp__qty-wrap {
+    flex-basis: auto;
+  }
+
+  .jp-fp .jp-fp__qty button {
+    flex-basis: 70px;
+  }
+
+  .jp-fp .jp-fp__cart {
+    padding-top: 35px;
+  }
+
+  .jp-fp .jp-fp__btn {
+    margin-top: 0;
+  }
+
+  .jp-fp .jp-fp__trust {
+    justify-content: flex-start;
+    column-gap: clamp(8px, 3cqw, 12px);
+    row-gap: 12px;
+    margin-top: 16px;
+    padding: 0 1px;
+    flex-wrap: wrap;
+  }
+}
+
+.jp-fp .jp-fp__select-icon {
+  right: 12px;
+}

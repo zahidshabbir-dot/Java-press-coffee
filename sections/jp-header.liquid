@@ -1,0 +1,379 @@
+{%- assign cta_url = section.settings.cta_url | default: routes.all_products_collection_url -%}
+{%- assign main_menu = section.settings.menu -%}
+{%- comment -%}
+  Mobile menu footer icon order; each network has a social_<network> setting.
+{%- endcomment -%}
+{%- assign social_networks = 'instagram,youtube,facebook,pinterest,tiktok' | split: ',' -%}
+
+{{ 'jp-header.css' | asset_url | stylesheet_tag }}
+
+<header
+  class="jp-hd"
+  data-jp-hd
+  style="
+    --jp-hd-red: {{ section.settings.accent }};
+    --jp-hd-text: {{ section.settings.text_color }};
+    --jp-hd-sub-dark: {{ section.settings.dropdown_color }};
+    --jp-hd-logo-width: {{ section.settings.logo_width }}px;
+    --jp-hd-logo-width-mobile: {{ section.settings.logo_width_mobile }}px;
+  "
+>
+  <div class="jp-hd__inner">
+    {% render 'jp-header-logo',
+      class: 'jp-hd__logo',
+      logo: section.settings.logo,
+      width: section.settings.logo_width,
+      loading: 'eager'
+    %}
+
+    <nav
+      class="jp-hd__nav"
+      id="jp-hd-nav-{{ section.id }}"
+      aria-label="{{ section.settings.navigation_label | escape }}"
+    >
+      <div class="jp-hd__drawer-top">
+        <button
+          type="button"
+          class="jp-hd__close"
+          aria-label="{{ section.settings.close_menu_label | escape }}"
+          data-jp-hd-close
+        >
+          {% render 'jp-icon-close' %}
+        </button>
+        {% render 'jp-header-logo',
+          class: 'jp-hd__drawer-logo',
+          logo: section.settings.logo,
+          width: section.settings.logo_width_mobile,
+          loading: 'lazy'
+        %}
+      </div>
+      {%- if main_menu != blank and main_menu.links != empty -%}
+        {%- for link in main_menu.links -%}
+          {%- assign has_dropdown = false -%}
+          {%- if link.links != empty -%}
+            {%- assign has_dropdown = true -%}
+          {%- endif -%}
+          <div class="jp-hd__item{% if has_dropdown %} has-sub{% endif %}">
+            <a
+              class="jp-hd__link"
+              href="{{ link.url }}"
+              {% if link.current or link.child_current %}aria-current="page"{% endif %}
+            >
+              {{- link.title -}}
+            </a>
+            {%- if has_dropdown -%}
+              <div class="jp-hd__sub">
+                <ul class="jp-hd__sub-list">
+                  {%- for child_link in link.links -%}
+                    <li{% if child_link.links != empty %} class="has-grand"{% endif %}>
+                      <a
+                        href="{{ child_link.url }}"
+                        {% if child_link.current %}aria-current="page"{% endif %}
+                      >
+                        {{- child_link.title -}}
+                      </a>
+                      {%- if child_link.links != empty -%}
+                        <ul class="jp-hd__grand">
+                          {%- for grandchild_link in child_link.links -%}
+                            <li>
+                              <a
+                                href="{{ grandchild_link.url }}"
+                                {% if grandchild_link.current %}aria-current="page"{% endif %}
+                              >
+                                {{- grandchild_link.title -}}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- endif -%}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for block in section.blocks -%}
+          {%- assign dropdown_menu = block.settings.dropdown_menu -%}
+          {%- assign has_dropdown = false -%}
+          {%- if dropdown_menu != blank and dropdown_menu.links != empty -%}
+            {%- assign has_dropdown = true -%}
+          {%- endif -%}
+          <div
+            class="jp-hd__item{% if has_dropdown %} has-sub{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.url != blank -%}
+              <a class="jp-hd__link" href="{{ block.settings.url }}">
+                {{- block.settings.label -}}
+              </a>
+            {%- elsif has_dropdown -%}
+              {%- comment -%} No link set: a button still opens the dropdown. {%- endcomment -%}
+              <button type="button" class="jp-hd__link">
+                {{- block.settings.label -}}
+              </button>
+            {%- else -%}
+              <span class="jp-hd__link">{{ block.settings.label }}</span>
+            {%- endif -%}
+            {%- if has_dropdown -%}
+              <div class="jp-hd__sub">
+                <ul class="jp-hd__sub-list">
+                  {%- for child_link in dropdown_menu.links -%}
+                    <li>
+                      <a
+                        href="{{ child_link.url }}"
+                        {% if child_link.current %}aria-current="page"{% endif %}
+                      >
+                        {{- child_link.title -}}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+      {%- if section.settings.cta_label != blank -%}
+        <a class="jp-hd__cta jp-hd__nav-cta" href="{{ cta_url }}">
+          {{- section.settings.cta_label -}}
+        </a>
+      {%- endif -%}
+      <div class="jp-hd__drawer-foot">
+        <a class="jp-hd__account" href="{{ routes.account_url }}">
+          {% render 'jp-icon-account' %}
+          {{ section.settings.login_label }}
+        </a>
+        <div class="jp-hd__location">
+          {{- localization.country.name }} |
+          {{ localization.country.currency.iso_code }}
+          {{ localization.country.currency.symbol -}}
+        </div>
+        <ul class="jp-hd__social">
+          {%- for network in social_networks -%}
+            {%- assign social_setting_key = 'social_' | append: network -%}
+            {%- assign social_url = section.settings[social_setting_key] -%}
+            {%- if social_url != blank -%}
+              <li>
+                {% render 'jp-social-link', network: network, url: social_url %}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    </nav>
+
+    <a
+      class="jp-hd__cart"
+      href="{{ routes.cart_url }}"
+      id="cart-icon-bubble"
+      aria-label="{{ 'templates.cart.cart' | t }}"
+    >
+      <span class="svg-wrapper">{% render 'jp-icon-cart' %}</span>
+      <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+      {%- if cart != empty -%}
+        <div class="cart-count-bubble">
+          {%- if cart.item_count < 100 -%}
+            <span aria-hidden="true">{{ cart.item_count }}</span>
+          {%- endif -%}
+          <span class="visually-hidden">
+            {{- 'sections.header.cart_count' | t: count: cart.item_count -}}
+          </span>
+        </div>
+      {%- endif -%}
+    </a>
+
+    {%- if section.settings.cta_label != blank -%}
+      <a class="jp-hd__cta" href="{{ cta_url }}">
+        <span class="jp-hd__cta-desktop">{{ section.settings.cta_label }}</span>
+        {%- comment -%} No whitespace between the two spans. {%- endcomment -%}
+        <span class="jp-hd__cta-mobile">
+          {{- section.settings.cta_label_mobile | default: section.settings.cta_label -}}
+        </span>
+      </a>
+    {%- endif -%}
+
+    <button
+      type="button"
+      class="jp-hd__burger"
+      aria-expanded="false"
+      aria-controls="jp-hd-nav-{{ section.id }}"
+      aria-label="{{ section.settings.open_menu_label | escape }}"
+      data-jp-hd-burger
+    >
+      {% render 'jp-icon-burger' %}
+    </button>
+  </div>
+</header>
+
+<script src="{{ 'jp-header.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "JP Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu",
+      "info": "Top-level links show in the header; each link's sub-items become its hover dropdown. Manage it in Content → Menus. If empty, the menu links below are used."
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Upload your logo. If empty, the store name is shown as text."
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 100,
+      "max": 220,
+      "step": 2,
+      "unit": "px",
+      "default": 158
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "label": "Logo width (mobile)",
+      "min": 80,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Accent color",
+      "default": "#ef4444"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Menu text color",
+      "default": "#424242"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_color",
+      "label": "Dropdown highlight color",
+      "default": "#1b4540"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button text",
+      "default": "Shop now →"
+    },
+    {
+      "type": "text",
+      "id": "cta_label_mobile",
+      "label": "Button text (mobile)",
+      "default": "Shop"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link",
+      "info": "If empty, the button links to all products."
+    },
+    {
+      "type": "header",
+      "content": "Mobile menu footer"
+    },
+    {
+      "type": "text",
+      "id": "login_label",
+      "label": "Account link text",
+      "default": "Login"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram link"
+    },
+    {
+      "type": "url",
+      "id": "social_youtube",
+      "label": "YouTube link"
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook link"
+    },
+    {
+      "type": "url",
+      "id": "social_pinterest",
+      "label": "Pinterest link"
+    },
+    {
+      "type": "url",
+      "id": "social_tiktok",
+      "label": "TikTok link"
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "navigation_label",
+      "label": "Navigation name for screen readers",
+      "default": "Main"
+    },
+    {
+      "type": "text",
+      "id": "open_menu_label",
+      "label": "Open menu button name for screen readers",
+      "default": "Menu"
+    },
+    {
+      "type": "text",
+      "id": "close_menu_label",
+      "label": "Close menu button name for screen readers",
+      "default": "Close menu"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Menu link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Link"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link",
+          "info": "If empty, the label shows without a link."
+        },
+        {
+          "type": "link_list",
+          "id": "dropdown_menu",
+          "label": "Dropdown menu",
+          "info": "Only used when no Menu is chosen above."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "JP Header"
+    }
+  ]
+}
+{% endschema %}

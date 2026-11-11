@@ -1,0 +1,38 @@
+{%- comment -%}
+  Shapes the brew guide animation copies while it runs (a drink layer, a coffee ground
+  and the sugar cube). They are kept here as templates so the script does not have to
+  write any SVG itself. This is the only place the sugar cube is drawn.
+  Accepts: nothing. Rendered once inside the brew guide dialog.
+{%- endcomment -%}
+<template data-jp-brew-shape-template="layer">
+  <svg>
+    <rect x="30" width="200" />
+  </svg>
+</template>
+
+<template data-jp-brew-shape-template="coffee-ground">
+  <svg>
+    <circle cy="54" opacity="0" />
+  </svg>
+</template>
+
+<template data-jp-brew-shape-template="sugar-cube">
+  <svg>
+    <rect
+      x="-8"
+      y="-8"
+      width="16"
+      height="16"
+      rx="3"
+      fill="#fff"
+      stroke="#e1e4e8"
+      stroke-width="1.5"
+    />
+  </svg>
+</template>
+
+<template data-jp-brew-shape-template="swatch-check">
+  <span>
+    {% render 'jp-icon-check', class: 'jp-bg__swatch-check' %}
+  </span>
+</template>

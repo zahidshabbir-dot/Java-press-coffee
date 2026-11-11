@@ -1,0 +1,121 @@
+.jp-ann {
+  background: var(--jp-ann-bg);
+  color: var(--jp-ann-text);
+  font-family: var(--font-body-family);
+}
+
+.jp-ann .jp-ann__inner {
+  position: relative;
+  max-width: 1440px;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jp-ann .jp-ann__slides {
+  display: grid;
+  width: 100%;
+  text-align: center;
+}
+
+.jp-ann .jp-ann__slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.jp-ann .jp-ann__slide.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.jp-ann .jp-ann__link {
+  color: var(--jp-ann-link);
+  font-weight: 600;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  margin-left: 6px;
+}
+
+.jp-ann .jp-ann__arrow {
+  position: absolute;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--jp-ann-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jp-ann .jp-ann__arrow--prev {
+  left: 120px;
+}
+
+.jp-ann .jp-ann__arrow--next {
+  right: 96px;
+}
+
+.jp-ann .jp-ann__arrow:focus-visible,
+.jp-ann .jp-ann__link:focus-visible {
+  outline: 2px solid var(--jp-ann-text);
+  outline-offset: 2px;
+}
+
+.jp-ann .jp-ann__arrow svg {
+  width: 24px;
+  height: 24px;
+}
+
+.jp-ann[data-single='true'] .jp-ann__arrow {
+  display: none;
+}
+
+@media (max-width: 1199px) {
+  .jp-ann .jp-ann__inner {
+    padding: 0 56px;
+  }
+
+  .jp-ann .jp-ann__arrow--prev {
+    left: 16px;
+  }
+
+  .jp-ann .jp-ann__arrow--next {
+    right: 16px;
+  }
+}
+
+@media (max-width: 749px) {
+  .jp-ann .jp-ann__inner {
+    height: auto;
+    min-height: 48px;
+    padding: 8px 48px;
+  }
+
+  .jp-ann .jp-ann__slide {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .jp-ann .jp-ann__arrow--prev {
+    left: 8px;
+  }
+
+  .jp-ann .jp-ann__arrow--next {
+    right: 8px;
+  }
+}

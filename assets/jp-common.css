@@ -1,0 +1,47 @@
+/*
+  Rules shared by several Java Press sections. Loaded once on every page
+  from layout/theme.liquid, before the section stylesheets.
+*/
+
+/* Product grid (collection and recommended products) */
+.jp-cl .jp-cl__grid,
+.jp-rc .jp-rc__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Struck-through compare-at price (product cards and buy boxes) */
+.jp-bs .jp-bs__was,
+.jp-cl .jp-cl__was,
+.jp-rc .jp-rc__was,
+.jp-fp .jp-fp__was,
+.jp-mp .jp-mp__was {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+  color: #929292;
+  text-decoration: line-through;
+}
+
+/* 20px icons centred in their button */
+.jp-hd .jp-hd__close svg,
+.jp-mp .jp-mp__arrow svg,
+.jp-fp .jp-fp__qty button svg,
+.jp-mp .jp-mp__qty button svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: auto;
+}
+
+@media (max-width: 989px) {
+  .jp-cl .jp-cl__grid,
+  .jp-rc .jp-rc__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 16px;
+  }
+}

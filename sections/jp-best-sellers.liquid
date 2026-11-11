@@ -1,0 +1,335 @@
+{%- liquid
+  assign track_id = 'jp-bs-track-' | append: section.id
+  assign has_active_tab = false
+  assign active_tab_button_id = ''
+  assign tab_buttons_markup = ''
+  assign product_cards_markup = ''
+  assign badge_markup = ''
+-%}
+
+{%- if section.settings.show_badge and section.settings.badge != blank -%}
+  {%- capture badge_markup -%}
+    {{
+      section.settings.badge
+      | image_url: width: 200
+      | image_tag: class: 'jp-bs__badge', alt: '', loading: 'lazy'
+    }}
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- for tab_number in (1..4) -%}
+  {%- assign collection_setting_key = 'collection_' | append: tab_number -%}
+  {%- assign tab_label_setting_key = 'tab_' | append: tab_number -%}
+  {%- assign tab_collection = section.settings[collection_setting_key] -%}
+  {%- if tab_collection != blank -%}
+    {%- liquid
+      assign tab_button_id = 'jp-bs-tab-' | append: section.id
+      assign tab_button_id = tab_button_id | append: '-' | append: tab_number
+    -%}
+    {%- assign is_selected_tab = false -%}
+    {%- unless has_active_tab -%}
+      {%- assign is_selected_tab = true -%}
+      {%- assign has_active_tab = true -%}
+      {%- assign active_tab_button_id = tab_button_id -%}
+    {%- endunless -%}
+
+    {%- capture tab_button_markup -%}
+      <button
+        type="button"
+        class="jp-bs__tab"
+        id="{{ tab_button_id }}"
+        role="tab"
+        data-jp-bs-tab="{{ tab_number }}"
+        aria-selected="{{ is_selected_tab }}"
+        aria-controls="{{ track_id }}"
+      >
+        {{- section.settings[tab_label_setting_key] | default: tab_collection.title -}}
+      </button>
+    {%- endcapture -%}
+    {%- assign tab_buttons_markup = tab_buttons_markup | append: tab_button_markup -%}
+
+    {%- capture card_attributes -%}
+      data-jp-bs-card data-tab="{{ tab_number }}"
+    {%- endcapture -%}
+    {%- capture tab_cards_markup -%}
+      {%- for tab_product in tab_collection.products limit: section.settings.products_per_tab -%}
+        {% render 'jp-product-card',
+          product: tab_product,
+          prefix: 'jp-bs',
+          wrapper_tag: 'article',
+          card_attributes: card_attributes,
+          badge_markup: badge_markup,
+          button_label: section.settings.button_label,
+          options_label: section.settings.button_options_label,
+          sold_out_label: section.settings.sold_out_label
+        %}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- assign product_cards_markup = product_cards_markup | append: tab_cards_markup -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{{ 'jp-product-card.css' | asset_url | stylesheet_tag }}
+{{ 'jp-best-sellers.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="jp-bs"
+  style="
+    --jp-bs-red: {{ section.settings.accent }};
+    --jp-bs-text: {{ section.settings.text_color }};
+    --jp-bs-tile: {{ section.settings.tile_bg }};
+    --jp-bs-tab: {{ section.settings.tab_color }};
+    --jp-bs-bg: {{ section.settings.bg }};
+    --jp-bs-padding-top: {{ section.settings.padding_top }}px;
+    --jp-bs-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+  data-jp-bs
+>
+  <div class="jp-bs__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="jp-bs__title">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if has_active_tab -%}
+      <div class="jp-bs__tabs" role="tablist">
+        {{- tab_buttons_markup -}}
+      </div>
+    {%- endif -%}
+
+    <div class="jp-bs__carousel">
+      <button
+        type="button"
+        class="jp-bs__arrow jp-bs__arrow--prev"
+        data-jp-bs-prev
+        aria-label="{{ section.settings.previous_label | escape }}"
+      >
+        {% render 'jp-icon-chevron', direction: 'prev' %}
+      </button>
+
+      <div
+        class="jp-bs__track"
+        id="{{ track_id }}"
+        {% if has_active_tab %}
+          role="tabpanel"
+          aria-labelledby="{{ active_tab_button_id }}"
+        {% endif %}
+        data-jp-bs-track
+      >
+        {{- product_cards_markup -}}
+      </div>
+
+      <button
+        type="button"
+        class="jp-bs__arrow jp-bs__arrow--next"
+        data-jp-bs-next
+        aria-label="{{ section.settings.next_label | escape }}"
+      >
+        {% render 'jp-icon-chevron', direction: 'next' %}
+      </button>
+    </div>
+
+    {%- if request.design_mode and has_active_tab == false -%}
+      <p class="jp-bs__empty">
+        Choose a collection for at least one tab in the section settings to show products.
+      </p>
+    {%- endif -%}
+    <div
+      class="jp-bs__dots"
+      data-jp-bs-dots
+      data-dot-label="{{ section.settings.dot_label | escape }}"
+    ></div>
+  </div>
+</section>
+
+<script src="{{ 'jp-best-sellers.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "JP Best sellers",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Try Our Best Sellers"
+    },
+    {
+      "type": "header",
+      "content": "Tabs",
+      "info": "Each tab shows one collection. Leave a collection empty to hide its tab."
+    },
+    {
+      "type": "collection",
+      "id": "collection_1",
+      "label": "Tab 1 collection"
+    },
+    {
+      "type": "text",
+      "id": "tab_1",
+      "label": "Tab 1 name",
+      "info": "Leave empty to use the collection title."
+    },
+    {
+      "type": "collection",
+      "id": "collection_2",
+      "label": "Tab 2 collection"
+    },
+    {
+      "type": "text",
+      "id": "tab_2",
+      "label": "Tab 2 name",
+      "info": "Leave empty to use the collection title."
+    },
+    {
+      "type": "collection",
+      "id": "collection_3",
+      "label": "Tab 3 collection"
+    },
+    {
+      "type": "text",
+      "id": "tab_3",
+      "label": "Tab 3 name",
+      "info": "Leave empty to use the collection title."
+    },
+    {
+      "type": "collection",
+      "id": "collection_4",
+      "label": "Tab 4 collection"
+    },
+    {
+      "type": "text",
+      "id": "tab_4",
+      "label": "Tab 4 name",
+      "info": "Leave empty to use the collection title."
+    },
+    {
+      "type": "range",
+      "id": "products_per_tab",
+      "label": "Products per tab",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Cards"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Add to cart button text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "button_options_label",
+      "label": "Button text (products with options)",
+      "default": "Choose options"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out text",
+      "default": "Sold out"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show badge",
+      "info": "The badge only shows once a badge image is uploaded below.",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "badge",
+      "label": "Badge image",
+      "info": "Shown in the top right corner of every product image."
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "previous_label",
+      "label": "Previous button label",
+      "info": "Read by screen readers.",
+      "default": "Previous products"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next button label",
+      "info": "Read by screen readers.",
+      "default": "Next products"
+    },
+    {
+      "type": "text",
+      "id": "dot_label",
+      "label": "Page dot label",
+      "info": "Read by screen readers. {page} is replaced by the page number.",
+      "default": "Go to page {page}"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "default": "#f2f2f2"
+    },
+    {
+      "type": "color",
+      "id": "tile_bg",
+      "label": "Image tile background",
+      "default": "#d9d9d9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#424242"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Accent color (button)",
+      "default": "#ef4444"
+    },
+    {
+      "type": "color",
+      "id": "tab_color",
+      "label": "Active tab underline",
+      "default": "#af272f"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 82
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 46
+    }
+  ],
+  "presets": [
+    {
+      "name": "JP Best sellers"
+    }
+  ]
+}
+{% endschema %}

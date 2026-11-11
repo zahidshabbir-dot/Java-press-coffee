@@ -57,6 +57,7 @@
     <script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'jp-sections.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'standard-actions-override.js' | asset_url }}" defer="defer"></script>
 
     {%- if settings.animations_reveal_on_scroll -%}
@@ -279,6 +280,7 @@
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'jp-common.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
     {%- if settings.cart_type == 'drawer' -%}
@@ -287,6 +289,7 @@
       {{ 'component-totals.css' | asset_url | stylesheet_tag }}
       {{ 'component-price.css' | asset_url | stylesheet_tag }}
       {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+      {{ 'jp-cart-drawer.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
 
     {%- unless settings.type_body_font.system? -%}
@@ -319,6 +322,21 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
+    {{ 'jp-reduced-motion.css' | asset_url | stylesheet_tag }}
+    {%- comment -%}
+      The Java Press sections use the Body font from Theme settings. The theme only loads
+      the regular and bold faces, so the medium, semibold and extra bold faces are added here.
+    {%- endcomment -%}
+    {%- liquid
+      assign body_font_500 = settings.type_body_font | font_modify: 'weight', '500'
+      assign body_font_600 = settings.type_body_font | font_modify: 'weight', '600'
+      assign body_font_800 = settings.type_body_font | font_modify: 'weight', '800'
+    -%}
+    {% style %}
+      {{ body_font_500 | font_face: font_display: 'swap' }}
+      {{ body_font_600 | font_face: font_display: 'swap' }}
+      {{ body_font_800 | font_face: font_display: 'swap' }}
+    {% endstyle %}
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
@@ -400,6 +418,8 @@
 
     {%- if settings.cart_type == 'drawer' -%}
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'jp-ajax-cart.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'jp-cart-calendar.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
   </body>
 </html>

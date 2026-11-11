@@ -62,7 +62,18 @@
         </div>
       {%- endif -%}
       <div class="drawer__header">
-        <h2 class="drawer__heading">{{ 'sections.cart.title' | t }}</h2>
+        <div class="jp-cd__head">
+          <h2 class="drawer__heading">{{ 'sections.cart.title' | t }}</h2>
+          {%- if cart != empty -%}
+            {%- assign jp_count_word = settings.jp_cart_count_word | default: 'products' -%}
+            {%- assign jp_count_last = jp_count_word | slice: -1 -%}
+            {%- if cart.item_count == 1 and jp_count_last == 's' -%}
+              {%- assign jp_count_len = jp_count_word | size | minus: 1 -%}
+              {%- assign jp_count_word = jp_count_word | slice: 0, jp_count_len -%}
+            {%- endif -%}
+            <p class="jp-cd__count">{{ cart.item_count }} {{ jp_count_word }}</p>
+          {%- endif -%}
+        </div>
         <button
           class="drawer__close"
           type="button"
@@ -194,8 +205,7 @@
                                   <div class="product-option">
                                     <dt>{{ option.name }}:</dt>
                                     <dd>
-                                      {{ option.value -}}
-                                      {%- unless forloop.last %}, {% endunless %}
+                                      {{ option.value }}
                                     </dd>
                                   </div>
                                 {%- endfor -%}
@@ -488,6 +498,58 @@
         </form>
       </cart-drawer-items>
       <div class="drawer__footer">
+        {%- if settings.jp_delivery_enabled and cart != empty -%}
+          {%- assign jp_lead = settings.jp_delivery_lead_days | times: 86400 -%}
+          {%- assign jp_min = 'now' | date: '%s' | plus: jp_lead -%}
+          {%- comment -%} The saved date is free text set by the shopper. Only a real YYYY-MM-DD date is printed, and it is escaped. {%- endcomment -%}
+          {%- assign jp_saved = cart.attributes.delivery_date | strip -%}
+          {%- assign jp_saved_ok = '' -%}
+          {%- assign jp_saved_fmt = jp_saved | date: '%Y-%m-%d' -%}
+          {%- if jp_saved != blank and jp_saved_fmt == jp_saved -%}
+            {%- assign jp_saved_ok = jp_saved -%}
+          {%- endif -%}
+          <div class="jp-cd__date">
+            <label class="jp-cd__date-label" for="CartDrawer-DeliveryDate">{{ settings.jp_delivery_label }}</label>
+            <div class="jp-cd__date-field" data-jp-cal>
+              <button type="button" class="jp-cd__date-btn" data-jp-cal-open aria-haspopup="dialog" aria-expanded="false">
+                <span data-jp-cal-label data-empty="{{ settings.jp_delivery_placeholder | escape }}">{% if jp_saved_ok != blank %}{{ jp_saved_ok | date: '%d/%m/%Y' | escape }}{% else %}{{ settings.jp_delivery_placeholder | escape }}{% endif %}</span>
+                {% render 'jp-icon-calendar', class: 'jp-cd__date-icon' %}
+              </button>
+              <input
+                type="hidden"
+                id="CartDrawer-DeliveryDate"
+                name="attributes[delivery_date]"
+                form="CartDrawer-Form"
+                value="{{ jp_saved_ok | escape }}"
+                data-jp-delivery-date
+                data-min="{{ jp_min | date: '%Y-%m-%d' }}"
+                data-required="{{ settings.jp_delivery_required }}"
+              >
+              <div class="jp-cal" role="dialog" aria-label="{{ settings.jp_delivery_label | escape }}" hidden>
+                <div class="jp-cal__head">
+                  <button type="button" class="jp-cal__nav" data-jp-cal-prev aria-label="{{ settings.jp_delivery_prev_label | escape }}">
+                    {% render 'jp-icon-calendar-arrow' %}
+                  </button>
+                  <p class="jp-cal__title" aria-live="polite" data-jp-cal-title></p>
+                  <button type="button" class="jp-cal__nav jp-cal__nav--next" data-jp-cal-next aria-label="{{ settings.jp_delivery_next_label | escape }}">
+                    {% render 'jp-icon-calendar-arrow' %}
+                  </button>
+                </div>
+                <div class="jp-cal__week">
+                  {%- assign jp_weekdays = settings.jp_delivery_weekdays | split: ',' -%}
+                  {%- for jp_day in jp_weekdays limit: 7 -%}<span>{{ jp_day | strip }}</span>{%- endfor -%}
+                </div>
+                <div class="jp-cal__days" data-jp-cal-days></div>
+                <div class="jp-cal__foot">
+                  {%- assign jp_empty_value = settings.jp_delivery_placeholder | replace: '/', ' / ' -%}
+                  <span class="jp-cal__value" data-jp-cal-value data-empty="{{ jp_empty_value | escape }}">{{ jp_empty_value }}</span>
+                  <button type="button" class="jp-cal__set" data-jp-cal-set disabled>{{ settings.jp_delivery_set_label }}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+
         {%- if settings.show_cart_note -%}
           <details id="Details-CartDrawer">
             <summary>
@@ -528,7 +590,7 @@
 
           <div class="totals" role="status">
             <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
-            <p class="totals__total-value">{{ cart.total_price | money_with_currency }}</p>
+            <p class="totals__total-value">{% if settings.jp_cart_show_currency %}{{ cart.total_price | money_with_currency }}{% else %}{{ cart.total_price | money }}{% endif %}</p>
           </div>
 
           <small class="tax-note caption-large rte">

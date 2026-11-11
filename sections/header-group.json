@@ -11,49 +11,89 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
-    "wr-header": {
-      "type": "wr-header",
-      "settings": {
-        "logo_width": 96,
-        "search_placeholder": "Search style, room or code (R9135)",
-        "phone": "1-888-990-2250",
-        "email": "sales@wallsrepublic.com",
-        "menu": "main-menu",
-        "highlight_title": "Sale",
-        "highlight_color": "#c10007"
-      }
-    },
-    "wr-announcement-bar": {
-      "type": "wr-announcement-bar",
+    "jp-announcement-bar": {
+      "type": "jp-announcement-bar",
       "blocks": {
         "m1": {
           "type": "message",
           "settings": {
-            "show_rating": true,
-            "before": "Rated 4.8 by 810+ customers",
-            "underline": true
-          }
-        },
-        "m2": {
-          "type": "message",
-          "settings": {
-            "before": "✦ Free shipping on all orders over ",
-            "highlight": "$350"
-          }
-        },
-        "m3": {
-          "type": "message",
-          "settings": {
-            "before": "✦ Try 3 free samples in your actual space"
+            "text": "We are here to help as your coffee concierge!",
+            "link_label": "Take the survey",
+            "link_url": ""
           }
         }
       },
       "block_order": [
-        "m1",
-        "m2",
-        "m3"
+        "m1"
       ],
-      "settings": {}
+      "settings": {
+        "bg": "#d4d4d4",
+        "text_color": "#2d2d2d",
+        "link_color": "#ef4444",
+        "autoplay": false,
+        "delay": 5
+      }
+    },
+    "jp-header": {
+      "type": "jp-header",
+      "blocks": {
+        "l1": {
+          "type": "link",
+          "settings": {
+            "label": "Learning Centre",
+            "url": "",
+            "dropdown_menu": ""
+          }
+        },
+        "l2": {
+          "type": "link",
+          "settings": {
+            "label": "Our Coffee Solutions",
+            "url": "",
+            "dropdown_menu": ""
+          }
+        },
+        "l3": {
+          "type": "link",
+          "settings": {
+            "label": "About Us",
+            "url": "",
+            "dropdown_menu": ""
+          }
+        },
+        "l4": {
+          "type": "link",
+          "settings": {
+            "label": "Blogs",
+            "url": "",
+            "dropdown_menu": ""
+          }
+        }
+      },
+      "block_order": [
+        "l1",
+        "l2",
+        "l3",
+        "l4"
+      ],
+      "settings": {
+        "menu": "main-menu",
+        "logo": "shopify://shop_images/Group_1000014406.png",
+        "logo_width": 158,
+        "logo_width_mobile": 120,
+        "accent": "#ef4444",
+        "text_color": "#424242",
+        "dropdown_color": "#1b4540",
+        "cta_label": "Shop now →",
+        "login_label": "Login",
+        "social_instagram": "",
+        "social_youtube": "",
+        "social_facebook": "",
+        "social_pinterest": "",
+        "social_tiktok": "",
+        "cta_label_mobile": "Shop",
+        "cta_url": "shopify://collections/all"
+      }
     },
     "announcement-bar": {
       "type": "announcement-bar",
@@ -101,8 +141,8 @@
     }
   },
   "order": [
-    "wr-announcement-bar",
-    "wr-header",
+    "jp-announcement-bar",
+    "jp-header",
     "announcement-bar",
     "header"
   ]
