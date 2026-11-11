@@ -2,22 +2,32 @@
 {%- assign background_image_mobile = section.settings.bg_image_mobile -%}
 {%- assign hero_image = section.settings.image -%}
 
-{%- assign script_font = section.settings.script_font -%}
+{%- assign script_font_url = section.settings.script_font_url | strip | remove: "'" | remove: '"' -%}
 
 {{ 'jp-hero.css' | asset_url | stylesheet_tag }}
 
-{%- comment -%} Loads the script font chosen in the section settings (Shopify font library). {%- endcomment -%}
-{% style %}
-  {{ script_font | font_face: font_display: 'swap' }}
-{% endstyle %}
+{%- if script_font_url != blank -%}
+  {%- comment -%}
+    The font file is uploaded in Shopify admin (Content > Files) and its link is pasted in
+    the section settings, so no font is stored in the theme code.
+  {%- endcomment -%}
+  {% style %}
+    @font-face {
+      font-family: 'JP Hero Script';
+      src: url('{{ script_font_url }}');
+      font-display: swap;
+    }
+  {% endstyle %}
+{%- endif -%}
 
 <section
   class="jp-hero"
   style="
     --jp-hero-bg: {{ section.settings.bg }};
     --jp-hero-accent: {{ section.settings.accent_color }};
-    --jp-hero-script-font: {{ script_font.family }}, {{ script_font.fallback_families }};
-    --jp-hero-script-weight: {{ script_font.weight }};
+    {%- if script_font_url != blank %}
+      --jp-hero-script-font: 'JP Hero Script', cursive;
+    {%- endif %}
     --jp-hero-red: {{ section.settings.button_color }};
     --jp-hero-dark: {{ section.settings.button_secondary_color }};
     --jp-hero-height: {{ section.settings.height }}px;
@@ -102,11 +112,10 @@
       "default": "Perfect"
     },
     {
-      "type": "font_picker",
-      "id": "script_font",
-      "label": "Script word font",
-      "info": "Font for the highlighted word in the heading. Pick a handwritten font.",
-      "default": "raleway_n4"
+      "type": "text",
+      "id": "script_font_url",
+      "label": "Script word font file (link)",
+      "info": "Upload the font file (.woff2) in Content > Files, copy its link and paste it here. Leave empty to use the heading font."
     },
     {
       "type": "text",
