@@ -1,0 +1,109 @@
+{%- comment -%}
+  Product card shared by the JP Best sellers, JP Collection and JP Recommended sections.
+  Each section keeps its own class names through `prefix` (prefix 'jp-bs' gives jp-bs__card,
+  jp-bs__media, ...), so the shared rules in jp-product-card.css and the section CSS both apply.
+
+  Accepts:
+  - product: {Object} The product to show.
+  - prefix: {String} Class prefix of the section: 'jp-bs', 'jp-cl' or 'jp-rc'.
+  - wrapper_tag: {String} Card element: 'li' (default) or 'article'.
+  - card_attributes: {String} Extra attributes for the card element (optional).
+  - image_loading: {String} 'lazy' (default) or 'eager'.
+  - tag_label: {String} Products with this tag show it as a label on the image (optional).
+  - badge_markup: {String} Badge image markup, built once by the section (optional).
+  - button_label: {String} Add to cart button text.
+  - options_label: {String} Button text for products with options.
+  - sold_out_label: {String} Sold out text.
+
+  Usage:
+  {% render 'jp-product-card',
+    product: product,
+    prefix: 'jp-rc',
+    badge_markup: badge_markup,
+    button_label: section.settings.button_label,
+    options_label: section.settings.button_options_label,
+    sold_out_label: section.settings.sold_out_label
+  %}
+{%- endcomment -%}
+
+{%- liquid
+  assign card_tag = wrapper_tag | default: 'li'
+  assign card_image_loading = image_loading | default: 'lazy'
+  assign image_class = prefix | append: '__img'
+  assign button_class = prefix | append: '__btn'
+-%}
+
+<{{ card_tag }}
+  class="{{ prefix }}__card"
+  {{ card_attributes }}
+>
+  <a
+    class="{{ prefix }}__media"
+    href="{{ product.url }}"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    {%- if tag_label != blank and product.tags contains tag_label -%}
+      <span class="{{ prefix }}__tag">{{ tag_label }}</span>
+    {%- endif -%}
+    {%- if product.featured_image != blank -%}
+      {{
+        product.featured_image
+        | image_url: width: 600
+        | image_tag:
+          class: image_class,
+          alt: '',
+          loading: card_image_loading,
+          widths: '300, 450, 600',
+          sizes: '(min-width: 990px) 25vw, 50vw'
+      }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: image_class }}
+    {%- endif -%}
+    {{- badge_markup -}}
+  </a>
+  <a
+    class="{{ prefix }}__name"
+    href="{{ product.url }}"
+  >
+    {{- product.title -}}
+  </a>
+  {%- if product.metafields.judgeme.badge != blank -%}
+    <div class="{{ prefix }}__rating {{ prefix }}__rating--jm">
+      {{- product.metafields.judgeme.badge -}}
+    </div>
+  {%- endif -%}
+  <div class="{{ prefix }}__price">
+    <span class="{{ prefix }}__now">{{ product.price | money }}</span>
+    {%- if product.compare_at_price > product.price -%}
+      <s class="{{ prefix }}__was">{{ product.compare_at_price | money }}</s>
+    {%- endif -%}
+  </div>
+  {%- if product.has_only_default_variant and product.available -%}
+    {%- assign form_class = prefix | append: '__form' -%}
+    {%- form 'product', product, class: form_class -%}
+      <input
+        type="hidden"
+        name="id"
+        value="{{ product.selected_or_first_available_variant.id }}"
+      >
+      <button
+        type="submit"
+        class="{{ button_class }}"
+      >
+        {{- button_label -}}
+      </button>
+    {%- endform -%}
+  {%- elsif product.available -%}
+    <a
+      class="{{ button_class }}"
+      href="{{ product.url }}"
+    >
+      {{- options_label -}}
+    </a>
+  {%- else -%}
+    <span class="{{ button_class }} {{ prefix }}__btn--off">
+      {{- sold_out_label -}}
+    </span>
+  {%- endif -%}
+</{{ card_tag }}>

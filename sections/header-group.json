@@ -11,55 +11,6 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
-    "jp-header": {
-      "type": "jp-header",
-      "blocks": {
-        "l1": {
-          "type": "link",
-          "settings": {
-            "label": "Learning Centre",
-            "url": "",
-            "dropdown_menu": "learning-centre"
-          }
-        },
-        "l2": {
-          "type": "link",
-          "settings": {
-            "label": "Our Coffee Solutions",
-            "url": "",
-            "dropdown_menu": "our-coffee-solutions"
-          }
-        },
-        "l3": {
-          "type": "link",
-          "settings": {
-            "label": "About Us",
-            "url": ""
-          }
-        },
-        "l4": {
-          "type": "link",
-          "settings": {
-            "label": "Blogs",
-            "url": ""
-          }
-        }
-      },
-      "block_order": [
-        "l1",
-        "l2",
-        "l3",
-        "l4"
-      ],
-      "settings": {
-        "logo_width": 158,
-        "accent": "#ef4444",
-        "text_color": "#424242",
-        "cta_label": "Shop now →",
-        "cta_url": "shopify://collections/all",
-        "menu": "main-menu"
-      }
-    },
     "jp-announcement-bar": {
       "type": "jp-announcement-bar",
       "blocks": {
@@ -75,7 +26,74 @@
       "block_order": [
         "m1"
       ],
-      "settings": {}
+      "settings": {
+        "bg": "#d4d4d4",
+        "text_color": "#2d2d2d",
+        "link_color": "#ef4444",
+        "autoplay": false,
+        "delay": 5
+      }
+    },
+    "jp-header": {
+      "type": "jp-header",
+      "blocks": {
+        "l1": {
+          "type": "link",
+          "settings": {
+            "label": "Learning Centre",
+            "url": "",
+            "dropdown_menu": ""
+          }
+        },
+        "l2": {
+          "type": "link",
+          "settings": {
+            "label": "Our Coffee Solutions",
+            "url": "",
+            "dropdown_menu": ""
+          }
+        },
+        "l3": {
+          "type": "link",
+          "settings": {
+            "label": "About Us",
+            "url": "",
+            "dropdown_menu": ""
+          }
+        },
+        "l4": {
+          "type": "link",
+          "settings": {
+            "label": "Blogs",
+            "url": "",
+            "dropdown_menu": ""
+          }
+        }
+      },
+      "block_order": [
+        "l1",
+        "l2",
+        "l3",
+        "l4"
+      ],
+      "settings": {
+        "menu": "main-menu",
+        "logo": "shopify://shop_images/Group_1000014406.png",
+        "logo_width": 158,
+        "logo_width_mobile": 120,
+        "accent": "#ef4444",
+        "text_color": "#424242",
+        "dropdown_color": "#1b4540",
+        "cta_label": "Shop now →",
+        "login_label": "Login",
+        "social_instagram": "",
+        "social_youtube": "",
+        "social_facebook": "",
+        "social_pinterest": "",
+        "social_tiktok": "",
+        "cta_label_mobile": "Shop",
+        "cta_url": "shopify://collections/all"
+      }
     },
     "announcement-bar": {
       "type": "announcement-bar",

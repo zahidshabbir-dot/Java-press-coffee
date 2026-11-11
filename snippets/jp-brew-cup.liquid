@@ -1,0 +1,129 @@
+{%- comment -%}
+  Brew guide: the cup illustration the game draws into.
+  The script finds its parts by their data-jp-brew-* attributes (data-jp-brew-cup-body,
+  data-jp-brew-layers, data-jp-brew-stream ...).
+  Accepts:
+  - id_suffix: unique suffix for the clip path, gradient and outline ids.
+    Defaults to the section id.
+  - label: accessible name of the illustration. When blank the illustration is hidden
+    from screen readers.
+{%- endcomment -%}
+{%- assign cup_id_suffix = id_suffix | default: section.id -%}
+<svg
+  class="jp-bg__svg"
+  viewBox="0 0 280 290"
+  {% if label != blank %}
+    role="img"
+    aria-label="{{ label | escape }}"
+  {% else %}
+    aria-hidden="true"
+  {% endif %}
+>
+  {% render 'jp-brew-cup-defs', id_suffix: cup_id_suffix %}
+
+  {%- comment -%} Saucer and its shadow {%- endcomment -%}
+  <ellipse cx="130" cy="268" rx="108" ry="13" fill="#000" opacity="0.12"/>
+  <ellipse cx="130" cy="250" rx="112" ry="22" fill="#e3ddd7"/>
+  <ellipse cx="130" cy="246" rx="92" ry="15" fill="#f4f1ee"/>
+  <ellipse cx="130" cy="236" rx="60" ry="8" fill="#000" opacity="0.16"/>
+
+  {%- comment -%}
+    Cup: handle, body, shine and rim. The outlines come from jp-brew-cup-defs; the fill and
+    stroke set on each <use> (and by the script) are inherited by the outline.
+  {%- endcomment -%}
+  <use
+    data-jp-brew-cup-handle
+    href="#jp-bg-cup-handle-{{ cup_id_suffix }}"
+    fill="none"
+    stroke="#fff"
+    stroke-width="13"
+    stroke-linecap="round"
+  />
+  <use
+    href="#jp-bg-cup-handle-{{ cup_id_suffix }}"
+    fill="none"
+    stroke="#000"
+    stroke-opacity="0.12"
+    stroke-width="13"
+    stroke-linecap="round"
+    stroke-dasharray="0 200 60 400"
+  />
+  <use
+    data-jp-brew-cup-body
+    href="#jp-bg-cup-body-{{ cup_id_suffix }}"
+    fill="#fff"
+  />
+  <use
+    href="#jp-bg-cup-body-{{ cup_id_suffix }}"
+    fill="url(#jp-bg-shine-{{ cup_id_suffix }})"
+  />
+  <ellipse data-jp-brew-cup-rim cx="130" cy="98" rx="76" ry="16" fill="#fff"/>
+  <ellipse cx="130" cy="98" rx="70" ry="12" fill="#d8d0c8"/>
+
+  {%- comment -%} Drink inside the cup (filled by the script) {%- endcomment -%}
+  <g clip-path="url(#jp-bg-clip-{{ cup_id_suffix }})">
+    <g data-jp-brew-layers></g>
+    <ellipse
+      data-jp-brew-surface
+      cx="130"
+      cy="150"
+      rx="60"
+      ry="9"
+      fill="#fff"
+      opacity="0"
+    />
+    <g data-jp-brew-swirl opacity="0">
+      <path
+        d="M-34 0 C-34 -16 34 -16 34 0 C34 12 -20 12 -20 0 C-20 -6 14 -6 14 0"
+        fill="none"
+        stroke="#fff"
+        stroke-opacity="0.5"
+        stroke-width="3"
+        stroke-linecap="round"
+      />
+    </g>
+  </g>
+
+  {%- comment -%} Pour stream and falling coffee / sugar {%- endcomment -%}
+  <rect
+    data-jp-brew-stream
+    x="126"
+    y="52"
+    width="8"
+    height="0"
+    rx="4"
+    opacity="0"
+  />
+  <g data-jp-brew-effects></g>
+
+  {%- comment -%} Spoon {%- endcomment -%}
+  <g data-jp-brew-spoon opacity="0">
+    <line
+      data-jp-brew-spoon-line
+      x1="200"
+      y1="14"
+      x2="130"
+      y2="150"
+      stroke="#b9bcc2"
+      stroke-width="6"
+      stroke-linecap="round"
+    />
+    <ellipse
+      data-jp-brew-spoon-bowl
+      cx="130"
+      cy="150"
+      rx="9"
+      ry="6"
+      fill="#b9bcc2"
+    />
+  </g>
+
+  {% render 'jp-brew-pourers' %}
+
+  {%- comment -%} Steam (shown when the drink is ready) {%- endcomment -%}
+  <g class="jp-bg__steam" data-jp-brew-steam>
+    <path d="M104 78 C92 58 116 46 104 24"/>
+    <path d="M134 74 C122 52 148 42 134 18"/>
+    <path d="M164 78 C152 58 176 46 164 24"/>
+  </g>
+</svg>

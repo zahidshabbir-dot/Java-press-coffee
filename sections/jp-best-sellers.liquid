@@ -1,351 +1,147 @@
-{% render 'jp-fonts' %}
+{%- liquid
+  assign track_id = 'jp-bs-track-' | append: section.id
+  assign has_active_tab = false
+  assign active_tab_button_id = ''
+  assign tab_buttons_markup = ''
+  assign product_cards_markup = ''
+  assign badge_markup = ''
+-%}
 
-{%- assign sid = section.id -%}
+{%- if section.settings.show_badge and section.settings.badge != blank -%}
+  {%- capture badge_markup -%}
+    {{
+      section.settings.badge
+      | image_url: width: 200
+      | image_tag: class: 'jp-bs__badge', alt: '', loading: 'lazy'
+    }}
+  {%- endcapture -%}
+{%- endif -%}
 
-{% style %}
-  .jp-bs-{{ sid }} {
+{%- for tab_number in (1..4) -%}
+  {%- assign collection_setting_key = 'collection_' | append: tab_number -%}
+  {%- assign tab_label_setting_key = 'tab_' | append: tab_number -%}
+  {%- assign tab_collection = section.settings[collection_setting_key] -%}
+  {%- if tab_collection != blank -%}
+    {%- liquid
+      assign tab_button_id = 'jp-bs-tab-' | append: section.id
+      assign tab_button_id = tab_button_id | append: '-' | append: tab_number
+    -%}
+    {%- assign is_selected_tab = false -%}
+    {%- unless has_active_tab -%}
+      {%- assign is_selected_tab = true -%}
+      {%- assign has_active_tab = true -%}
+      {%- assign active_tab_button_id = tab_button_id -%}
+    {%- endunless -%}
+
+    {%- capture tab_button_markup -%}
+      <button
+        type="button"
+        class="jp-bs__tab"
+        id="{{ tab_button_id }}"
+        role="tab"
+        data-jp-bs-tab="{{ tab_number }}"
+        aria-selected="{{ is_selected_tab }}"
+        aria-controls="{{ track_id }}"
+      >
+        {{- section.settings[tab_label_setting_key] | default: tab_collection.title -}}
+      </button>
+    {%- endcapture -%}
+    {%- assign tab_buttons_markup = tab_buttons_markup | append: tab_button_markup -%}
+
+    {%- capture card_attributes -%}
+      data-jp-bs-card data-tab="{{ tab_number }}"
+    {%- endcapture -%}
+    {%- capture tab_cards_markup -%}
+      {%- for tab_product in tab_collection.products limit: section.settings.products_per_tab -%}
+        {% render 'jp-product-card',
+          product: tab_product,
+          prefix: 'jp-bs',
+          wrapper_tag: 'article',
+          card_attributes: card_attributes,
+          badge_markup: badge_markup,
+          button_label: section.settings.button_label,
+          options_label: section.settings.button_options_label,
+          sold_out_label: section.settings.sold_out_label
+        %}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- assign product_cards_markup = product_cards_markup | append: tab_cards_markup -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{{ 'jp-product-card.css' | asset_url | stylesheet_tag }}
+{{ 'jp-best-sellers.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="jp-bs"
+  style="
     --jp-bs-red: {{ section.settings.accent }};
     --jp-bs-text: {{ section.settings.text_color }};
     --jp-bs-tile: {{ section.settings.tile_bg }};
     --jp-bs-tab: {{ section.settings.tab_color }};
-    --jp-bs-gap: 32px;
-    --jp-bs-per: 4;
-    background: {{ section.settings.bg }};
-    color: var(--jp-bs-text);
-    font-family: 'Raleway', sans-serif;
-    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
-  }
-  .jp-bs-{{ sid }} * { box-sizing: border-box; }
-  .jp-bs-{{ sid }} .jp-bs__inner { max-width: 1440px; margin: 0 auto; padding: 0 120px; }
-  .jp-bs-{{ sid }} .jp-bs__title {
-    margin: 0 0 83px;
-    text-align: center;
-    font-size: 32px;
-    line-height: 1.201;
-    font-weight: 700;
-    text-transform: capitalize;
-    color: var(--jp-bs-text);
-  }
-  .jp-bs-{{ sid }} .jp-bs__tabs {
-    display: flex;
-    justify-content: flex-start;
-    gap: 62px;
-    margin: 0 0 47px;
-    box-shadow: inset 0 -1px 0 #ebeae6;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .jp-bs-{{ sid }} .jp-bs__tabs::-webkit-scrollbar { display: none; }
-  .jp-bs-{{ sid }} .jp-bs__tab:first-child { margin-left: auto; }
-  .jp-bs-{{ sid }} .jp-bs__tab:last-child { margin-right: auto; }
-  .jp-bs-{{ sid }} .jp-bs__tab {
-    flex: 0 0 auto;
-    padding: 0 5.5px 20px;
-    border: 0;
-    border-bottom: 1px solid transparent;
-    margin-bottom: 0;
-    background: none;
-    color: #2d2d2d;
-    font: 400 20px/22px 'Raleway', sans-serif;
-    letter-spacing: 1px;
-    text-transform: capitalize;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .jp-bs-{{ sid }} .jp-bs__tab[aria-selected='true'] { border-bottom-color: var(--jp-bs-tab); font-weight: 500; }
-  .jp-bs-{{ sid }} .jp-bs__tab:focus-visible { outline: 2px solid var(--jp-bs-text); outline-offset: -2px; }
-
-  .jp-bs-{{ sid }} .jp-bs__carousel { position: relative; }
-  .jp-bs-{{ sid }} .jp-bs__track {
-    display: flex;
-    gap: var(--jp-bs-gap);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-  }
-  .jp-bs-{{ sid }} .jp-bs__track::-webkit-scrollbar { display: none; }
-  .jp-bs-{{ sid }} .jp-bs__card {
-    flex: 0 0 calc((100% - (var(--jp-bs-per) - 1) * var(--jp-bs-gap)) / var(--jp-bs-per));
-    scroll-snap-align: start;
-    min-width: 0;
-  }
-  .jp-bs-{{ sid }} .jp-bs__card[hidden] { display: none; }
-  .jp-bs-{{ sid }} .jp-bs__media {
-    position: relative;
-    display: block;
-    aspect-ratio: 274 / 285;
-    background: var(--jp-bs-tile);
-    overflow: hidden;
-  }
-  .jp-bs-{{ sid }} .jp-bs__img {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 88%;
-    height: auto;
-    max-height: 90%;
-    object-fit: contain;
-    transform: translate(-50%, -50%);
-  }
-  .jp-bs-{{ sid }} .jp-bs__badge { position: absolute; top: 11px; right: 7px; width: 25%; height: auto; }
-  .jp-bs-{{ sid }} .jp-bs__card { display: flex; flex-direction: column; gap: 10px; }
-  .jp-bs-{{ sid }} .jp-bs__name {
-    display: block;
-    flex: 1 0 auto;
-    margin: 0;
-    color: var(--jp-bs-text);
-    font-size: 20px;
-    line-height: 25px;
-    font-weight: 700;
-    text-transform: capitalize;
-    text-decoration: none;
-  }
-  .jp-bs-{{ sid }} .jp-bs__stars { color: var(--jp-bs-red); letter-spacing: 0; font-size: 11.5px; }
-  .jp-bs-{{ sid }} .jp-bs__rating { display: flex; align-items: center; gap: 8px; height: 16px; font-size: 14px; font-weight: 700; line-height: normal; }
-  .jp-bs-{{ sid }} .jp-bs__price { display: flex; align-items: baseline; gap: 5px; margin: 0; }
-  .jp-bs-{{ sid }} .jp-bs__now { font-size: 20px; line-height: 22px; font-weight: 700; }
-  .jp-bs-{{ sid }} .jp-bs__was { font-size: 14px; line-height: 22px; font-weight: 500; color: #929292; text-decoration: line-through; }
-  .jp-bs-{{ sid }} .jp-bs__btn {
-    display: block;
-    height: 50px;
-    border-radius: 5px;
-    background: var(--jp-bs-red);
-    color: #fff;
-    font-size: 18px;
-    line-height: 50px;
-    font-weight: 800;
-    text-align: center;
-    text-transform: uppercase;
-    text-decoration: none;
-  }
-  .jp-bs-{{ sid }} button.jp-bs__btn { width: 100%; border: 0; padding: 0; font-family: inherit; cursor: pointer; }
-  .jp-bs-{{ sid }} .jp-bs__form { margin: 0; }
-  .jp-bs-{{ sid }} .jp-bs__btn--off { background: #b5b5b5; cursor: not-allowed; }
-  .jp-bs-{{ sid }} .jp-bs__empty { text-align: center; margin: 0; }
-  .jp-bs-{{ sid }} .jp-bs__reviews { font-weight: 700; text-decoration: underline; }
-  .jp-bs-{{ sid }} .jp-bs__btn:hover { filter: brightness(0.93); }
-  .jp-bs-{{ sid }} a:focus-visible { outline: 2px solid var(--jp-bs-text); outline-offset: 2px; }
-
-  .jp-bs-{{ sid }} .jp-bs__arrow {
-    position: absolute;
-    top: 142.5px;
-    width: 45px;
-    height: 45px;
-    margin-top: -22.5px;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    background: #000;
-    color: #fff;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-  }
-  .jp-bs-{{ sid }} .jp-bs__arrow--prev { left: 0; }
-  .jp-bs-{{ sid }} .jp-bs__arrow--next { right: 0; }
-  .jp-bs-{{ sid }} .jp-bs__arrow svg { width: 20px; height: 20px; }
-  .jp-bs-{{ sid }} .jp-bs__arrow:focus-visible { outline: 2px solid var(--jp-bs-red); outline-offset: 2px; }
-  .jp-bs-{{ sid }} .jp-bs__arrow[hidden] { display: none; }
-  .jp-bs-{{ sid }} .jp-bs__dots { display: flex; justify-content: center; gap: 4px; margin-top: 70px; min-height: 11px; }
-  .jp-bs-{{ sid }} .jp-bs__dot {
-    width: 6px;
-    height: 6px;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    background: #c4c4c4;
-    cursor: pointer;
-  }
-  .jp-bs-{{ sid }} .jp-bs__dot.is-active { background: #000; }
-
-  @media (max-width: 1199px) {
-    .jp-bs-{{ sid }} .jp-bs__inner { padding: 0 40px; }
-    .jp-bs-{{ sid }}  { --jp-bs-per: 3; --jp-bs-gap: 24px; }
-  }
-  @media (max-width: 989px) {
-    .jp-bs-{{ sid }} { --jp-bs-per: 2; }
-  }
-  @media (max-width: 749px) {
-    .jp-bs-{{ sid }} .jp-bs__inner { padding: 0 17px; }
-    .jp-bs-{{ sid }} { --jp-bs-gap: 10px; }
-    .jp-bs-{{ sid }} .jp-bs__title { font-size: 24px; margin-bottom: 48px; }
-    .jp-bs-{{ sid }} .jp-bs__tabs { justify-content: flex-start; gap: 30px; margin-bottom: 38px; }
-    .jp-bs-{{ sid }} .jp-bs__tab:first-child { margin-left: 0; }
-    .jp-bs-{{ sid }} .jp-bs__tab:last-child { margin-right: 0; }
-    .jp-bs-{{ sid }} .jp-bs__tab { font-size: 14px; line-height: 15px; padding: 0 0 11px; }
-    .jp-bs-{{ sid }} .jp-bs__card { flex: 0 0 194px; }
-    .jp-bs-{{ sid }} .jp-bs__name { font-size: 16px; line-height: 22px; }
-    .jp-bs-{{ sid }} .jp-bs__rating { font-size: 12px; }
-    .jp-bs-{{ sid }} .jp-bs__now { font-size: 16px; }
-    .jp-bs-{{ sid }} .jp-bs__btn { font-size: 16px; }
-    .jp-bs-{{ sid }} .jp-bs__arrow { width: 30px; height: 30px; top: 110px; margin-top: -15px; }
-    .jp-bs-{{ sid }} .jp-bs__arrow--prev { left: 13px; }
-    .jp-bs-{{ sid }} .jp-bs__arrow--next { right: 13px; }
-    .jp-bs-{{ sid }} .jp-bs__arrow svg { width: 16px; height: 16px; }
-    .jp-bs-{{ sid }} .jp-bs__dots { margin-top: 58px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .jp-bs-{{ sid }} .jp-bs__track { scroll-behavior: auto; }
-  }
-{% endstyle %}
-
-<section class="jp-bs-{{ sid }}" data-jp-bs>
+    --jp-bs-bg: {{ section.settings.bg }};
+    --jp-bs-padding-top: {{ section.settings.padding_top }}px;
+    --jp-bs-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+  data-jp-bs
+>
   <div class="jp-bs__inner">
     {%- if section.settings.heading != blank -%}
       <h2 class="jp-bs__title">{{ section.settings.heading }}</h2>
     {%- endif -%}
 
-    {%- assign tab_shown = false -%}
-    <div class="jp-bs__tabs" role="tablist">
-      {%- for i in (1..4) -%}
-        {%- assign ckey = 'collection_' | append: i -%}
-        {%- assign lkey = 'tab_' | append: i -%}
-        {%- assign c = section.settings[ckey] -%}
-        {%- if c != blank -%}
-          {%- assign selected = 'false' -%}
-          {%- unless tab_shown -%}{%- assign selected = 'true' -%}{%- assign tab_shown = true -%}{%- endunless -%}
-          <button type="button" class="jp-bs__tab" role="tab" data-jp-bs-tab="{{ i }}" aria-selected="{{ selected }}">{{ section.settings[lkey] | default: c.title }}</button>
-        {%- endif -%}
-      {%- endfor -%}
-    </div>
+    {%- if has_active_tab -%}
+      <div class="jp-bs__tabs" role="tablist">
+        {{- tab_buttons_markup -}}
+      </div>
+    {%- endif -%}
 
     <div class="jp-bs__carousel">
-      <button type="button" class="jp-bs__arrow jp-bs__arrow--prev" data-jp-bs-prev aria-label="Previous products">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <button
+        type="button"
+        class="jp-bs__arrow jp-bs__arrow--prev"
+        data-jp-bs-prev
+        aria-label="{{ section.settings.previous_label | escape }}"
+      >
+        {% render 'jp-icon-chevron', direction: 'prev' %}
       </button>
 
-      <div class="jp-bs__track" data-jp-bs-track>
-        {%- for i in (1..4) -%}
-          {%- assign ckey = 'collection_' | append: i -%}
-          {%- assign c = section.settings[ckey] -%}
-          {%- if c != blank -%}
-            {%- for product in c.products limit: section.settings.products_per_tab -%}
-              {%- assign rating = product.metafields.reviews.rating.value.rating -%}
-              {%- assign rating_count = product.metafields.reviews.rating_count.value -%}
-              <article class="jp-bs__card" data-jp-bs-card data-tab="{{ i }}">
-                <a class="jp-bs__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
-                  {%- if product.featured_image != blank -%}
-                    {{ product.featured_image | image_url: width: 600 | image_tag: class: 'jp-bs__img', alt: product.title, loading: 'lazy' }}
-                  {%- else -%}
-                    {{ 'product-1' | placeholder_svg_tag: 'jp-bs__img' }}
-                  {%- endif -%}
-                  {%- if section.settings.show_badge -%}
-                    {%- if section.settings.badge != blank -%}
-                      {{ section.settings.badge | image_url: width: 200 | image_tag: class: 'jp-bs__badge', alt: '', loading: 'lazy' }}
-                    {%- else -%}
-                      <img class="jp-bs__badge" src="{{ 'badge-farmed-for-good.png' | asset_url }}" width="171" height="189" alt="" loading="lazy">
-                    {%- endif -%}
-                  {%- endif -%}
-                </a>
-                <a class="jp-bs__name" href="{{ product.url }}">{{ product.title }}</a>
-                {%- if section.settings.use_judgeme and product.metafields.judgeme.badge != blank -%}
-                  <div class="jp-bs__rating jp-bs__rating--jm">{{ product.metafields.judgeme.badge }}</div>
-                {%- else -%}
-                  {%- assign full = 0 -%}
-                  {%- if rating != blank -%}{%- assign full = rating | round | at_most: 5 -%}{%- endif -%}
-                  <div class="jp-bs__rating">
-                    <span class="jp-bs__stars" role="img" aria-label="{{ rating | default: 0 }} out of 5 stars">
-                      {%- for n in (1..5) -%}{% if n <= full %}★{% else %}☆{% endif %}{%- endfor -%}
-                    </span>
-                    {%- if rating_count != blank -%}<span class="jp-bs__reviews">( {{ rating_count }} Reviews )</span>{%- endif -%}
-                  </div>
-                {%- endif -%}
-                <div class="jp-bs__price">
-                  <span class="jp-bs__now">{{ product.price | money }}</span>
-                  {%- if product.compare_at_price > product.price -%}
-                    <s class="jp-bs__was">{{ product.compare_at_price | money }}</s>
-                  {%- endif -%}
-                </div>
-                {%- if product.has_only_default_variant and product.available -%}
-                  {%- form 'product', product, class: 'jp-bs__form' -%}
-                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                    <button type="submit" class="jp-bs__btn">{{ section.settings.button_label }}</button>
-                  {%- endform -%}
-                {%- elsif product.available -%}
-                  <a class="jp-bs__btn" href="{{ product.url }}">{{ section.settings.button_options_label }}</a>
-                {%- else -%}
-                  <span class="jp-bs__btn jp-bs__btn--off">{{ section.settings.sold_out_label }}</span>
-                {%- endif -%}
-              </article>
-            {%- endfor -%}
-          {%- endif -%}
-        {%- endfor -%}
+      <div
+        class="jp-bs__track"
+        id="{{ track_id }}"
+        {% if has_active_tab %}
+          role="tabpanel"
+          aria-labelledby="{{ active_tab_button_id }}"
+        {% endif %}
+        data-jp-bs-track
+      >
+        {{- product_cards_markup -}}
       </div>
 
-      <button type="button" class="jp-bs__arrow jp-bs__arrow--next" data-jp-bs-next aria-label="Next products">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <button
+        type="button"
+        class="jp-bs__arrow jp-bs__arrow--next"
+        data-jp-bs-next
+        aria-label="{{ section.settings.next_label | escape }}"
+      >
+        {% render 'jp-icon-chevron', direction: 'next' %}
       </button>
     </div>
 
-    {%- unless tab_shown -%}
-      <p class="jp-bs__empty">Choose a collection for Tab 1 in the section settings to show products.</p>
-    {%- endunless -%}
-    <div class="jp-bs__dots" data-jp-bs-dots></div>
+    {%- if request.design_mode and has_active_tab == false -%}
+      <p class="jp-bs__empty">
+        Choose a collection for at least one tab in the section settings to show products.
+      </p>
+    {%- endif -%}
+    <div
+      class="jp-bs__dots"
+      data-jp-bs-dots
+      data-dot-label="{{ section.settings.dot_label | escape }}"
+    ></div>
   </div>
 </section>
 
-<script>
-  (function () {
-    var root = document.currentScript.previousElementSibling;
-    if (!root || !root.hasAttribute('data-jp-bs')) return;
-    var track = root.querySelector('[data-jp-bs-track]');
-    var cards = Array.prototype.slice.call(root.querySelectorAll('[data-jp-bs-card]'));
-    var tabs = Array.prototype.slice.call(root.querySelectorAll('[data-jp-bs-tab]'));
-    var dotsEl = root.querySelector('[data-jp-bs-dots]');
-    var prev = root.querySelector('[data-jp-bs-prev]');
-    var next = root.querySelector('[data-jp-bs-next]');
-    var dots = [];
-
-    function pages() { return Math.max(1, Math.ceil((track.scrollWidth - 2) / track.clientWidth)); }
-    function current() { return Math.round(track.scrollLeft / track.clientWidth); }
-    function go(i) { track.scrollTo({ left: i * track.clientWidth }); }
-
-    function buildDots() {
-      var n = pages();
-      dotsEl.innerHTML = '';
-      dots = [];
-      var multi = n > 1;
-      prev.hidden = !multi;
-      next.hidden = !multi;
-      if (!multi) return;
-      for (var i = 0; i < n; i++) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'jp-bs__dot';
-        b.setAttribute('aria-label', 'Go to page ' + (i + 1));
-        (function (idx) { b.addEventListener('click', function () { go(idx); }); })(i);
-        dotsEl.appendChild(b);
-        dots.push(b);
-      }
-      updateDots();
-    }
-    function updateDots() {
-      var c = Math.min(current(), dots.length - 1);
-      dots.forEach(function (d, i) { d.classList.toggle('is-active', i === c); });
-    }
-    function filter(tab) {
-      cards.forEach(function (c) { c.hidden = !!tabs.length && c.dataset.tab !== tab; });
-      track.scrollLeft = 0;
-      buildDots();
-    }
-
-    tabs.forEach(function (t) {
-      t.addEventListener('click', function () {
-        tabs.forEach(function (o) { o.setAttribute('aria-selected', o === t ? 'true' : 'false'); });
-        filter(t.dataset.jpBsTab);
-      });
-    });
-    prev.addEventListener('click', function () { go(Math.max(0, current() - 1)); });
-    next.addEventListener('click', function () { go(Math.min(pages() - 1, current() + 1)); });
-    track.addEventListener('scroll', updateDots, { passive: true });
-    window.addEventListener('resize', buildDots);
-
-    filter(tabs.length ? tabs[0].dataset.jpBsTab : '1');
-  })();
-</script>
+<script src="{{ 'jp-best-sellers.js' | asset_url }}" defer></script>
 
 {% schema %}
 {
@@ -360,7 +156,7 @@
     {
       "type": "header",
       "content": "Tabs",
-      "info": "Each tab shows the products of one collection. Leave a collection empty to hide that tab."
+      "info": "Each tab shows one collection. Leave a collection empty to hide its tab."
     },
     {
       "type": "collection",
@@ -439,22 +235,41 @@
     },
     {
       "type": "checkbox",
-      "id": "use_judgeme",
-      "label": "Use Judge.me review stars",
-      "info": "Turn on after installing Judge.me and enabling its app embed. Otherwise stars come from the product's review rating.",
-      "default": false
-    },
-    {
-      "type": "checkbox",
       "id": "show_badge",
       "label": "Show badge",
+      "info": "The badge only shows once a badge image is uploaded below.",
       "default": true
     },
     {
       "type": "image_picker",
       "id": "badge",
       "label": "Badge image",
-      "info": "Leave empty to use the default 'Farmed for good' badge."
+      "info": "Shown in the top right corner of every product image."
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "previous_label",
+      "label": "Previous button label",
+      "info": "Read by screen readers.",
+      "default": "Previous products"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next button label",
+      "info": "Read by screen readers.",
+      "default": "Next products"
+    },
+    {
+      "type": "text",
+      "id": "dot_label",
+      "label": "Page dot label",
+      "info": "Read by screen readers. {page} is replaced by the page number.",
+      "default": "Go to page {page}"
     },
     {
       "type": "header",
@@ -481,7 +296,7 @@
     {
       "type": "color",
       "id": "accent",
-      "label": "Accent color (button & stars)",
+      "label": "Accent color (button)",
       "default": "#ef4444"
     },
     {

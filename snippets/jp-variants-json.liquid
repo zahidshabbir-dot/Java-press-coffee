@@ -1,0 +1,28 @@
+{%- comment -%}
+  Prints the variants of a product as JSON for the product scripts.
+  Prices are formatted by Shopify with the store's money format, so the price
+  after a variant change looks the same as the price on page load.
+  Usage: {% render 'jp-variants-json', product: product %}
+{%- endcomment -%}
+[
+  {%- for variant in product.variants -%}
+    {
+      "id": {{ variant.id | json }},
+      "options": {{ variant.options | json }},
+      "available": {{ variant.available | json }},
+      "price": {{ variant.price | json }},
+      "compare_at_price": {{ variant.compare_at_price | default: 0 | json }},
+      "price_formatted": {{ variant.price | money | json }},
+      "compare_formatted": {{ variant.compare_at_price | money | json }},
+      "featured_image":
+      {%- if variant.featured_image %}
+        {
+          "id": {{ variant.featured_image.id | json }}
+        }
+      {%- else %}
+        null
+      {%- endif %}
+    }
+    {%- unless forloop.last -%},{%- endunless -%}
+  {%- endfor -%}
+]

@@ -1,0 +1,16 @@
+{%- comment -%}
+  Solid caret (triangle pointing down), drawn with currentColor.
+  Accepts:
+  - class: optional class for the <svg>.
+{%- endcomment -%}
+<svg
+  {% if class != blank %}class="{{ class | escape }}"{% endif %}
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path
+    d="M7 10l5 5 5-5H7z"
+    fill="currentColor"
+  />
+</svg>

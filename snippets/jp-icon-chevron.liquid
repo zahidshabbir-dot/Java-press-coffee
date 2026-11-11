@@ -1,0 +1,36 @@
+{%- comment -%}
+  Chevron arrow icon (slider and gallery buttons). Drawn with currentColor; set the color in CSS.
+  Accepts:
+  - direction: 'prev' (points left) or 'next' (points right). Default 'next'.
+  - stroke_width: line thickness. Default 2.
+  - size: 'large' draws longer arms (product gallery arrows). Default: regular chevron.
+  - class: optional class for the svg.
+{%- endcomment -%}
+{%- assign chevron_stroke_width = stroke_width | default: 2 -%}
+{%- if size == 'large' -%}
+  {%- if direction == 'prev' -%}
+    {%- assign chevron_path = 'M15 5l-7 7 7 7' -%}
+  {%- else -%}
+    {%- assign chevron_path = 'M9 5l7 7-7 7' -%}
+  {%- endif -%}
+{%- elsif direction == 'prev' -%}
+  {%- assign chevron_path = 'M15 6l-6 6 6 6' -%}
+{%- else -%}
+  {%- assign chevron_path = 'M9 6l6 6-6 6' -%}
+{%- endif -%}
+<svg
+  {% if class != blank %}
+    class="{{ class | escape }}"
+  {% endif %}
+  viewBox="0 0 24 24"
+  fill="none"
+  aria-hidden="true"
+>
+  <path
+    d="{{ chevron_path }}"
+    stroke="currentColor"
+    stroke-width="{{ chevron_stroke_width }}"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

@@ -1,0 +1,191 @@
+{%- comment -%}
+  Buy box shared by JP Featured product and JP Product: badges, title, rating or app blocks,
+  price, description, variant options, quantity, add to cart button and trust points.
+  Styles: assets/jp-buy-box.css plus the section stylesheet. Script: assets/jp-product-form.js.
+  Accepts:
+  - product: the product to show.
+  - section: the calling section (its settings, blocks and id are read here).
+  - prefix: class, id and data attribute prefix, 'jp-fp' or 'jp-mp'.
+  - heading_tag: tag of the product title. Default 'h2'.
+  - app_blocks_html: the section's rendered @app blocks. They are rendered in the section file
+    because app blocks cannot be rendered from a snippet.
+  Usage:
+  {% render 'jp-product-info',
+    product: product,
+    section: section,
+    prefix: 'jp-mp',
+    heading_tag: 'h1',
+    app_blocks_html: app_blocks_html
+  %}
+{%- endcomment -%}
+
+{%- assign selected_variant = product.selected_or_first_available_variant -%}
+{%- assign title_tag = heading_tag | default: 'h2' -%}
+{%- assign option_label_format = section.settings.option_label | default: '[option]' -%}
+{%- assign form_class = prefix | append: '__form' -%}
+{%- assign decrease_label = 'products.product.quantity.decrease' | t: product: product.title -%}
+{%- assign increase_label = 'products.product.quantity.increase' | t: product: product.title -%}
+
+{%- assign badge_blocks = section.blocks | where: 'type', 'pill' -%}
+{%- if badge_blocks.size > 0 -%}
+  <div class="{{ prefix }}__pills">
+    {%- for block in badge_blocks -%}
+      <span
+        class="{{ prefix }}__pill"
+        style="
+          --{{ prefix }}-pill-bg: {{ block.settings.bg }};
+          --{{ prefix }}-pill-color: {{ block.settings.color }};
+        "
+        {{ block.shopify_attributes }}
+      >
+        {{- block.settings.text -}}
+      </span>
+    {%- endfor -%}
+  </div>
+{%- endif -%}
+
+<{{ title_tag }} class="{{ prefix }}__title">{{ product.title }}</{{ title_tag }}>
+
+{%- if app_blocks_html != blank -%}
+  {{ app_blocks_html }}
+{%- elsif product.metafields.judgeme.badge != blank -%}
+  <div class="{{ prefix }}__rating {{ prefix }}__rating--jm">
+    {{- product.metafields.judgeme.badge -}}
+  </div>
+{%- endif -%}
+
+<div class="{{ prefix }}__price">
+  <span class="{{ prefix }}__now" data-{{ prefix }}-price>
+    {{- selected_variant.price | money -}}
+  </span>
+  <s
+    class="{{ prefix }}__was"
+    data-{{ prefix }}-compare
+    {% unless selected_variant.compare_at_price > selected_variant.price %}
+      hidden
+    {% endunless %}
+  >
+    {{- selected_variant.compare_at_price | money -}}
+  </s>
+</div>
+
+<div class="{{ prefix }}__desc">
+  {%- if section.settings.description != blank -%}
+    {{ section.settings.description }}
+  {%- else -%}
+    <p>
+      {{- product.description | strip_html | truncatewords: section.settings.description_words -}}
+    </p>
+  {%- endif -%}
+</div>
+
+{%- form 'product', product, class: form_class, novalidate: 'novalidate' -%}
+  <input
+    type="hidden"
+    name="id"
+    value="{{ selected_variant.id }}"
+    data-{{ prefix }}-id
+  >
+
+  {%- unless product.has_only_default_variant -%}
+    <div class="{{ prefix }}__options">
+      {%- for option in product.options_with_values -%}
+        {%- assign option_select_id = prefix
+          | append: '-'
+          | append: section.id
+          | append: '-opt-'
+          | append: forloop.index
+        -%}
+        <div>
+          <label class="{{ prefix }}__label" for="{{ option_select_id }}">
+            {{- option_label_format | replace: '[option]', option.name -}}
+          </label>
+          <div class="{{ prefix }}__select-field">
+            <select
+              class="{{ prefix }}__select"
+              id="{{ option_select_id }}"
+              data-{{ prefix }}-option
+            >
+              {%- for value in option.values -%}
+                <option
+                  value="{{ value | escape }}"
+                  {% if option.selected_value == value %}
+                    selected
+                  {% endif %}
+                >
+                  {{- value -}}
+                </option>
+              {%- endfor -%}
+            </select>
+            {%- assign select_icon_class = prefix | append: '__select-icon' -%}
+            {% render 'jp-icon-caret', class: select_icon_class %}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endunless -%}
+
+  <div class="{{ prefix }}__buy">
+    <div class="{{ prefix }}__qty-wrap">
+      <label class="{{ prefix }}__label" for="{{ prefix }}-{{ section.id }}-qty">
+        {{- section.settings.quantity_label -}}
+      </label>
+      <div class="{{ prefix }}__qty">
+        <button
+          type="button"
+          data-{{ prefix }}-minus
+          aria-label="{{ decrease_label | escape }}"
+        >
+          {% render 'jp-icon-minus' %}
+        </button>
+        <input
+          type="number"
+          id="{{ prefix }}-{{ section.id }}-qty"
+          name="quantity"
+          value="1"
+          min="1"
+          inputmode="numeric"
+          data-{{ prefix }}-qty
+        >
+        <button
+          type="button"
+          data-{{ prefix }}-plus
+          aria-label="{{ increase_label | escape }}"
+        >
+          {% render 'jp-icon-plus' %}
+        </button>
+      </div>
+    </div>
+
+    <div class="{{ prefix }}__cart">
+      <button
+        type="submit"
+        class="{{ prefix }}__btn"
+        data-{{ prefix }}-submit
+        data-label="{{ section.settings.button_label | escape }}"
+        data-soldout="{{ section.settings.sold_out_label | escape }}"
+        {% unless selected_variant.available %}
+          disabled
+        {% endunless %}
+      >
+        {%- if selected_variant.available -%}
+          {{- section.settings.button_label -}}
+        {%- else -%}
+          {{- section.settings.sold_out_label -}}
+        {%- endif -%}
+      </button>
+
+      {%- assign trust_blocks = section.blocks | where: 'type', 'trust' -%}
+      {%- if trust_blocks.size > 0 -%}
+        <ul class="{{ prefix }}__trust">
+          {%- for block in trust_blocks -%}
+            <li {{ block.shopify_attributes }}>
+              {% render 'jp-icon-check-circle' %}
+              {{ block.settings.text }}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endform -%}

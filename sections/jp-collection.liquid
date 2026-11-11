@@ -1,0 +1,489 @@
+{%- liquid
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign clear_filters_url = collection.url
+  if sort_by != blank
+    assign clear_filters_url = clear_filters_url | append: '?sort_by=' | append: sort_by
+  endif
+-%}
+
+{%- assign badge_markup = '' -%}
+{%- if section.settings.show_badge and section.settings.badge != blank -%}
+  {%- capture badge_markup -%}
+    {{
+      section.settings.badge
+      | image_url: width: 200
+      | image_tag: class: 'jp-cl__badge', alt: '', loading: 'lazy'
+    }}
+  {%- endcapture -%}
+{%- endif -%}
+
+{{ 'jp-product-card.css' | asset_url | stylesheet_tag }}
+{{ 'jp-collection.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'jp-collection.js' | asset_url }}" defer></script>
+
+{%- paginate collection.products by section.settings.products_per_page -%}
+  <section
+    class="jp-cl"
+    data-jp-cl
+    style="
+      --jp-cl-red: {{ section.settings.button_color }};
+      --jp-cl-text: {{ section.settings.text_color }};
+      --jp-cl-line: {{ section.settings.line_color }};
+      --jp-cl-bg: {{ section.settings.bg }};
+      --jp-cl-tile: {{ section.settings.tile_color }};
+      --jp-cl-tag-bg: {{ section.settings.tag_bg }};
+      --jp-cl-padding-top: {{ section.settings.padding_top }}px;
+      --jp-cl-padding-bottom: {{ section.settings.padding_bottom }}px;
+      --jp-cl-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+      --jp-cl-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    "
+  >
+    <div class="jp-cl__inner">
+      <h1 class="jp-cl__title">{{ collection.title }}</h1>
+      {%- if section.settings.show_description and collection.description != blank -%}
+        <div class="jp-cl__desc rte">{{ collection.description }}</div>
+      {%- endif -%}
+
+      <div class="jp-cl__mobile-bar">
+        <button
+          type="button"
+          class="jp-cl__mobile-open"
+          data-jp-cl-open
+          aria-haspopup="dialog"
+        >
+          {% render 'jp-icon-filter' %}
+          <span>{{ section.settings.filter_sort_label }}</span>
+        </button>
+        <span>{{ collection.products_count }} {{ section.settings.count_label }}</span>
+      </div>
+      <div class="jp-cl__overlay" data-jp-cl-close hidden></div>
+
+      <form
+        class="jp-cl__form-bar"
+        id="jp-cl-form-{{ section.id }}"
+        method="get"
+        action="{{ collection.url }}"
+      >
+        <div
+          class="jp-cl__bar"
+          role="group"
+          aria-label="{{ section.settings.filter_sort_label | escape }}"
+        >
+          <div class="jp-cl__drawer-head">
+            <div>
+              <p class="jp-cl__drawer-title">{{ section.settings.filter_sort_label }}</p>
+              <p class="jp-cl__drawer-count">
+                {{- collection.products_count }} {{ section.settings.count_label -}}
+              </p>
+            </div>
+            <button
+              type="button"
+              class="jp-cl__drawer-close"
+              data-jp-cl-close
+              aria-label="{{ 'accessibility.close' | t }}"
+            >
+              {% render 'jp-icon-close' %}
+            </button>
+          </div>
+          <div class="jp-cl__filters">
+            {%- if section.settings.enable_filtering and collection.filters.size > 0 -%}
+              {%- assign has_active_filter = false -%}
+              <span class="jp-cl__filter-label">{{ section.settings.filter_label }}</span>
+              {%- for filter in collection.filters -%}
+                <details class="jp-cl__drop">
+                  <summary>
+                    <span>{{ filter.label }}</span>
+                    {% render 'jp-icon-caret', class: 'jp-cl__caret' %}
+                    {% render 'jp-icon-arrow-right', class: 'jp-cl__drop-arrow' %}
+                  </summary>
+                  <div class="jp-cl__panel">
+                    {%- if filter.type == 'price_range' -%}
+                      {%- liquid
+                        if filter.min_value.value != blank or filter.max_value.value != blank
+                          assign has_active_filter = true
+                        endif
+                        assign min_price_value = ''
+                        if filter.min_value.value != blank
+                          assign min_price_value = filter.min_value.value | divided_by: 100.0
+                        endif
+                        assign max_price_value = ''
+                        if filter.max_value.value != blank
+                          assign max_price_value = filter.max_value.value | divided_by: 100.0
+                        endif
+                      -%}
+                      <div class="jp-cl__range">
+                        <input
+                          type="number"
+                          name="{{ filter.min_value.param_name }}"
+                          value="{{ min_price_value }}"
+                          min="0"
+                          placeholder="{{ filter.range_min | divided_by: 100.0 }}"
+                          aria-label="{{ section.settings.min_price_label | escape }}"
+                        >
+                        <span>–</span>
+                        <input
+                          type="number"
+                          name="{{ filter.max_value.param_name }}"
+                          value="{{ max_price_value }}"
+                          min="0"
+                          placeholder="{{ filter.range_max | divided_by: 100.0 }}"
+                          aria-label="{{ section.settings.max_price_label | escape }}"
+                        >
+                      </div>
+                      <button type="submit" class="jp-cl__apply">
+                        {{- section.settings.apply_label -}}
+                      </button>
+                    {%- else -%}
+                      {%- if filter.active_values.size > 0 -%}
+                        {%- assign has_active_filter = true -%}
+                      {%- endif -%}
+                      {%- for value in filter.values -%}
+                        {%- liquid
+                          assign value_disabled = false
+                          if value.count == 0 and value.active == false
+                            assign value_disabled = true
+                          endif
+                        -%}
+                        <label class="jp-cl__option{% if value_disabled %} is-disabled{% endif %}">
+                          <input
+                            type="checkbox"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value | escape }}"
+                            {% if value.active %}checked{% endif %}
+                            {% if value_disabled %}disabled{% endif %}
+                            data-jp-cl-auto
+                          >
+                          {{ value.label }} ({{ value.count }})
+                        </label>
+                      {%- endfor -%}
+                    {%- endif -%}
+                  </div>
+                </details>
+              {%- endfor -%}
+              {%- if has_active_filter -%}
+                <a class="jp-cl__clear" href="{{ clear_filters_url }}">
+                  {{- section.settings.clear_label -}}
+                </a>
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+
+          <div class="jp-cl__right">
+            {%- if section.settings.enable_sorting -%}
+              <div class="jp-cl__sort-wrap">
+                <label for="jp-cl-sort-{{ section.id }}">{{ section.settings.sort_label }}</label>
+                <span class="jp-cl__select-field">
+                  <select
+                    class="jp-cl__select"
+                    id="jp-cl-sort-{{ section.id }}"
+                    name="sort_by"
+                    data-jp-cl-auto
+                  >
+                    {%- for option in collection.sort_options -%}
+                      <option
+                        value="{{ option.value }}"
+                        {% if option.value == sort_by %}selected{% endif %}
+                      >
+                        {{- option.name -}}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                  {% render 'jp-icon-caret', class: 'jp-cl__select-icon' %}
+                  {% render 'jp-icon-arrow-right', class: 'jp-cl__select-arrow' %}
+                </span>
+              </div>
+            {%- endif -%}
+            <span class="jp-cl__count">
+              {{- collection.products_count }} {{ section.settings.count_label -}}
+            </span>
+          </div>
+          <div class="jp-cl__drawer-foot">
+            <a class="jp-cl__remove" href="{{ clear_filters_url }}">
+              {{- section.settings.remove_label -}}
+            </a>
+            <button type="submit" class="jp-cl__drawer-apply">
+              {{- section.settings.apply_label -}}
+            </button>
+          </div>
+        </div>
+      </form>
+
+      {%- if collection.products.size == 0 -%}
+        <p class="jp-cl__empty">{{ section.settings.empty_text }}</p>
+      {%- else -%}
+        <ul class="jp-cl__grid">
+          {%- for product in collection.products -%}
+            {%- if forloop.index <= 4 -%}
+              {%- assign card_loading = 'eager' -%}
+            {%- else -%}
+              {%- assign card_loading = 'lazy' -%}
+            {%- endif -%}
+            {% render 'jp-product-card',
+              product: product,
+              prefix: 'jp-cl',
+              image_loading: card_loading,
+              tag_label: section.settings.tag_text,
+              badge_markup: badge_markup,
+              button_label: section.settings.button_label,
+              options_label: section.settings.button_options_label,
+              sold_out_label: section.settings.sold_out_label
+            %}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if paginate.pages > 1 -%}
+        {%- liquid
+          assign previous_page_classes = 'jp-cl__page jp-cl__page--prev'
+          unless paginate.previous
+            assign previous_page_classes = previous_page_classes | append: ' is-off'
+          endunless
+          assign next_page_classes = 'jp-cl__page'
+          unless paginate.next
+            assign next_page_classes = next_page_classes | append: ' is-off'
+          endunless
+        -%}
+        <nav class="jp-cl__pages" aria-label="{{ 'general.pagination.label' | t }}">
+          <a
+            class="{{ previous_page_classes }}"
+            {% if paginate.previous %}href="{{ paginate.previous.url }}"{% endif %}
+            aria-label="{{ 'general.pagination.previous' | t }}"
+          >
+            {% render 'jp-icon-page-arrow' %}
+          </a>
+          <a
+            class="{{ next_page_classes }}"
+            {% if paginate.next %}href="{{ paginate.next.url }}"{% endif %}
+            aria-label="{{ 'general.pagination.next' | t }}"
+          >
+            {% render 'jp-icon-page-arrow' %}
+          </a>
+        </nav>
+      {%- endif -%}
+    </div>
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "JP Collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 4,
+      "max": 48,
+      "step": 4,
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Show filters",
+      "info": "Filters come from Shopify's Search & Discovery app.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Show sorting",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "filter_label",
+      "label": "Filter label",
+      "default": "Filter:"
+    },
+    {
+      "type": "text",
+      "id": "filter_sort_label",
+      "label": "Mobile filter button text",
+      "default": "Filter and sort"
+    },
+    {
+      "type": "text",
+      "id": "remove_label",
+      "label": "Mobile remove all text",
+      "default": "Remove All"
+    },
+    {
+      "type": "text",
+      "id": "sort_label",
+      "label": "Sort label",
+      "default": "Sort By:"
+    },
+    {
+      "type": "text",
+      "id": "count_label",
+      "label": "Product count word",
+      "default": "products"
+    },
+    {
+      "type": "text",
+      "id": "apply_label",
+      "label": "Apply button text",
+      "default": "Apply"
+    },
+    {
+      "type": "text",
+      "id": "clear_label",
+      "label": "Clear filters text",
+      "default": "Clear all"
+    },
+    {
+      "type": "text",
+      "id": "min_price_label",
+      "label": "Minimum price field label",
+      "info": "Read by screen readers.",
+      "default": "Minimum price"
+    },
+    {
+      "type": "text",
+      "id": "max_price_label",
+      "label": "Maximum price field label",
+      "info": "Read by screen readers.",
+      "default": "Maximum price"
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "No products text",
+      "default": "No products found."
+    },
+    {
+      "type": "header",
+      "content": "Cards"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Add to cart text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "button_options_label",
+      "label": "Button text (products with options)",
+      "default": "Choose options"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out text",
+      "default": "Sold out"
+    },
+    {
+      "type": "text",
+      "id": "tag_text",
+      "label": "Label tag",
+      "info": "Products with this tag show a label on the image. Leave empty to hide.",
+      "default": "Best Seller"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "info": "Shows the description from the collection page in Shopify admin, under the title.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show badge",
+      "info": "The badge only shows once a badge image is uploaded below.",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "badge",
+      "label": "Badge image",
+      "info": "Shown in the top right corner of every product image."
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "tile_color",
+      "label": "Image background",
+      "default": "#d9d9d9"
+    },
+    {
+      "type": "color",
+      "id": "tag_bg",
+      "label": "Label background",
+      "default": "#fae5b9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#424242"
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Border color",
+      "default": "#c4d1d0"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button color",
+      "default": "#ef4444"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding (desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 81
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding (desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "enabled_on": {
+    "templates": ["collection"]
+  }
+}
+{% endschema %}

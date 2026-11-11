@@ -1,212 +1,92 @@
-{% render 'jp-fonts' %}
+{%- assign cta_url = section.settings.cta_url | default: routes.all_products_collection_url -%}
+{%- assign main_menu = section.settings.menu -%}
+{%- comment -%}
+  Mobile menu footer icon order; each network has a social_<network> setting.
+{%- endcomment -%}
+{%- assign social_networks = 'instagram,youtube,facebook,pinterest,tiktok' | split: ',' -%}
 
-{%- assign sid = section.id -%}
+{{ 'jp-header.css' | asset_url | stylesheet_tag }}
 
-{% style %}
-  .jp-hd-{{ sid }} {
+<header
+  class="jp-hd"
+  data-jp-hd
+  style="
     --jp-hd-red: {{ section.settings.accent }};
     --jp-hd-text: {{ section.settings.text_color }};
     --jp-hd-sub-dark: {{ section.settings.dropdown_color }};
-    background: #fff;
-    font-family: 'Raleway', sans-serif;
-    position: relative;
-    z-index: 20;
-  }
-  .jp-hd-{{ sid }} * { box-sizing: border-box; }
-  .jp-hd-{{ sid }} .jp-hd__inner {
-    max-width: 1440px;
-    height: 74px;
-    margin: 0 auto;
-    padding: 0 120px;
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-  .jp-hd-{{ sid }} .jp-hd__logo { display: block; flex: 0 0 auto; line-height: 0; margin-right: auto; }
-  .jp-hd-{{ sid }} .jp-hd__logo img { display: block; width: {{ section.settings.logo_width }}px; height: auto; }
-  .jp-hd-{{ sid }} .jp-hd__nav { display: flex; align-items: center; gap: 44px; margin-right: 43px; }
-  .jp-hd-{{ sid }} .jp-hd__link {
-    color: var(--jp-hd-text);
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 35px;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  .jp-hd-{{ sid }} .jp-hd__link:hover,
-  .jp-hd-{{ sid }} .jp-hd__link[aria-current='page'] { color: var(--jp-hd-red); }
-
-  /* Dropdowns (filled from Shopify Navigation menus) */
-  .jp-hd-{{ sid }} .jp-hd__item { position: relative; }
-  .jp-hd-{{ sid }} .jp-hd__sub-list { margin: 0; padding: 0; list-style: none; }
-  .jp-hd-{{ sid }} .jp-hd__sub-list a {
-    display: block;
-    color: var(--jp-hd-text);
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 40px;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  @media (min-width: 990px) {
-    .jp-hd-{{ sid }} .jp-hd__item.has-sub > .jp-hd__link { position: relative; }
-    .jp-hd-{{ sid }} .jp-hd__item.has-sub:hover > .jp-hd__link,
-    .jp-hd-{{ sid }} .jp-hd__item.has-sub:focus-within > .jp-hd__link { color: var(--jp-hd-red); font-weight: 600; }
-    .jp-hd-{{ sid }} .jp-hd__item.has-sub:hover > .jp-hd__link::after,
-    .jp-hd-{{ sid }} .jp-hd__item.has-sub:focus-within > .jp-hd__link::after {
-      content: '';
-      position: absolute;
-      left: 50%;
-      bottom: -3px;
-      width: 5px;
-      height: 5px;
-      margin-left: -2.5px;
-      border-radius: 50%;
-      background: var(--jp-hd-red);
-    }
-    .jp-hd-{{ sid }} .jp-hd__sub {
-      display: none;
-      position: absolute;
-      left: 50%;
-      top: 100%;
-      z-index: 30;
-      padding-top: 12px;
-      transform: translateX(-50%);
-    }
-    .jp-hd-{{ sid }} .jp-hd__item.has-sub:hover > .jp-hd__sub,
-    .jp-hd-{{ sid }} .jp-hd__item.has-sub:focus-within > .jp-hd__sub { display: block; }
-    .jp-hd-{{ sid }} .jp-hd__sub-list {
-      min-width: 150px;
-      border-radius: 6px;
-      background: #fff;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
-    }
-    .jp-hd-{{ sid }} .jp-hd__sub-list a { padding: 0 30px 0 22px; border-top: 1px solid #cdd9d6; }
-    .jp-hd-{{ sid }} .jp-hd__sub-list li:first-child a { border-top: 0; }
-    .jp-hd-{{ sid }} .jp-hd__sub-list:not(:hover) li:first-child a,
-    .jp-hd-{{ sid }} .jp-hd__sub-list a:hover,
-    .jp-hd-{{ sid }} .jp-hd__sub-list a:focus-visible { background: var(--jp-hd-sub-dark); color: #fff; font-weight: 500; outline: 0; }
-  }
-
-  .jp-hd-{{ sid }} .jp-hd__cart {
-    position: relative;
-    flex: 0 0 24px;
-    width: 24px;
-    height: 24px;
-    margin: 0 32px 0 0;
-    background: url('{{ 'icon-cart-jp.svg' | asset_url }}') center / 24px 24px no-repeat;
-    text-decoration: none;
-  }
-  .jp-hd-{{ sid }} .jp-hd__cart .svg-wrapper { display: none; }
-  .jp-hd-{{ sid }} .jp-hd__cart .cart-count-bubble {
-    position: absolute;
-    top: -8px;
-    right: -10px;
-    min-width: 16px;
-    height: 16px;
-    padding: 0 4px;
-    border-radius: 999px;
-    background: var(--jp-hd-red);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 800;
-    line-height: 16px;
-    text-align: center;
-  }
-  .jp-hd-{{ sid }} .jp-hd__cta {
-    flex: 0 0 auto;
-    width: 213.6px;
-    height: 50px;
-    padding: 0;
-    border-radius: 5px;
-    background: var(--jp-hd-red);
-    color: #fff;
-    font-size: 15px;
-    font-weight: 800;
-    line-height: 50px;
-    text-align: center;
-    text-transform: uppercase;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  .jp-hd-{{ sid }} .jp-hd__cta:hover { filter: brightness(0.93); }
-  .jp-hd-{{ sid }} .jp-hd__burger {
-    display: none;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: var(--jp-hd-text);
-    cursor: pointer;
-  }
-  .jp-hd-{{ sid }} .jp-hd__burger svg { width: 24px; height: 24px; display: block; margin: auto; }
-  .jp-hd-{{ sid }} a:focus-visible,
-  .jp-hd-{{ sid }} button:focus-visible { outline: 2px solid var(--jp-hd-text); outline-offset: 2px; }
-
-  @media (max-width: 1199px) {
-    .jp-hd-{{ sid }} .jp-hd__inner { padding: 0 40px; }
-    .jp-hd-{{ sid }} .jp-hd__nav { gap: 24px; margin-right: 24px; }
-    .jp-hd-{{ sid }} .jp-hd__cart { margin-right: 20px; }
-  }
-  .jp-hd-{{ sid }} .jp-hd__cta-m { display: none; }
-  @media (max-width: 989px) {
-    .jp-hd-{{ sid }} .jp-hd__inner { padding: 0 16px 0 14px; gap: 0; height: 52px; }
-    .jp-hd-{{ sid }} .jp-hd__burger { display: block; order: 1; width: 36px; height: 36px; margin-right: 0; flex: 0 0 36px; }
-    .jp-hd-{{ sid }} .jp-hd__logo { order: 2; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; }
-    .jp-hd-{{ sid }} .jp-hd__logo img { width: {{ section.settings.logo_width_mobile }}px; }
-    .jp-hd-{{ sid }} .jp-hd__cart { order: 3; margin: 0 16px 0 auto; }
-    .jp-hd-{{ sid }} .jp-hd__cta:not(.jp-hd__nav-cta) { order: 4; display: block; width: 82px; height: 38px; border-radius: 4px; font-size: 14px; line-height: 38px; }
-    .jp-hd-{{ sid }} .jp-hd__cta-d { display: none; }
-    .jp-hd-{{ sid }} .jp-hd__cta-m { display: inline; }
-    .jp-hd-{{ sid }} .jp-hd__nav-cta { display: none; }
-    .jp-hd-{{ sid }} .jp-hd__nav {
-      display: none;
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 100%;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0;
-      padding: 8px 20px 20px;
-      background: #fff;
-      border-top: 1px solid #eee;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-    }
-    .jp-hd-{{ sid }}.is-open .jp-hd__nav { display: flex; }
-    .jp-hd-{{ sid }} .jp-hd__link { display: block; line-height: 48px; border-bottom: 1px solid #f0f0f0; }
-    .jp-hd-{{ sid }} .jp-hd__sub-list a { padding: 0 0 0 16px; line-height: 40px; border-bottom: 1px solid #f0f0f0; }
-  }
-  @media (min-width: 990px) {
-    .jp-hd-{{ sid }} .jp-hd__nav-cta { display: none; }
-  }
-{% endstyle %}
-
-<header class="jp-hd-{{ sid }}" data-jp-hd>
+    --jp-hd-logo-width: {{ section.settings.logo_width }}px;
+    --jp-hd-logo-width-mobile: {{ section.settings.logo_width_mobile }}px;
+  "
+>
   <div class="jp-hd__inner">
-    <a class="jp-hd__logo" href="{{ routes.root_url }}">
-      {%- if section.settings.logo != blank -%}
-        {{ section.settings.logo | image_url: width: 440 | image_tag: width: section.settings.logo_width, alt: shop.name, loading: 'eager' }}
-      {%- else -%}
-        <img src="{{ 'logo-organic-cafe.svg' | asset_url }}" width="158" height="39" alt="{{ shop.name | escape }}">
-      {%- endif -%}
-    </a>
+    {% render 'jp-header-logo',
+      class: 'jp-hd__logo',
+      logo: section.settings.logo,
+      width: section.settings.logo_width,
+      loading: 'eager'
+    %}
 
-    <nav class="jp-hd__nav" id="jp-hd-nav-{{ sid }}" aria-label="Main">
-      {%- assign main_menu = section.settings.menu -%}
-      {%- if main_menu != blank and main_menu.links.size > 0 -%}
+    <nav
+      class="jp-hd__nav"
+      id="jp-hd-nav-{{ section.id }}"
+      aria-label="{{ section.settings.navigation_label | escape }}"
+    >
+      <div class="jp-hd__drawer-top">
+        <button
+          type="button"
+          class="jp-hd__close"
+          aria-label="{{ section.settings.close_menu_label | escape }}"
+          data-jp-hd-close
+        >
+          {% render 'jp-icon-close' %}
+        </button>
+        {% render 'jp-header-logo',
+          class: 'jp-hd__drawer-logo',
+          logo: section.settings.logo,
+          width: section.settings.logo_width_mobile,
+          loading: 'lazy'
+        %}
+      </div>
+      {%- if main_menu != blank and main_menu.links != empty -%}
         {%- for link in main_menu.links -%}
-          {%- assign has_sub = false -%}
-          {%- if link.links.size > 0 -%}{%- assign has_sub = true -%}{%- endif -%}
-          <div class="jp-hd__item{% if has_sub %} has-sub{% endif %}">
-            <a class="jp-hd__link" href="{{ link.url }}"{% if link.current or link.child_current %} aria-current="page"{% endif %}>{{ link.title }}</a>
-            {%- if has_sub -%}
+          {%- assign has_dropdown = false -%}
+          {%- if link.links != empty -%}
+            {%- assign has_dropdown = true -%}
+          {%- endif -%}
+          <div class="jp-hd__item{% if has_dropdown %} has-sub{% endif %}">
+            <a
+              class="jp-hd__link"
+              href="{{ link.url }}"
+              {% if link.current or link.child_current %}aria-current="page"{% endif %}
+            >
+              {{- link.title -}}
+            </a>
+            {%- if has_dropdown -%}
               <div class="jp-hd__sub">
                 <ul class="jp-hd__sub-list">
-                  {%- for child in link.links -%}
-                    <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a></li>
+                  {%- for child_link in link.links -%}
+                    <li{% if child_link.links != empty %} class="has-grand"{% endif %}>
+                      <a
+                        href="{{ child_link.url }}"
+                        {% if child_link.current %}aria-current="page"{% endif %}
+                      >
+                        {{- child_link.title -}}
+                      </a>
+                      {%- if child_link.links != empty -%}
+                        <ul class="jp-hd__grand">
+                          {%- for grandchild_link in child_link.links -%}
+                            <li>
+                              <a
+                                href="{{ grandchild_link.url }}"
+                                {% if grandchild_link.current %}aria-current="page"{% endif %}
+                              >
+                                {{- grandchild_link.title -}}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- endif -%}
+                    </li>
                   {%- endfor -%}
                 </ul>
               </div>
@@ -215,16 +95,39 @@
         {%- endfor -%}
       {%- else -%}
         {%- for block in section.blocks -%}
-          {%- assign sub_menu = block.settings.dropdown_menu -%}
-          {%- assign has_sub = false -%}
-          {%- if sub_menu != blank and sub_menu.links.size > 0 -%}{%- assign has_sub = true -%}{%- endif -%}
-          <div class="jp-hd__item{% if has_sub %} has-sub{% endif %}" {{ block.shopify_attributes }}>
-            <a class="jp-hd__link" href="{{ block.settings.url | default: '#' }}">{{ block.settings.label }}</a>
-            {%- if has_sub -%}
+          {%- assign dropdown_menu = block.settings.dropdown_menu -%}
+          {%- assign has_dropdown = false -%}
+          {%- if dropdown_menu != blank and dropdown_menu.links != empty -%}
+            {%- assign has_dropdown = true -%}
+          {%- endif -%}
+          <div
+            class="jp-hd__item{% if has_dropdown %} has-sub{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.url != blank -%}
+              <a class="jp-hd__link" href="{{ block.settings.url }}">
+                {{- block.settings.label -}}
+              </a>
+            {%- elsif has_dropdown -%}
+              {%- comment -%} No link set: a button still opens the dropdown. {%- endcomment -%}
+              <button type="button" class="jp-hd__link">
+                {{- block.settings.label -}}
+              </button>
+            {%- else -%}
+              <span class="jp-hd__link">{{ block.settings.label }}</span>
+            {%- endif -%}
+            {%- if has_dropdown -%}
               <div class="jp-hd__sub">
                 <ul class="jp-hd__sub-list">
-                  {%- for child in sub_menu.links -%}
-                    <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a></li>
+                  {%- for child_link in dropdown_menu.links -%}
+                    <li>
+                      <a
+                        href="{{ child_link.url }}"
+                        {% if child_link.current %}aria-current="page"{% endif %}
+                      >
+                        {{- child_link.title -}}
+                      </a>
+                    </li>
                   {%- endfor -%}
                 </ul>
               </div>
@@ -233,49 +136,78 @@
         {%- endfor -%}
       {%- endif -%}
       {%- if section.settings.cta_label != blank -%}
-        <a class="jp-hd__cta jp-hd__nav-cta" href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}">{{ section.settings.cta_label }}</a>
+        <a class="jp-hd__cta jp-hd__nav-cta" href="{{ cta_url }}">
+          {{- section.settings.cta_label -}}
+        </a>
       {%- endif -%}
+      <div class="jp-hd__drawer-foot">
+        <a class="jp-hd__account" href="{{ routes.account_url }}">
+          {% render 'jp-icon-account' %}
+          {{ section.settings.login_label }}
+        </a>
+        <div class="jp-hd__location">
+          {{- localization.country.name }} |
+          {{ localization.country.currency.iso_code }}
+          {{ localization.country.currency.symbol -}}
+        </div>
+        <ul class="jp-hd__social">
+          {%- for network in social_networks -%}
+            {%- assign social_setting_key = 'social_' | append: network -%}
+            {%- assign social_url = section.settings[social_setting_key] -%}
+            {%- if social_url != blank -%}
+              <li>
+                {% render 'jp-social-link', network: network, url: social_url %}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
     </nav>
 
-    <a class="jp-hd__cart" href="{{ routes.cart_url }}" id="cart-icon-bubble" aria-label="{{ 'templates.cart.cart' | t }}">
-      <span class="svg-wrapper"></span>
+    <a
+      class="jp-hd__cart"
+      href="{{ routes.cart_url }}"
+      id="cart-icon-bubble"
+      aria-label="{{ 'templates.cart.cart' | t }}"
+    >
+      <span class="svg-wrapper">{% render 'jp-icon-cart' %}</span>
       <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
       {%- if cart != empty -%}
         <div class="cart-count-bubble">
-          {%- if cart.item_count < 100 -%}<span aria-hidden="true">{{ cart.item_count }}</span>{%- endif -%}
-          <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+          {%- if cart.item_count < 100 -%}
+            <span aria-hidden="true">{{ cart.item_count }}</span>
+          {%- endif -%}
+          <span class="visually-hidden">
+            {{- 'sections.header.cart_count' | t: count: cart.item_count -}}
+          </span>
         </div>
       {%- endif -%}
     </a>
 
     {%- if section.settings.cta_label != blank -%}
-      <a class="jp-hd__cta" href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}"><span class="jp-hd__cta-d">{{ section.settings.cta_label }}</span><span class="jp-hd__cta-m">{{ section.settings.cta_label_mobile | default: section.settings.cta_label }}</span></a>
+      <a class="jp-hd__cta" href="{{ cta_url }}">
+        <span class="jp-hd__cta-desktop">{{ section.settings.cta_label }}</span>
+        {%- comment -%} No whitespace between the two spans. {%- endcomment -%}
+        <span class="jp-hd__cta-mobile">
+          {{- section.settings.cta_label_mobile | default: section.settings.cta_label -}}
+        </span>
+      </a>
     {%- endif -%}
 
-    <button type="button" class="jp-hd__burger" aria-expanded="false" aria-controls="jp-hd-nav-{{ sid }}" aria-label="Menu" data-jp-hd-burger>
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <button
+      type="button"
+      class="jp-hd__burger"
+      aria-expanded="false"
+      aria-controls="jp-hd-nav-{{ section.id }}"
+      aria-label="{{ section.settings.open_menu_label | escape }}"
+      data-jp-hd-burger
+    >
+      {% render 'jp-icon-burger' %}
     </button>
   </div>
 </header>
 
-<script>
-  (function () {
-    var root = document.currentScript.previousElementSibling;
-    if (!root || !root.hasAttribute('data-jp-hd')) return;
-    var burger = root.querySelector('[data-jp-hd-burger]');
-    burger.addEventListener('click', function () {
-      var open = root.classList.toggle('is-open');
-      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && root.classList.contains('is-open')) {
-        root.classList.remove('is-open');
-        burger.setAttribute('aria-expanded', 'false');
-        burger.focus();
-      }
-    });
-  })();
-</script>
+<script src="{{ 'jp-header.js' | asset_url }}" defer></script>
 
 {% schema %}
 {
@@ -292,7 +224,7 @@
       "type": "image_picker",
       "id": "logo",
       "label": "Logo",
-      "info": "Leave empty to use the default Organic Cafe logo."
+      "info": "Upload your logo. If empty, the store name is shown as text."
     },
     {
       "type": "range",
@@ -329,8 +261,12 @@
     {
       "type": "color",
       "id": "dropdown_color",
-      "label": "Dropdown highlight",
+      "label": "Dropdown highlight color",
       "default": "#1b4540"
+    },
+    {
+      "type": "header",
+      "content": "Button"
     },
     {
       "type": "text",
@@ -347,7 +283,65 @@
     {
       "type": "url",
       "id": "cta_url",
-      "label": "Button link"
+      "label": "Button link",
+      "info": "If empty, the button links to all products."
+    },
+    {
+      "type": "header",
+      "content": "Mobile menu footer"
+    },
+    {
+      "type": "text",
+      "id": "login_label",
+      "label": "Account link text",
+      "default": "Login"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram link"
+    },
+    {
+      "type": "url",
+      "id": "social_youtube",
+      "label": "YouTube link"
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook link"
+    },
+    {
+      "type": "url",
+      "id": "social_pinterest",
+      "label": "Pinterest link"
+    },
+    {
+      "type": "url",
+      "id": "social_tiktok",
+      "label": "TikTok link"
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "navigation_label",
+      "label": "Navigation name for screen readers",
+      "default": "Main"
+    },
+    {
+      "type": "text",
+      "id": "open_menu_label",
+      "label": "Open menu button name for screen readers",
+      "default": "Menu"
+    },
+    {
+      "type": "text",
+      "id": "close_menu_label",
+      "label": "Close menu button name for screen readers",
+      "default": "Close menu"
     }
   ],
   "blocks": [
@@ -364,7 +358,8 @@
         {
           "type": "url",
           "id": "url",
-          "label": "Link"
+          "label": "Link",
+          "info": "If empty, the label shows without a link."
         },
         {
           "type": "link_list",
@@ -377,33 +372,7 @@
   ],
   "presets": [
     {
-      "name": "JP Header",
-      "blocks": [
-        {
-          "type": "link",
-          "settings": {
-            "label": "Learning Centre"
-          }
-        },
-        {
-          "type": "link",
-          "settings": {
-            "label": "Our Coffee Solutions"
-          }
-        },
-        {
-          "type": "link",
-          "settings": {
-            "label": "About Us"
-          }
-        },
-        {
-          "type": "link",
-          "settings": {
-            "label": "Blogs"
-          }
-        }
-      ]
+      "name": "JP Header"
     }
   ]
 }

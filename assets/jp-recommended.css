@@ -1,0 +1,85 @@
+.jp-rc {
+  background: var(--jp-rc-bg);
+  color: var(--jp-rc-text);
+  font-family: var(--font-body-family);
+  padding: var(--jp-rc-padding-top) 20px var(--jp-rc-padding-bottom);
+}
+
+.jp-rc * {
+  box-sizing: border-box;
+}
+
+.jp-rc .jp-rc__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.jp-rc .jp-rc__title {
+  margin: 0 0 48px;
+  font-family: inherit;
+  font-size: 32px;
+  line-height: 1.201;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-align: center;
+  text-transform: capitalize;
+  color: var(--jp-rc-text);
+}
+
+/* Shared card rules: jp-product-card.css */
+.jp-rc .jp-rc__media {
+  aspect-ratio: 274 / 285;
+  border-radius: 5px;
+  background: var(--jp-rc-tile);
+}
+
+.jp-rc .jp-rc__img {
+  width: 87%;
+}
+
+.jp-rc .jp-rc__badge {
+  top: 11px;
+  width: 21%;
+}
+
+.jp-rc .jp-rc__name {
+  color: var(--jp-rc-text);
+}
+
+.jp-rc .jp-rc__now {
+  font-size: 20px;
+}
+
+.jp-rc .jp-rc__btn {
+  height: 50px;
+  background: var(--jp-rc-red);
+  font-size: 18px;
+  line-height: 50px;
+  cursor: pointer;
+}
+
+.jp-rc .jp-rc__btn--off {
+  background: #b5b5b5;
+  cursor: not-allowed;
+}
+
+.jp-rc a:focus-visible,
+.jp-rc button:focus-visible {
+  outline: 2px solid var(--jp-rc-text);
+  outline-offset: 2px;
+}
+
+@media (max-width: 749px) {
+  .jp-rc {
+    padding: var(--jp-rc-padding-top-mobile) 16px var(--jp-rc-padding-bottom-mobile);
+  }
+
+  .jp-rc .jp-rc__title {
+    font-size: 24px;
+    margin-bottom: 28px;
+  }
+
+  .jp-rc .jp-rc__btn {
+    font-size: 16px;
+  }
+}

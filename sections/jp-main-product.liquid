@@ -1,0 +1,444 @@
+{%- comment -%}
+  JP Product
+  Product page: gallery, title, price, variant pickers, quantity, add to cart and accordions.
+  The buy box is snippets/jp-product-info.liquid (shared with JP Featured product).
+  Styles: assets/jp-buy-box.css and assets/jp-main-product.css.
+  Scripts: assets/jp-product-form.js and assets/jp-main-product.js.
+{%- endcomment -%}
+
+{%- comment -%} Photos at least this wide (width / height) fill the image area. {%- endcomment -%}
+{%- assign photo_min_aspect_ratio = 0.9 -%}
+{%- capture section_style -%}
+  --jp-mp-red: {{ section.settings.accent }};
+  --jp-mp-text: {{ section.settings.text_color }};
+  --jp-mp-green: {{ section.settings.trust_color }};
+  --jp-mp-bg: {{ section.settings.bg }};
+  --jp-mp-tile: {{ section.settings.tile_color }};
+  --jp-mp-acc-bg: {{ section.settings.acc_bg }};
+  --jp-mp-padding-top: {{ section.settings.padding_top }}px;
+  --jp-mp-padding-bottom: {{ section.settings.padding_bottom }}px;
+  --jp-mp-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+  --jp-mp-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+{%- endcapture -%}
+
+{{ 'jp-buy-box.css' | asset_url | stylesheet_tag }}
+{{ 'jp-main-product.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="jp-mp"
+  style="{{ section_style | strip_newlines }}"
+  data-jp-mp
+  data-product-url="{{ product.url }}"
+>
+  <div class="jp-mp__inner">
+    <div class="jp-mp__gallery">
+      <div class="jp-mp__stage" data-jp-mp-stage>
+        {%- if product.images.size > 0 -%}
+          {%- for image in product.images -%}
+            {%- assign slide_class = 'jp-mp__slide' -%}
+            {%- if forloop.first -%}
+              {%- assign slide_class = slide_class | append: ' is-active' -%}
+            {%- endif -%}
+            {%- if section.settings.fill_photos and image.aspect_ratio >= photo_min_aspect_ratio -%}
+              {%- assign slide_class = slide_class | append: ' is-photo' -%}
+            {%- endif -%}
+            <div
+              class="{{ slide_class }}"
+              data-jp-mp-slide
+              data-media-id="{{ image.id }}"
+            >
+              {%- assign slide_alt = image.alt | default: product.title -%}
+              {%- if forloop.first -%}
+                {%- assign slide_loading = 'eager' -%}
+                {%- assign slide_priority = 'high' -%}
+              {%- else -%}
+                {%- assign slide_loading = 'lazy' -%}
+                {%- assign slide_priority = 'auto' -%}
+              {%- endif -%}
+              {{
+                image
+                | image_url: width: 1000
+                | image_tag:
+                  alt: slide_alt,
+                  loading: slide_loading,
+                  fetchpriority: slide_priority,
+                  widths: '400, 600, 800, 1000',
+                  sizes: '(min-width: 990px) 585px, 100vw'
+              }}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="jp-mp__slide is-active">{{ 'product-1' | placeholder_svg_tag }}</div>
+        {%- endif -%}
+
+        {%- if product.images.size > 1 -%}
+          <button
+            type="button"
+            class="jp-mp__arrow jp-mp__arrow--prev"
+            aria-label="{{ 'general.slider.previous_slide' | t | escape }}"
+            data-jp-mp-prev
+          >
+            {% render 'jp-icon-chevron', direction: 'prev', size: 'large', stroke_width: 2.4 %}
+          </button>
+          <button
+            type="button"
+            class="jp-mp__arrow jp-mp__arrow--next"
+            aria-label="{{ 'general.slider.next_slide' | t | escape }}"
+            data-jp-mp-next
+          >
+            {% render 'jp-icon-chevron', direction: 'next', size: 'large', stroke_width: 2.4 %}
+          </button>
+        {%- endif -%}
+      </div>
+
+      {%- if product.images.size > 0 -%}
+        <ul class="jp-mp__thumbs">
+          {%- for image in product.images -%}
+            {%- assign thumb_label = 'products.product.media.load_image' | t: index: forloop.index -%}
+            <li>
+              <button
+                type="button"
+                class="jp-mp__thumb"
+                data-jp-mp-thumb="{{ forloop.index0 }}"
+                aria-label="{{ thumb_label | escape }}"
+                {% if forloop.first %}
+                  aria-current="true"
+                {% endif %}
+              >
+                {{ image | image_url: width: 200 | image_tag: alt: '', loading: 'lazy' }}
+              </button>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    <div class="jp-mp__info">
+      {%- assign app_blocks = section.blocks | where: 'type', '@app' -%}
+      {%- capture app_blocks_html -%}
+        {%- for block in app_blocks -%}
+          <div class="jp-mp__app">{% render block %}</div>
+        {%- endfor -%}
+      {%- endcapture -%}
+      {% render 'jp-product-info',
+        product: product,
+        section: section,
+        prefix: 'jp-mp',
+        heading_tag: 'h1',
+        app_blocks_html: app_blocks_html
+      %}
+
+      {%- assign accordion_blocks = section.blocks | where: 'type', 'accordion' -%}
+      {%- if accordion_blocks.size > 0 -%}
+        <div class="jp-mp__acc">
+          {%- for block in accordion_blocks -%}
+            <details
+              class="jp-mp__item"
+              {{ block.shopify_attributes }}
+              {% if block.settings.open %}
+                open
+              {% endif %}
+            >
+              <summary>
+                <span>{{ block.settings.title }}</span>
+                {% render 'jp-icon-plus', class: 'jp-mp__acc-icon', stroke_width: 1.6 %}
+              </summary>
+              <div class="jp-mp__acc-body">
+                {%- if block.settings.content != blank -%}
+                  {{ block.settings.content }}
+                {%- else -%}
+                  {{ product.description }}
+                {%- endif -%}
+                {%- if block.settings.show_howto and section.settings.howto_label != blank -%}
+                  <button type="button" class="jp-mp__howto" data-jp-brew-open>
+                    {{- section.settings.howto_label -}}
+                  </button>
+                {%- endif -%}
+              </div>
+            </details>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <script type="application/json" data-jp-mp-variants>
+    {% render 'jp-variants-json', product: product %}
+  </script>
+</section>
+
+<script src="{{ 'jp-product-form.js' | asset_url }}" defer></script>
+<script src="{{ 'jp-main-product.js' | asset_url }}" defer></script>
+
+<script type="application/ld+json">{{ product | structured_data }}</script>
+
+{% schema %}
+{
+  "name": "JP Product",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Short description override",
+      "info": "Leave empty to use the product description."
+    },
+    {
+      "type": "range",
+      "id": "description_words",
+      "label": "Description length (words)",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "default": 28
+    },
+    {
+      "type": "checkbox",
+      "id": "fill_photos",
+      "label": "Fill the image area with photos",
+      "info": "Square or wide photos fill the image area. Tall product shots, such as packshots, stay centered.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "quantity_label",
+      "label": "Quantity label",
+      "default": "Quantity:"
+    },
+    {
+      "type": "text",
+      "id": "option_label",
+      "label": "Option label",
+      "info": "[option] is replaced by the option name, for example Size.",
+      "default": "[option]:"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Add to cart text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out text",
+      "default": "Sold out"
+    },
+    {
+      "type": "text",
+      "id": "howto_label",
+      "label": "\"How to use\" link text",
+      "info": "Opens the brew guide pop-up (add the JP Brew guide section to this page). Leave empty to hide.",
+      "default": "How to use"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "tile_color",
+      "label": "Image background",
+      "default": "#d9d9d9"
+    },
+    {
+      "type": "color",
+      "id": "acc_bg",
+      "label": "Accordion background",
+      "default": "#f2f2f2"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#424242"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Price and button",
+      "default": "#ef4444"
+    },
+    {
+      "type": "color",
+      "id": "trust_color",
+      "label": "Trust text color",
+      "default": "#075d57"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding (desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding (desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "pill",
+      "name": "Badge",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Best Seller"
+        },
+        {
+          "type": "color",
+          "id": "bg",
+          "label": "Background",
+          "default": "#ece03a"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Text color",
+          "default": "#434343"
+        }
+      ]
+    },
+    {
+      "type": "trust",
+      "name": "Trust point",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Secure Checkout"
+        }
+      ]
+    },
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "About Product:"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "info": "Leave empty to use the product description."
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_howto",
+          "label": "Show the \"How to use\" link",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "JP Product",
+      "blocks": [
+        {
+          "type": "pill",
+          "settings": {
+            "text": "Best Seller",
+            "bg": "#ece03a",
+            "color": "#434343"
+          }
+        },
+        {
+          "type": "pill",
+          "settings": {
+            "text": "Staff Pick",
+            "bg": "#424242",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "type": "trust",
+          "settings": {
+            "text": "Secure Checkout"
+          }
+        },
+        {
+          "type": "trust",
+          "settings": {
+            "text": "Secure Shipping"
+          }
+        },
+        {
+          "type": "trust",
+          "settings": {
+            "text": "Satisfaction Guarantee"
+          }
+        },
+        {
+          "type": "accordion",
+          "settings": {
+            "title": "About Product:",
+            "open": true,
+            "show_howto": true
+          }
+        },
+        {
+          "type": "accordion",
+          "settings": {
+            "title": "Ingredients:"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

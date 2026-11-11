@@ -1,0 +1,455 @@
+{%- comment -%}
+  JP Brew guide
+  A pop-up with an interactive "make your coffee" game. It opens when a visitor clicks any element
+  with the attribute data-jp-brew-open (for example the "How to use" link on the product page).
+  Steps, texts, colors and labels are all editable in the theme customizer.
+  Styles: assets/jp-brew-guide.css. Script: assets/jp-brew-guide.js.
+  Illustration: snippets/jp-brew-cup.liquid. Animation shapes: snippets/jp-brew-shapes.liquid.
+  The script reads the steps, texts and colors from the JSON block [data-jp-brew-settings].
+{%- endcomment -%}
+
+{%- assign brew_settings = section.settings -%}
+
+{{ 'jp-brew-guide.css' | asset_url | stylesheet_tag }}
+
+<dialog
+  class="jp-bg"
+  data-jp-brew
+  aria-labelledby="jp-bg-title-{{ section.id }}"
+  style="
+    --jp-bg-panel: {{ brew_settings.panel_bg }};
+    --jp-bg-text: {{ brew_settings.text_color }};
+    --jp-bg-accent: {{ brew_settings.accent }};
+    --jp-bg-stage: {{ brew_settings.stage_bg }};
+  "
+>
+  <div class="jp-bg__head">
+    <div>
+      <h2 class="jp-bg__title" id="jp-bg-title-{{ section.id }}">{{ brew_settings.heading }}</h2>
+      {%- if brew_settings.subheading != blank -%}
+        <p class="jp-bg__sub">{{ brew_settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+    <button
+      type="button"
+      class="jp-bg__close"
+      data-jp-brew-close
+      aria-label="{{ brew_settings.close_label | escape }}"
+    >
+      {% render 'jp-icon-close', class: 'jp-bg__close-icon' %}
+    </button>
+  </div>
+
+  <div class="jp-bg__body">
+    <div class="jp-bg__stage" data-jp-brew-stage>
+      <div class="jp-bg__cupwrap" data-jp-brew-cup-wrap>
+        {% render 'jp-brew-cup', id_suffix: section.id, label: brew_settings.heading %}
+        {% render 'jp-brew-shapes' %}
+      </div>
+    </div>
+
+    <div class="jp-bg__panel">
+      <div class="jp-bg__dots" data-jp-brew-progress-dots aria-hidden="true"></div>
+      <p class="jp-bg__step" data-jp-brew-step-label></p>
+      <h3 class="jp-bg__heading" data-jp-brew-step-title></h3>
+      <p class="jp-bg__text" data-jp-brew-step-text></p>
+      <div class="jp-bg__controls" data-jp-brew-controls></div>
+      <button type="button" class="jp-bg__restart" data-jp-brew-restart>
+        {{- brew_settings.restart_label -}}
+      </button>
+    </div>
+  </div>
+
+  {%- comment -%}
+    Blank colors fall back to the schema defaults: the script mixes these colors and needs a
+    hex value.
+  {%- endcomment -%}
+  <script type="application/json" data-jp-brew-settings>
+    {
+      "steps": [
+        {%- for block in section.blocks -%}
+          {
+            "action": {{ block.settings.action | json }},
+            "title": {{ block.settings.title | json }},
+            "text": {{ block.settings.text | json }}
+          }
+          {%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ],
+      "cups": [
+        {
+          "name": {{ brew_settings.cup_1_name | json }},
+          "color": {{ brew_settings.cup_1 | default: '#ffffff' | json }}
+        },
+        {
+          "name": {{ brew_settings.cup_2_name | json }},
+          "color": {{ brew_settings.cup_2 | default: '#ef4444' | json }}
+        },
+        {
+          "name": {{ brew_settings.cup_3_name | json }},
+          "color": {{ brew_settings.cup_3 | default: '#075d57' | json }}
+        }
+      ],
+      "water": {{ brew_settings.water_color | default: '#cfe7ef' | json }},
+      "milk": {{ brew_settings.milk_color | default: '#f7f1e8' | json }},
+      "coffee": {{ brew_settings.coffee_color | default: '#4a2c1a' | json }},
+      "coffeeGroundDark": {{ brew_settings.coffee_ground_dark | default: '#3a2214' | json }},
+      "coffeeGroundLight": {{ brew_settings.coffee_ground_light | default: '#5a3a26' | json }},
+      "preview": {{ brew_settings.preview_in_editor | json }},
+      "defaultCup": {{ brew_settings.default_cup | json }},
+      "labels": {
+        "stepCounter": {{ brew_settings.step_counter_label | json }},
+        "sugarCounter": {{ brew_settings.sugar_counter_label | json }},
+        "next": {{ brew_settings.next_label | json }},
+        "water": {{ brew_settings.water_label | json }},
+        "milk": {{ brew_settings.milk_label | json }},
+        "coffee": {{ brew_settings.coffee_btn | json }},
+        "sugar": {{ brew_settings.sugar_btn | json }},
+        "skip": {{ brew_settings.skip_label | json }},
+        "stir": {{ brew_settings.stir_btn | json }},
+        "readyTitle": {{ brew_settings.ready_title | json }},
+        "readyText": {{ brew_settings.ready_text | json }}
+      }
+    }
+  </script>
+</dialog>
+
+<script src="{{ 'jp-brew-guide.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "JP Brew guide",
+  "tag": "div",
+  "class": "jp-brew-guide",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This section adds a pop-up. It opens when a visitor clicks \"How to use\" on the product page (or any link or button with the attribute data-jp-brew-open)."
+    },
+    {
+      "type": "checkbox",
+      "id": "preview_in_editor",
+      "label": "Open the pop-up while editing in the theme editor",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How to make your coffee"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Follow the steps and make your own cup."
+    },
+    {
+      "type": "text",
+      "id": "ready_title",
+      "label": "Finished title",
+      "default": "Your coffee is ready!"
+    },
+    {
+      "type": "textarea",
+      "id": "ready_text",
+      "label": "Finished text",
+      "default": "Take a sip and enjoy. Smooth, rich and made the Java Press way."
+    },
+    {
+      "type": "header",
+      "content": "Button and label text"
+    },
+    {
+      "type": "text",
+      "id": "step_counter_label",
+      "label": "Step counter",
+      "info": "{current} is replaced by the step number and {total} by the number of steps.",
+      "default": "Step {current} of {total}"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Continue button",
+      "default": "Continue"
+    },
+    {
+      "type": "text",
+      "id": "water_label",
+      "label": "Hot water button",
+      "default": "Hot water"
+    },
+    {
+      "type": "text",
+      "id": "milk_label",
+      "label": "Milk button",
+      "default": "Warm milk"
+    },
+    {
+      "type": "text",
+      "id": "coffee_btn",
+      "label": "Add coffee button",
+      "default": "Add coffee"
+    },
+    {
+      "type": "text",
+      "id": "sugar_btn",
+      "label": "Add sugar button",
+      "default": "Add sugar"
+    },
+    {
+      "type": "text",
+      "id": "sugar_counter_label",
+      "label": "Sugar counter",
+      "info": "{current} is replaced by the sugar cubes added and {total} by the maximum (3).",
+      "default": "{current} / {total}"
+    },
+    {
+      "type": "text",
+      "id": "skip_label",
+      "label": "Skip sugar button",
+      "default": "Skip sugar"
+    },
+    {
+      "type": "text",
+      "id": "stir_btn",
+      "label": "Stir button",
+      "default": "Stir"
+    },
+    {
+      "type": "text",
+      "id": "restart_label",
+      "label": "Start again link",
+      "default": "Start again"
+    },
+    {
+      "type": "text",
+      "id": "close_label",
+      "label": "Close button (screen readers)",
+      "default": "Close"
+    },
+    {
+      "type": "header",
+      "content": "Cups"
+    },
+    {
+      "type": "text",
+      "id": "cup_1_name",
+      "label": "Cup 1 name",
+      "default": "White"
+    },
+    {
+      "type": "color",
+      "id": "cup_1",
+      "label": "Cup 1 color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "cup_2_name",
+      "label": "Cup 2 name",
+      "default": "Red"
+    },
+    {
+      "type": "color",
+      "id": "cup_2",
+      "label": "Cup 2 color",
+      "default": "#ef4444"
+    },
+    {
+      "type": "text",
+      "id": "cup_3_name",
+      "label": "Cup 3 name",
+      "default": "Green"
+    },
+    {
+      "type": "color",
+      "id": "cup_3",
+      "label": "Cup 3 color",
+      "default": "#075d57"
+    },
+    {
+      "type": "select",
+      "id": "default_cup",
+      "label": "Cup selected by default",
+      "options": [
+        {
+          "value": "1",
+          "label": "Cup 1"
+        },
+        {
+          "value": "2",
+          "label": "Cup 2"
+        },
+        {
+          "value": "3",
+          "label": "Cup 3"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Drink colors"
+    },
+    {
+      "type": "color",
+      "id": "water_color",
+      "label": "Water",
+      "default": "#cfe7ef"
+    },
+    {
+      "type": "color",
+      "id": "milk_color",
+      "label": "Milk",
+      "default": "#f7f1e8"
+    },
+    {
+      "type": "color",
+      "id": "coffee_color",
+      "label": "Coffee",
+      "default": "#4a2c1a"
+    },
+    {
+      "type": "color",
+      "id": "coffee_ground_dark",
+      "label": "Coffee grounds (dark)",
+      "default": "#3a2214"
+    },
+    {
+      "type": "color",
+      "id": "coffee_ground_light",
+      "label": "Coffee grounds (light)",
+      "default": "#5a3a26"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "panel_bg",
+      "label": "Pop-up background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "stage_bg",
+      "label": "Cup area background",
+      "default": "#f1e6da"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2d2d2d"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Buttons and progress",
+      "default": "#ef4444"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "select",
+          "id": "action",
+          "label": "What the visitor does",
+          "options": [
+            {
+              "value": "cup",
+              "label": "Pick a cup"
+            },
+            {
+              "value": "base",
+              "label": "Choose water or milk"
+            },
+            {
+              "value": "coffee",
+              "label": "Add coffee"
+            },
+            {
+              "value": "sugar",
+              "label": "Add sugar"
+            },
+            {
+              "value": "stir",
+              "label": "Stir"
+            }
+          ],
+          "default": "cup"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Pick your cup"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Choose the cup you like best."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "JP Brew guide",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "action": "cup",
+            "title": "Pick your cup",
+            "text": "Choose the cup you like best."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "action": "base",
+            "title": "Choose your base",
+            "text": "Hot water for a classic cup, or warm milk for a creamy one."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "action": "coffee",
+            "title": "Add the coffee",
+            "text": "One scoop of Java Press coffee per cup."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "action": "sugar",
+            "title": "Sweeten it",
+            "text": "Add sugar to taste, or skip this step."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "action": "stir",
+            "title": "Mix it up",
+            "text": "Stir for about 10 seconds until everything is blended."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -25,32 +25,38 @@
           "type": "column",
           "settings": {
             "title": "Company",
-            "links": "FAQ’s | /pages/faq\nWarranty | /pages/warranty\nPrivacy Statements | /policies/privacy-policy\nTerms of Services | /policies/terms-of-service"
+            "links": "FAQs | /pages/faq\nWarranty | /pages/warranty\nPrivacy Statements | /policies/privacy-policy\nTerms of Service | /policies/terms-of-service"
           }
         },
         "c3": {
           "type": "column",
           "settings": {
             "title": "Contact",
-            "links": "Contact Us | /pages/contact\nPhone: (+971 1234  567)"
+            "links": "Contact Us | /pages/contact\nPhone: (+971 1234 567)"
           }
         },
         "s1": {
           "type": "social",
           "settings": {
-            "network": "facebook"
+            "network": "facebook",
+            "icon": "shopify://shop_images/Vector-1.png",
+            "url": ""
           }
         },
         "s2": {
           "type": "social",
           "settings": {
-            "network": "linkedin"
+            "network": "linkedin",
+            "icon": "shopify://shop_images/Vector.png",
+            "url": ""
           }
         },
         "s3": {
           "type": "social",
           "settings": {
-            "network": "twitter"
+            "network": "twitter",
+            "icon": "shopify://shop_images/Vector-2.png",
+            "url": ""
           }
         }
       },
@@ -62,7 +68,16 @@
         "s2",
         "s3"
       ],
-      "settings": {}
+      "settings": {
+        "logo_text": "Organic Cafe",
+        "social_box_color": "#003f3a",
+        "logo": "shopify://shop_images/Logo_white.svg",
+        "about": "<p>Our journey into coffee started in 2015 with a passion for developing the best entry level burr coffee grinder on the market.</p>",
+        "copyright": "",
+        "bg": "#075d57",
+        "text_color": "#ffffff",
+        "line_color": "#478a85"
+      }
     }
   },
   "order": [

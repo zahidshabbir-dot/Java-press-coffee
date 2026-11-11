@@ -1,8 +1,8 @@
-{% if cart == empty %}
-  <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
-{% else %}
-  <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
-{% endif %}
+{%- comment -%}
+  Shopify re-renders this section after every add to cart and puts the result inside the
+  JP Header cart link (#cart-icon-bubble), so it renders the same cart icon as the header.
+{%- endcomment -%}
+<span class="svg-wrapper">{% render 'jp-icon-cart' %}</span>
 
 <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
 {%- if cart != empty -%}

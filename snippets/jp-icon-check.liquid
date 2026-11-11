@@ -1,0 +1,20 @@
+{%- comment -%}
+  Check mark, drawn with currentColor.
+  Accepts:
+  - class: optional class for the <svg>.
+{%- endcomment -%}
+<svg
+  {% if class != blank %}class="{{ class | escape }}"{% endif %}
+  viewBox="0 0 20 20"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path
+    d="M5.5 10.5l3 3 6-7"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

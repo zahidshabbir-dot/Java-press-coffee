@@ -1,175 +1,91 @@
-{% render 'jp-fonts' %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Comforter&display=swap" rel="stylesheet">
+{%- assign background_image = section.settings.bg_image -%}
+{%- assign background_image_mobile = section.settings.bg_image_mobile -%}
+{%- assign hero_image = section.settings.image -%}
 
-{%- assign sid = section.id -%}
+{%- assign script_font_url = section.settings.script_font_url | strip | remove: "'" | remove: '"' -%}
 
-{% style %}
-  .jp-hero-{{ sid }} {
+{{ 'jp-hero.css' | asset_url | stylesheet_tag }}
+
+{%- if script_font_url != blank -%}
+  {%- comment -%}
+    The font file is uploaded in Shopify admin (Content > Files) and its link is pasted in
+    the section settings, so no font is stored in the theme code.
+  {%- endcomment -%}
+  {% style %}
+    @font-face {
+      font-family: 'JP Hero Script';
+      src: url('{{ script_font_url }}');
+      font-display: swap;
+    }
+  {% endstyle %}
+{%- endif -%}
+
+<section
+  class="jp-hero"
+  style="
     --jp-hero-bg: {{ section.settings.bg }};
     --jp-hero-accent: {{ section.settings.accent_color }};
+    {%- if script_font_url != blank %}
+      --jp-hero-script-font: 'JP Hero Script', cursive;
+    {%- endif %}
     --jp-hero-red: {{ section.settings.button_color }};
     --jp-hero-dark: {{ section.settings.button_secondary_color }};
-    position: relative;
-    overflow: hidden;
-    background: var(--jp-hero-bg);
-    {%- if section.settings.bg_image != blank %}
-    background-image: url('{{ section.settings.bg_image | image_url: width: 2880 }}');
-    {%- else %}
-    background-image: url('{{ 'hero-banner.png' | asset_url }}');
+    --jp-hero-height: {{ section.settings.height }}px;
+    --jp-hero-image-align: {{ section.settings.image_align }};
+    --jp-hero-image-width: {{ section.settings.image_width }}px;
+    {%- if background_image != blank %}
+      --jp-hero-bg-image: url('{{ background_image | image_url: width: 2880 }}');
     {%- endif %}
-    background-size: cover;
-    background-position: center right;
-    background-repeat: no-repeat;
-    color: #fff;
-    font-family: 'Raleway', sans-serif;
-  }
-  .jp-hero-{{ sid }} * { box-sizing: border-box; }
-  .jp-hero-{{ sid }} .jp-hero__inner {
-    position: relative;
-    max-width: 1440px;
-    min-height: {{ section.settings.height }}px;
-    margin: 0 auto;
-    padding: 0 120px;
-    display: grid;
-    grid-template-columns: minmax(0, 481px) minmax(0, 1fr);
-    align-items: center;
-    column-gap: 40px;
-  }
-  .jp-hero-{{ sid }} .jp-hero__content { position: relative; z-index: 2; padding: 48px 0; }
-
-  /* Text styles from Figma (desktop) */
-  .jp-hero-{{ sid }} .jp-hero__title {
-    margin: 0 0 9px;
-    font-size: 64px;
-    line-height: 1.151;
-    font-weight: 700;
-    text-transform: capitalize;
-    color: #fff;
-  }
-  .jp-hero-{{ sid }} .jp-hero__script {
-    display: inline-block;
-    font-family: 'Comforter', 'Brush Script MT', cursive;
-    font-size: 96px;
-    line-height: 0.8;
-    font-weight: 400;
-    letter-spacing: 4.8px;
-    text-transform: none;
-    color: var(--jp-hero-accent);
-    margin-left: 4px;
-    vertical-align: baseline;
-    transform: rotate(-6.87deg);
-  }
-  .jp-hero-{{ sid }} .jp-hero__text { margin: 0 0 19px; font-size: 20px; line-height: 30px; font-weight: 400; }
-  .jp-hero-{{ sid }} .jp-hero__text p { margin: 0; }
-  .jp-hero-{{ sid }} .jp-hero__text strong { font-weight: 700; }
-  .jp-hero-{{ sid }} .jp-hero__btn {
-    display: block;
-    width: 100%;
-    height: 50px;
-    margin: 0 0 8px;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 18px;
-    line-height: 50px;
-    text-align: center;
-    text-decoration: none;
-    text-transform: uppercase;
-    white-space: pre;
-  }
-  .jp-hero-{{ sid }} .jp-hero__btn--primary { background: var(--jp-hero-red); font-weight: 800; }
-  .jp-hero-{{ sid }} .jp-hero__btn--secondary { background: var(--jp-hero-dark); font-weight: 600; }
-  .jp-hero-{{ sid }} .jp-hero__btn:hover { filter: brightness(0.93); }
-  .jp-hero-{{ sid }} .jp-hero__btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  .jp-hero-{{ sid }} .jp-hero__rating {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 16px;
-    font-size: 12px;
-    line-height: 14px;
-    font-weight: 700;
-    white-space: pre;
-  }
-  .jp-hero-{{ sid }} .jp-hero__stars { color: var(--jp-hero-accent); letter-spacing: 0; font-size: 11.5px; }
-
-  .jp-hero-{{ sid }} .jp-hero__visual {
-    position: relative;
-    align-self: stretch;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 320px;
-  }
-  .jp-hero-{{ sid }} .jp-hero__product {
-    position: relative;
-    display: block;
-    width: 100%;
-    max-width: {{ section.settings.image_width }}px;
-    height: auto;
-    margin-top: 12px;
-  }
-
-  @media (max-width: 1199px) {
-    .jp-hero-{{ sid }} .jp-hero__inner { padding: 0 40px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-    .jp-hero-{{ sid }} .jp-hero__title { font-size: 48px; }
-    .jp-hero-{{ sid }} .jp-hero__script { font-size: 72px; }
-  }
-  @media (max-width: 749px) {
-    .jp-hero-{{ sid }} {
-      {%- if section.settings.bg_image_mobile != blank %}
-      background-image: url('{{ section.settings.bg_image_mobile | image_url: width: 1000 }}');
-      {%- else %}
-      background-image: url('{{ 'hero-banner-mobile.png' | asset_url }}');
-      {%- endif %}
-      background-position: center top;
-    }
-    .jp-hero-{{ sid }} .jp-hero__inner { grid-template-columns: 1fr; padding: 0 16px; min-height: 0; column-gap: 0; }
-    .jp-hero-{{ sid }} .jp-hero__visual { order: -1; min-height: 0; padding: 28px 0 0; }
-    .jp-hero-{{ sid }} .jp-hero__product { max-width: min(100%, 340px); margin-top: 0; }
-    .jp-hero-{{ sid }} .jp-hero__content { padding: 24px 0 46px; text-align: center; }
-    .jp-hero-{{ sid }} .jp-hero__title { font-size: 42px; line-height: 1.051; margin-bottom: 16px; }
-    .jp-hero-{{ sid }} .jp-hero__script { font-size: 65px; letter-spacing: 3.25px; }
-    .jp-hero-{{ sid }} .jp-hero__text { font-size: 16px; line-height: 23.5px; margin-bottom: 24px; }
-    .jp-hero-{{ sid }} .jp-hero__btn { font-size: 16px; }
-    .jp-hero-{{ sid }} .jp-hero__rating { justify-content: center; }
-  }
-{% endstyle %}
-
-<section class="jp-hero-{{ sid }}" data-jp-hero>
+    {%- if background_image_mobile != blank %}
+      --jp-hero-bg-image-mobile: url('{{ background_image_mobile | image_url: width: 1000 }}');
+    {%- endif %}
+  "
+>
   <div class="jp-hero__inner">
     <div class="jp-hero__content">
       <h1 class="jp-hero__title">
         {{- section.settings.title_before }}
-        {%- if section.settings.title_script != blank %} <span class="jp-hero__script">{{ section.settings.title_script }}</span>{% endif -%}
-        {%- if section.settings.title_after != blank %}<br>{{ section.settings.title_after }}{% endif -%}
+        {%- if section.settings.title_script != blank %}
+          <span class="jp-hero__script">{{ section.settings.title_script }}</span>
+        {%- endif -%}
+        {%- if section.settings.title_after != blank -%}
+          <br>{{ section.settings.title_after }}
+        {%- endif -%}
       </h1>
 
       {%- if section.settings.text != blank -%}
         <div class="jp-hero__text">{{ section.settings.text }}</div>
       {%- endif -%}
 
-      {%- if section.settings.button_label != blank -%}
-        <a class="jp-hero__btn jp-hero__btn--primary" href="{{ section.settings.button_url | default: routes.all_products_collection_url }}">{{ section.settings.button_label }}</a>
+      {%- if section.settings.button_label != blank and section.settings.button_url != blank -%}
+        <a class="jp-hero__btn jp-hero__btn--primary" href="{{ section.settings.button_url }}">
+          {{- section.settings.button_label -}}
+        </a>
       {%- endif -%}
-      {%- if section.settings.button_2_label != blank -%}
-        <a class="jp-hero__btn jp-hero__btn--secondary" href="{{ section.settings.button_2_url | default: '#' }}">{{ section.settings.button_2_label }}</a>
-      {%- endif -%}
-
-      {%- if section.settings.rating_text != blank -%}
-        <div class="jp-hero__rating">
-          <span class="jp-hero__stars" aria-hidden="true">{{ '★★★★★' | slice: 0, section.settings.stars }}</span>
-          <span>{{ section.settings.rating_text }}</span>
-        </div>
+      {%- if section.settings.button_2_label != blank and section.settings.button_2_url != blank -%}
+        <a class="jp-hero__btn jp-hero__btn--secondary" href="{{ section.settings.button_2_url }}">
+          {{- section.settings.button_2_label -}}
+        </a>
       {%- endif -%}
     </div>
 
     <div class="jp-hero__visual">
-      {%- if section.settings.image != blank -%}
-        {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'jp-hero__product', alt: section.settings.image.alt | default: section.settings.title_before, loading: 'eager', fetchpriority: 'high' }}
-      {%- else -%}
-        <img class="jp-hero__product" src="{{ 'hero-mask-group.png' | asset_url }}" width="1760" height="1773" alt="{{ section.settings.title_before | escape }}" loading="eager" fetchpriority="high">
+      {%- if hero_image != blank -%}
+        {%- assign hero_image_alt = hero_image.alt | default: section.settings.title_before -%}
+        {%- capture hero_image_sizes -%}
+          (min-width: 750px) {{ section.settings.image_width }}px, min(calc(100vw - 32px), 340px)
+        {%- endcapture -%}
+        {{
+          hero_image
+          | image_url: width: 1280
+          | image_tag:
+            class: 'jp-hero__product',
+            alt: hero_image_alt,
+            widths: '340, 450, 680, 900, 1280',
+            sizes: hero_image_sizes,
+            loading: 'eager',
+            fetchpriority: 'high'
+        }}
       {%- endif -%}
     </div>
   </div>
@@ -179,37 +95,164 @@
 {
   "name": "JP Hero",
   "settings": [
-    { "type": "header", "content": "Heading" },
-    { "type": "text", "id": "title_before", "label": "Heading start", "default": "Your" },
-    { "type": "text", "id": "title_script", "label": "Script (accent) word", "default": "Perfect" },
-    { "type": "text", "id": "title_after", "label": "Heading second line", "default": "Coffee Routine!" },
-    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Discover your tailored at home coffee products & routine as we are your <strong>100% FREE Coffee Concierge</strong>!</p>" },
-
-    { "type": "header", "content": "Buttons" },
-    { "type": "text", "id": "button_label", "label": "Primary button text", "default": "Browse all products  →" },
-    { "type": "url", "id": "button_url", "label": "Primary button link" },
-    { "type": "text", "id": "button_2_label", "label": "Secondary button text", "default": "Take your free survey now  →" },
-    { "type": "url", "id": "button_2_url", "label": "Secondary button link" },
-
-    { "type": "header", "content": "Rating" },
-    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "4.9/5.00  (Serviced 6,000,000+ Coffee Lovers)" },
-    { "type": "range", "id": "stars", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
-
-    { "type": "header", "content": "Images" },
-    { "type": "image_picker", "id": "image", "label": "Product image", "info": "Leave empty to use the default coffee bags." },
-    { "type": "range", "id": "image_width", "label": "Product image width", "min": 280, "max": 640, "step": 10, "unit": "px", "default": 450 },
-    { "type": "image_picker", "id": "bg_image", "label": "Background image", "info": "Leave empty to use the default banner." },
-    { "type": "image_picker", "id": "bg_image_mobile", "label": "Background image (mobile)", "info": "Used on phones. Leave empty to use the default mobile banner." },
-
-    { "type": "header", "content": "Style" },
-    { "type": "color", "id": "bg", "label": "Background", "default": "#075e58" },
-    { "type": "color", "id": "accent_color", "label": "Accent (script word & stars)", "default": "#deb126" },
-    { "type": "color", "id": "button_color", "label": "Primary button", "default": "#ef4444" },
-    { "type": "color", "id": "button_secondary_color", "label": "Secondary button", "default": "#064a46" },
-    { "type": "range", "id": "height", "label": "Minimum height", "min": 400, "max": 800, "step": 10, "unit": "px", "default": 620 }
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "title_before",
+      "label": "Heading start",
+      "default": "Your"
+    },
+    {
+      "type": "text",
+      "id": "title_script",
+      "label": "Script (accent) word",
+      "default": "Perfect"
+    },
+    {
+      "type": "text",
+      "id": "script_font_url",
+      "label": "Script word font file (link)",
+      "info": "Upload the font file (.woff2) in Content > Files, copy its link and paste it here. Leave empty to use the heading font."
+    },
+    {
+      "type": "text",
+      "id": "title_after",
+      "label": "Heading second line",
+      "default": "Coffee Routine!"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Discover your tailored at home coffee products & routine as we are your <strong>100% FREE Coffee Concierge</strong>!</p>"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Primary button text",
+      "default": "Browse all products →"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Primary button link",
+      "default": "/collections/all",
+      "info": "The button is hidden when this is empty."
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Secondary button text",
+      "default": "Take your free survey now →"
+    },
+    {
+      "type": "url",
+      "id": "button_2_url",
+      "label": "Secondary button link",
+      "info": "The button is hidden when this is empty."
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Product image",
+      "info": "Shown next to the text. A transparent PNG about 900 px wide works best."
+    },
+    {
+      "type": "select",
+      "id": "image_align",
+      "label": "Product image position",
+      "default": "flex-end",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left (near the text)"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Product image width",
+      "min": 280,
+      "max": 640,
+      "step": 10,
+      "unit": "px",
+      "default": 450
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image",
+      "info": "Covers the whole banner. Recommended size 2880 × 1240 px."
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image_mobile",
+      "label": "Background image (mobile)",
+      "info": "Used on phones. If empty, the desktop image is used."
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "default": "#075e58"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent (script word)",
+      "default": "#deb126"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Primary button",
+      "default": "#ef4444"
+    },
+    {
+      "type": "color",
+      "id": "button_secondary_color",
+      "label": "Secondary button",
+      "default": "#064a46"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Minimum height",
+      "min": 400,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 620
+    }
   ],
   "presets": [
-    { "name": "JP Hero" }
+    {
+      "name": "JP Hero"
+    }
   ]
 }
 {% endschema %}
