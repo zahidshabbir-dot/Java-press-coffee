@@ -50,15 +50,18 @@
           "type": "accordion",
           "settings": {
             "title": "About Product:",
+            "content": "",
             "open": true,
-            "show_howto": true
+            "show_howto": false
           }
         },
         "acc_2": {
           "type": "accordion",
           "settings": {
             "title": "Ingredients:",
-            "content": "<p>Add your ingredients here.</p>"
+            "content": "<p>Add your ingredients here.</p>",
+            "open": false,
+            "show_howto": false
           }
         }
       },
@@ -71,66 +74,29 @@
         "acc_1",
         "acc_2"
       ],
-      "settings": {}
-    },
-    "disclosures": {
-      "type": "disclosures",
       "settings": {
-        "heading": "Disclosures",
-        "heading_size": "h2",
-        "open_by_default": false,
-        "color_scheme": "",
-        "padding_top": 36,
-        "padding_bottom": 0
+        "description": "",
+        "description_words": 28,
+        "fill_photos": true,
+        "quantity_label": "Quantity:",
+        "button_label": "Add to cart",
+        "sold_out_label": "Sold out",
+        "howto_label": "How to use",
+        "default_rating": "4.9",
+        "default_reviews": "117",
+        "reviews_label": "Reviews",
+        "bg": "#ffffff",
+        "tile_color": "#d9d9d9",
+        "acc_bg": "#f2f2f2",
+        "text_color": "#424242",
+        "accent": "#ef4444",
+        "star_color": "#deb126",
+        "trust_color": "#075d57",
+        "padding_top": 34,
+        "padding_bottom": 60,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 40
       }
-    },
-    "jp_callout": {
-      "type": "jp-callout",
-      "blocks": {
-        "callout_1": {
-          "type": "callout",
-          "settings": {
-            "title": "Top 1% of the world’s coffee",
-            "text": "Specialty grade, single origin, and hand-picked at peak ripeness for the highest quality."
-          }
-        },
-        "callout_2": {
-          "type": "callout",
-          "settings": {
-            "title": "A new coffee each month",
-            "text": "These coffees aren’t on the shelves, from Malawi to Myanmar, India to Ecuador, and more."
-          }
-        },
-        "callout_3": {
-          "type": "callout",
-          "settings": {
-            "title": "Roasted fresh to order",
-            "text": "And always roasted to your preference. Maximum freshness, maximum flavor."
-          }
-        },
-        "callout_4": {
-          "type": "callout",
-          "settings": {
-            "title": "Delivered on your schedule",
-            "text": "Skip or change your delivery date at any time, and set a schedule that works for you."
-          }
-        }
-      },
-      "block_order": [
-        "callout_1",
-        "callout_2",
-        "callout_3",
-        "callout_4"
-      ],
-      "settings": {}
-    },
-    "jp_recommended": {
-      "type": "jp-recommended",
-      "settings": {}
-    },
-    "jp_newsletter": {
-      "type": "jp-newsletter",
-      "settings": {}
     },
     "jp_brew_guide": {
       "type": "jp-brew-guide",
@@ -183,7 +149,148 @@
         "step_4",
         "step_5"
       ],
-      "settings": {}
+      "settings": {
+        "preview_in_editor": false,
+        "heading": "How to make your coffee",
+        "subheading": "Follow the steps and make your own cup.",
+        "ready_title": "Your coffee is ready!",
+        "ready_text": "Take a sip and enjoy. Smooth, rich and made the Java Press way.",
+        "step_word": "Step",
+        "of_word": "of",
+        "next_label": "Continue",
+        "water_label": "Hot water",
+        "milk_label": "Warm milk",
+        "coffee_btn": "Add coffee",
+        "sugar_btn": "Add sugar",
+        "skip_label": "Skip sugar",
+        "stir_btn": "Stir",
+        "restart_label": "Start again",
+        "close_label": "Close",
+        "cup_1_name": "White",
+        "cup_1": "#ffffff",
+        "cup_2_name": "Red",
+        "cup_2": "#ef4444",
+        "cup_3_name": "Green",
+        "cup_3": "#075d57",
+        "default_cup": "2",
+        "water_color": "#cfe7ef",
+        "milk_color": "#f7f1e8",
+        "coffee_color": "#4a2c1a",
+        "panel_bg": "#ffffff",
+        "stage_bg": "#f1e6da",
+        "text_color": "#2d2d2d",
+        "accent": "#ef4444"
+      }
+    },
+    "disclosures": {
+      "type": "disclosures",
+      "settings": {
+        "heading": "Disclosures",
+        "heading_size": "h2",
+        "open_by_default": false,
+        "color_scheme": "",
+        "padding_top": 36,
+        "padding_bottom": 0
+      }
+    },
+    "jp_callout": {
+      "type": "jp-callout",
+      "blocks": {
+        "callout_1": {
+          "type": "callout",
+          "settings": {
+            "icon": "shopify://shop_images/Mask_group_088f144f-c3c9-468a-b997-d70010672d7c.png",
+            "title": "Top 1% of the world’s coffee",
+            "text": "Specialty grade, single origin, and hand-picked at peak ripeness for the highest quality."
+          }
+        },
+        "callout_2": {
+          "type": "callout",
+          "settings": {
+            "icon": "shopify://shop_images/Mask_group-1_f982551b-5dfe-4655-9503-a134ed23c3aa.png",
+            "title": "A new coffee each month",
+            "text": "These coffees aren’t on the shelves, from Malawi to Myanmar, India to Ecuador, and more."
+          }
+        },
+        "callout_3": {
+          "type": "callout",
+          "settings": {
+            "icon": "shopify://shop_images/Mask_group-2_c3faffec-a01c-4e0d-8336-17cf6d334fc0.png",
+            "title": "Roasted fresh to order",
+            "text": "And always roasted to your preference. Maximum freshness, maximum flavor."
+          }
+        },
+        "callout_4": {
+          "type": "callout",
+          "settings": {
+            "icon": "shopify://shop_images/Mask_group-3_0ac63c34-7266-4148-9a7f-e7a5583f997b.png",
+            "title": "Delivered on your schedule",
+            "text": "Skip or change your delivery date at any time, and set a schedule that works for you."
+          }
+        }
+      },
+      "block_order": [
+        "callout_1",
+        "callout_2",
+        "callout_3",
+        "callout_4"
+      ],
+      "settings": {
+        "heading": "Why 100,000 Coffee drinkers have switched to organicCoffee",
+        "bg": "#075d57",
+        "heading_color": "#ffffff",
+        "text_color": "#eaeaea",
+        "icon_color": "#ffffff",
+        "padding_top": 67,
+        "padding_bottom": 48,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "jp_recommended": {
+      "type": "jp-recommended",
+      "settings": {
+        "heading": "Recommended For You",
+        "collection": "java-coffee",
+        "products_count": 4,
+        "button_label": "Add to cart",
+        "button_options_label": "Choose options",
+        "sold_out_label": "Sold out",
+        "show_badge": true,
+        "badge": "shopify://shop_images/section_5_a_2_ae013e44-e219-4168-b5b1-8760141afb14.png",
+        "default_stars": 5,
+        "default_reviews": "1171",
+        "reviews_label": "Reviews",
+        "bg": "#e3e3e3",
+        "tile_color": "#d9d9d9",
+        "text_color": "#424242",
+        "button_color": "#ef4444",
+        "star_color": "#ef4444",
+        "padding_top": 72,
+        "padding_bottom": 72,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "jp_newsletter": {
+      "type": "jp-newsletter",
+      "settings": {
+        "eyebrow": "Newsletter Subscription",
+        "heading": "Join our newsletter and get updates on\npromotions and coupons.",
+        "text": "<p>Get <strong>“$20 discount”</strong> for your first order</p>",
+        "placeholder": "Your Email Address",
+        "button_label": "Subscribe Now →",
+        "success_message": "Thanks for subscribing!",
+        "bg": "#f2f2f2",
+        "text_color": "#424242",
+        "accent_color": "#035d57",
+        "button_color": "#ef4444",
+        "field_bg": "#d9d9d9",
+        "padding_top": 36,
+        "padding_bottom": 70,
+        "padding_top_mobile": 33,
+        "padding_bottom_mobile": 85
+      }
     }
   },
   "order": [

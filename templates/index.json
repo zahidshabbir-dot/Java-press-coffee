@@ -11,12 +11,52 @@
   "sections": {
     "jp_hero": {
       "type": "jp-hero",
-      "settings": {}
+      "settings": {
+        "title_before": "Your",
+        "title_script": "Perfect",
+        "title_after": "Coffee Routine!",
+        "text": "<p>Discover your tailored at home coffee products & routine as we are your <strong>100% FREE Coffee Concierge</strong>!</p>",
+        "button_label": "Browse all products  →",
+        "button_url": "",
+        "button_2_label": "Take your free survey now  →",
+        "button_2_url": "",
+        "image": "shopify://shop_images/Mask_group_a1a80b31-11fc-4bff-be77-76c59f11a231.png",
+        "image_align": "flex-end",
+        "image_width": 450,
+        "bg_image": "shopify://shop_images/Group_1000014407.png",
+        "bg_image_mobile": "shopify://shop_images/Group_164760.png",
+        "bg": "#075e58",
+        "accent_color": "#deb126",
+        "button_color": "#ef4444",
+        "button_secondary_color": "#064a46",
+        "height": 620
+      }
     },
     "jp_best_sellers": {
       "type": "jp-best-sellers",
       "settings": {
-        "collection_1": "all"
+        "heading": "Try Our Best Sellers",
+        "collection_1": "all",
+        "tab_1": "Daily Essentials",
+        "collection_2": "daily-essentials",
+        "tab_2": "Black",
+        "collection_3": "black",
+        "tab_3": "Hard",
+        "collection_4": "hard",
+        "tab_4": "chocolate",
+        "products_per_tab": 4,
+        "button_label": "Add to cart",
+        "button_options_label": "Choose options",
+        "sold_out_label": "Sold out",
+        "show_badge": true,
+        "badge": "shopify://shop_images/section_5_a_2_ae013e44-e219-4168-b5b1-8760141afb14.png",
+        "bg": "#f2f2f2",
+        "tile_bg": "#d9d9d9",
+        "text_color": "#424242",
+        "accent": "#ef4444",
+        "tab_color": "#af272f",
+        "padding_top": 82,
+        "padding_bottom": 46
       }
     },
     "jp_featured_product": {
@@ -64,11 +104,45 @@
         "t2",
         "t3"
       ],
-      "settings": {}
+      "settings": {
+        "product": "",
+        "description": "<p>Pure Vitamin C easily dissolvable in liquids for gentle ingestion and improved absorption. Rigorously tested to ensure freedom from GMOs, corn, and other impurities.&nbsp;</p>",
+        "description_words": 30,
+        "quantity_label": "Quantity:",
+        "button_label": "Add to cart",
+        "sold_out_label": "Sold out",
+        "show_badge": true,
+        "badge": "shopify://shop_images/section_5_a_2_ae013e44-e219-4168-b5b1-8760141afb14.png",
+        "bg": "#ffffff",
+        "tile_bg": "#d9d9d9",
+        "text_color": "#424242",
+        "accent": "#ef4444",
+        "trust_color": "#075d57",
+        "padding_top": 82,
+        "padding_bottom": 110
+      }
     },
     "jp_newsletter": {
       "type": "jp-newsletter",
-      "settings": {}
+      "settings": {
+        "icon": "shopify://shop_images/coffee_1.png",
+        "eyebrow": "Newsletter Subscription",
+        "heading": "Join our newsletter and get updates on\npromotions and coupons.",
+        "text": "<p>Get <strong>“$20 discount”</strong> for your first order</p>",
+        "placeholder": "Your Email Address",
+        "button_label": "Subscribe Now →",
+        "success_message": "Thanks for subscribing!",
+        "bg_image": "shopify://shop_images/Group_1000014343.png",
+        "bg": "#f2f2f2",
+        "text_color": "#424242",
+        "accent_color": "#035d57",
+        "button_color": "#ef4444",
+        "field_bg": "#d9d9d9",
+        "padding_top": 36,
+        "padding_bottom": 70,
+        "padding_top_mobile": 33,
+        "padding_bottom_mobile": 85
+      }
     }
   },
   "order": [
