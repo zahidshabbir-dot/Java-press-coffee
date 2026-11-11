@@ -44,10 +44,10 @@
 
 .jp-hero .jp-hero__script {
   display: inline-block;
-  font-family: var(--font-heading-family);
+  font-family: var(--jp-hero-script-font, var(--font-heading-family));
   font-size: 96px;
   line-height: 0.8;
-  font-weight: 400;
+  font-weight: var(--jp-hero-script-weight, 400);
   letter-spacing: 4.8px;
   text-transform: none;
   color: var(--jp-hero-accent);

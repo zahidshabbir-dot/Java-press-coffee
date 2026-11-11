@@ -2,13 +2,22 @@
 {%- assign background_image_mobile = section.settings.bg_image_mobile -%}
 {%- assign hero_image = section.settings.image -%}
 
+{%- assign script_font = section.settings.script_font -%}
+
 {{ 'jp-hero.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%} Loads the script font chosen in the section settings (Shopify font library). {%- endcomment -%}
+{% style %}
+  {{ script_font | font_face: font_display: 'swap' }}
+{% endstyle %}
 
 <section
   class="jp-hero"
   style="
     --jp-hero-bg: {{ section.settings.bg }};
     --jp-hero-accent: {{ section.settings.accent_color }};
+    --jp-hero-script-font: {{ script_font.family }}, {{ script_font.fallback_families }};
+    --jp-hero-script-weight: {{ script_font.weight }};
     --jp-hero-red: {{ section.settings.button_color }};
     --jp-hero-dark: {{ section.settings.button_secondary_color }};
     --jp-hero-height: {{ section.settings.height }}px;
@@ -91,6 +100,13 @@
       "id": "title_script",
       "label": "Script (accent) word",
       "default": "Perfect"
+    },
+    {
+      "type": "font_picker",
+      "id": "script_font",
+      "label": "Script word font",
+      "info": "Font for the highlighted word in the heading. Pick a handwritten font.",
+      "default": "raleway_n4"
     },
     {
       "type": "text",
