@@ -57,8 +57,11 @@
         <div class="jp-hero__text">{{ section.settings.text }}</div>
       {%- endif -%}
 
-      {%- if section.settings.button_label != blank and section.settings.button_url != blank -%}
-        <a class="jp-hero__btn jp-hero__btn--primary" href="{{ section.settings.button_url }}">
+      {%- assign primary_button_url = section.settings.button_url
+        | default: routes.all_products_collection_url
+      -%}
+      {%- if section.settings.button_label != blank -%}
+        <a class="jp-hero__btn jp-hero__btn--primary" href="{{ primary_button_url }}">
           {{- section.settings.button_label -}}
         </a>
       {%- endif -%}
@@ -144,7 +147,7 @@
       "id": "button_url",
       "label": "Primary button link",
       "default": "/collections/all",
-      "info": "The button is hidden when this is empty."
+      "info": "Leave empty to link to all products."
     },
     {
       "type": "text",
